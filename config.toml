@@ -1,4 +1,4 @@
-baseurl = "/"
+baseurl = "eloquent-swirles-d7e709.netlify.com/"
 languageCode = "en-us"
 title = "Hugo Future Imperfect"
 theme = "hugo-future-imperfect"
