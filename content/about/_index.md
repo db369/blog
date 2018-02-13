@@ -1,29 +1,10 @@
 +++
-title = "About Hugo"
-date = "2014-04-09"
+title = "About Me"
+date = "2018-02-13"
 +++
 
-Hugo is a static site engine written in Go.
+David Bloom was a Specialist at [Nasdaq](http://www.nasdaq.com) in Corporate Solutions (formerly part of Thomson Reuters) through November 2014. David focused on valuation and quantitative analytics, however, he is particularly skilled at solving unique problems for clients. David has helped clients analyse counter-party risk, value themeselves against peers, optimize capital structure, and evaluate market volatility. David has also worked with internal strategy in analyzing the business, its clients, and service structure. He has also helped business development teams assess prospective services and interdepartmental product offerings.
 
+Prior to joining Thomson Reuters, David was a corporate development professional and held roles at Xerox, PanAmSat, and Amphenol. In these roles, he has evaluated, analyzed, coordinated, and executed strategic M&A and divestitures. David also spent some time at Deutsche Bank as an Associate in Project Finance where he helped structure transactions for U.S. and Latin American telecommunications companies. Just after college, David worked at Skadden, Arps, Slate, Meagher & Flom where he not only provided analytical support in significant M&A transactions and antitrust litigation cases, but also drafted offering memoranda for private placements and IPO's.
 
-It makes use of a variety of open source projects including:
-
-* [Cobra](https://github.com/spf13/cobra)
-* [Viper](https://github.com/spf13/viper)
-* [J Walter Weatherman](https://github.com/spf13/jWalterWeatherman)
-* [Cast](https://github.com/spf13/cast)
-
-Learn more and contribute on [GitHub](https://github.com/spf13).
-
-## Setup
-
-Some fun facts about [Hugo](http://gohugo.io/):
-
-* Built in [Go](http://golang.org/)
-* Loosely inspired by [Jekyll](http://jekyllrb.com/)
-* Primarily developed by [spf13](http://spf13.com/) on the train while commuting to and from Manhattan.
-* Coded in [Vim](http://vim.org) using [spf13-vim](http://vim.spf13.com/)
-
-Have questions or suggestions? Feel free to [open an issue on GitHub](https://github.com/spf13/hugo/issues/new) or [ask me on Twitter](https://twitter.com/spf13).
-
-Thanks for reading!
+David holds an MBA from the [Yale School of Management](https://som.yale.edu) and a BA from [New York University](http://www.nyu.edu). David has worked in Hong Kong and Australia; he currently resides in India with his wife and two children.
