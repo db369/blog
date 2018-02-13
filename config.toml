@@ -37,9 +37,9 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
   # These are stored in the favicon folder. See the following for more information:
   # https://github.com/audreyr/favicon-cheat-sheet
   loadFavicon          = true
-  faviconVersion       = ""
+  faviconVersion       = "ico"
   # Sets Social Share links to appear on posts
-  socialShare          = true
+  socialShare          = false
   # Sets specific share to appear on posts (default behavior is to appear)
   socialShareTwitter   = false
   socialShareGoogleplus = false
