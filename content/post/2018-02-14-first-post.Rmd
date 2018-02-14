@@ -1,13 +1,12 @@
 ---
-title: "First Post!"
-categories: "data science"
-tags: "about_me"
-date: 2018-02-14T15:24:08+05:30
-draft: false
-description: "A little about me and this blog"
-featured: "pic1.jpg"
-featuredalt: "Me and the kids"
-featuredpath: "img/main"
+title: First Post!
+author: dave
+date: '2018-02-14'
+slug: first-post
+categories:
+  - data science
+tags:
+  - about
 ---
 
 ## Introduction
