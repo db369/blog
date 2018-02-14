@@ -1,6 +1,6 @@
-baseurl = "/"
+baseurl = "http://blog.dave-bloom.com/"
 languageCode = "en-us"
-title = "David A Bloom"
+title = "Dave Bloom"
 theme = "hugo-future-imperfect"
 preserveTaxonomyNames = true
 paginate = 3
