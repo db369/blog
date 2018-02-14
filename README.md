@@ -1,2 +1,2 @@
 # blog
-Web site hosting my experiments in data science
+Web site hosting my experiments in data science and whatever else I feel like sharing...
