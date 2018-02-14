@@ -8,8 +8,6 @@ disqusShortname = ""
 googleAnalytics = ""
 pluralizeListTitles = false
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
-PygmentsCodeFences = true
-PygmentsStyle = "friendly"
 
 [params]
   # Sets the meta tag description
@@ -64,7 +62,7 @@ PygmentsStyle = "friendly"
   disable_highlight = false # set to true to disable Highlight
   highlightjsVersion = "9.11.0"
   highlightjsCDN = "//cdn.bootcss.com"
-  highlightjsLang = ["r", "yaml", "css"]
+  highlightjsLang = ["r", "yaml", "css", "python"]
   highlightjsTheme = "github"
   
 # Disqus will take priority over Staticman (github.com/eduardoboucas/staticman)
