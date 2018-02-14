@@ -1,9 +1,9 @@
 +++
 title = "David A Bloom"
 type = "contact"
-netlify = true
+netlify = false
 emailservice = "formspree.io/david.a.bloom@aya.yale.edu"
-contactname = "David A Bloom"
+contactname = "Your Name"
 contactemail = "Your Email Address"
 contactmessage = "Your Message"
 +++
