@@ -8,6 +8,8 @@ disqusShortname = ""
 googleAnalytics = ""
 pluralizeListTitles = false
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
+PygmentsCodeFences = true
+PygmentsStyle = "friendly"
 
 [params]
   # Sets the meta tag description
