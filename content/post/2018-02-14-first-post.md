@@ -1,6 +1,6 @@
 +++
 title = "First Post!"
-author = "dave""
+author = "dave"
 date = "2018-02-14"
 slug = first-post
 featured = "pic1.jpg"
