@@ -2,7 +2,7 @@
 title = "First Post!"
 author = "dave"
 date = "2018-02-14"
-slug = first-post
+slug = "first-post"
 featured = "pic1.jpg"
 featuredalt = "me and kids"
 featuredpath = "img/main"
