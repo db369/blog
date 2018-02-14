@@ -57,6 +57,9 @@
             <link rel="stylesheet" href="{{ "css/main.css" | relURL }}">
             <link rel="stylesheet" href="{{ "css/add-on.css" | relURL }}">
             <link rel="stylesheet" href="{{ "css/academicons.min.css" | relURL }}">
+            <link rel="stylesheet" href="{{"css/ocean.css" | absURL}}" rel="stylesheet" id="theme-stylesheet">
+            <script src="{{ "js/highlight.pack.js" | absURL }}"></script>
+            <script>hljs.initHighlightingOnLoad();</script>
         {{ end }}
 
         {{ if ne ($.Scratch.Get "cssFiles") false }}
