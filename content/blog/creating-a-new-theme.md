@@ -781,7 +781,7 @@ Hugo uses the section and type to find the template file for every piece of cont
 
 Now that we know the search rule, let's see what we actually have available:
 
-```
+```bash
 $ find themes/zafta -name single.html | xargs ls -l
 -rw-r--r--  1 quoha  staff  132 Sep 29 17:31 themes/zafta/layouts/_default/
                                                 single.html
