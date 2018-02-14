@@ -122,7 +122,7 @@ Let's use Hugo to create a new web site. I'm a Mac user, so I'll create mine in 
 
 The "new site" command will create a skeleton of a site. It will give you the basic directory structure and a useable configuration file.
 
-```
+```bash
 $ hugo new site ~/Sites/zafta
 $ cd ~/Sites/zafta
 $ ls -l
@@ -145,7 +145,7 @@ The other directories (archetypes/, layouts/, and static/) are used when customi
 
 Running the `hugo` command with no options will read all the available content and generate the HTML files. It will also copy all static files (that's everything that's not content). Since we have an empty site, it won't do much, but it will do it very quickly.
 
-```
+```bash
 $ hugo --verbose
 INFO: 2014/09/29 Using config file: config.toml
 INFO: 2014/09/29 syncing from /Users/quoha/Sites/zafta/static/ to
@@ -166,7 +166,7 @@ The "`--verbose`" flag gives extra information that will be helpful when we buil
 
 We can verify that the command worked by looking at the directory again.
 
-```
+```bash
 $ ls -l
 total 8
 drwxr-xr-x  2 quoha  staff   68 Sep 29 16:49 archetypes
@@ -180,7 +180,7 @@ $
 
 See that new public/ directory? Hugo placed all generated content there. When you're ready to publish your web site, that's the place to start. For now, though, let's just confirm that we have what we'd expect from a site with no content.
 
-```
+```bash
 $ ls -l public
 total 16
 -rw-r--r--  1 quoha  staff  416 Sep 29 17:02 index.xml
@@ -196,7 +196,7 @@ Hugo created two XML files, which is standard, but there are no HTML files.
 
 Verify that you can run the built-in web server. It will dramatically shorten your development cycle if you do. Start it by running the "server" command. If it is successful, you will see output similar to the following:
 
-```
+```bash
 $ hugo server --verbose
 INFO: 2014/09/29 Using config file: /Users/quoha/Sites/zafta/config.toml
 INFO: 2014/09/29 syncing from /Users/quoha/Sites/zafta/static/ to
@@ -253,7 +253,7 @@ All themes have opinions on content and layout. For example, Zafta uses "post" o
 
 Use the hugo "new" command to create the skeleton of a theme. This creates the directory structure and places empty files for you to fill out.
 
-```
+```bash
 $ hugo new theme zafta
 
 $ ls -l
@@ -286,7 +286,7 @@ The skeleton includes templates (the files ending in .html), license file, a des
 
 Please take a minute to fill out the theme.toml and LICENSE.md files. They're optional, but if you're going to be distributing your theme, it tells the world who to praise (or blame). It's also nice to declare the license so that people will know how they can use the theme.
 
-```
+```bash
 $ vi themes/zafta/theme.toml
 author = "michael d henderson"
 description = "a minimal working template"
@@ -302,7 +302,7 @@ tags = ["tags", "categories"]
 
 Note that the the skeleton's template files are empty. Don't worry, we'll be changing that shortly.
 
-```
+```bash
 $ find themes/zafta -name '*.html' | xargs ls -l
 -rw-r--r--  1 quoha  staff  0 Sep 29 17:31 themes/zafta/layouts/_default/
                                             list.html
@@ -325,7 +325,7 @@ Now that we've got a theme to work with, it's a good idea to add the theme name 
 
 Edit the file to add the theme, add a title for the site, and specify that all of our content will use the TOML format.
 
-```
+```bash
 $ vi config.toml
 theme = "zafta"
 baseurl = ""
@@ -341,7 +341,7 @@ $
 
 Now that we have an empty theme, let's generate the site again.
 
-```
+```bash
 $ hugo --verbose
 INFO: 2014/09/29 Using config file: /Users/quoha/Sites/zafta/config.toml
 INFO: 2014/09/29 syncing from /Users/quoha/Sites/zafta/themes/zafta/static/ to
@@ -362,7 +362,7 @@ Did you notice that the output is different? The warning message for the home pa
 
 Let's check the public/ directory to see what Hugo's created.
 
-```
+```bash
 $ ls -l public
 total 16
 drwxr-xr-x  2 quoha  staff   68 Sep 29 17:56 css
