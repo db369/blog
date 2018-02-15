@@ -118,12 +118,12 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
   identifier = "fa fa-id-card-o"
   weight = 2
 
-#[[menu.main]]
-#  name = "Blog"
-#  url = "/blog/"
-#  identifier = "fa fa-newspaper-o"
-#  weight = 3
-#
+[[menu.main]]
+  name = "Blog"
+  url = "/post/"
+  identifier = "fa fa-newspaper-o"
+  weight = 3
+
 #[[menu.main]]
 #  name = "Itemized"
 #  url = "/itemized/"
