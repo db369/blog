@@ -85,11 +85,10 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 [params.intro]
   header    = "Dave Bloom"
 
-  paragraph = "[description to come]"
+  paragraph = "[description to come] 
+    <i class = "fa fa-map-marker" aria-hidden="true">::before</i> Chennai, India"
 
   about     = "Watch me try, watch me fail, watch me succeed, but mostly fail..."
-  
-  identifier = "fa fa-map-marker"
 
   # This appears at the top of the sidebar above params.intro.header.
   # A width of less than 100px is recommended from a design perspective.
