@@ -120,7 +120,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
 [[menu.main]]
   name = "Blog"
-  url = "/post/"
+  url = "/blog/"
   identifier = "fa fa-newspaper-o"
   weight = 3
 
