@@ -85,8 +85,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 [params.intro]
   header    = "Dave Bloom"
 
-  paragraph = "[description to come] 
-    <i class = "fa fa-map-marker" aria-hidden="true">::before</i> Chennai, India"
+  paragraph = "[description to come] <i class = \"fa fa-map-marker\" aria-hidden=\"true\">::before</i> Chennai, India"
 
   about     = "Watch me try, watch me fail, watch me succeed, but mostly fail..."
 
