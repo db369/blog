@@ -1,4 +1,4 @@
-baseurl = "http://blog.dave-bloom.com/"
+baseurl = "https://blog.dave-bloom.com/"
 languageCode = "en-us"
 title = "Dave Bloom"
 theme = "hugo-future-imperfect"
@@ -190,4 +190,4 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
   orcid            = ""
   researchgate     = ""    
   # Email
-  email            = "example"
+  email            = ""
