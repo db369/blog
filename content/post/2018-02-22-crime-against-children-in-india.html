@@ -1,0 +1,400 @@
+---
+title: Crime Against Children in India
+author: dave
+date: '2018-02-22'
+featured: "india_children.jpg"
+featuredalt: "children of India"
+featuredpath: "img/main"
+categories:
+  - EDA
+  - R
+tags:
+  - crime
+  - EDA
+  - India
+  - R
+slug: crime-against-children-in-india
+---
+
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>I found this dataset by chance on <a href="https://data.world">data.world</a> and it immediately sparked in interest as I have two small children and recently moved to India in 2017. The data is organized by state and specific crime from 2001 to 2012. It is a bit dated and not as granular as I would like (by city would have been nice), but the dataset is still worth exploring and practicing some basic skills.</p>
+<p>The dataset can be found <a href="https://data.world/bhavnachawla/crime-rate-against-children-india-2001-2012">here</a>.</p>
+<div id="load-the-necessary-libraries" class="section level3">
+<h3>Load the necessary libraries</h3>
+<pre class="r"><code>library(data.world)
+library(tidyverse)
+library(stringr)
+library(maptools)
+library(RColorBrewer)
+library(patchwork)
+library(gridExtra)</code></pre>
+</div>
+<div id="accessing-the-data" class="section level3">
+<h3>Accessing the data</h3>
+<p>As per data.world’s automatically generated notebook, the first step is querying the database and checking what tables are included.</p>
+<pre class="r"><code># Datasets are referenced by their URL or path
+dataset_key &lt;- &quot;https://data.world/bhavnachawla/crime-rate-against-children-india-2001-2012&quot;
+# List tables available for SQL queries
+tables_qry &lt;- data.world::qry_sql(&quot;SELECT * FROM Tables&quot;)
+tables_df &lt;- data.world::query(tables_qry, dataset = dataset_key)
+# See what is in it
+tables_df$tableName</code></pre>
+<pre><code>## [1] &quot;crime_head_wise_persons_arrested_under_crime_against_children_during_2001_2012&quot;</code></pre>
+<p>Next, we query the table found.</p>
+<pre class="r"><code>if (length(tables_df$tableName) &gt; 0) {
+  sample_qry &lt;- data.world::qry_sql(sprintf(&quot;SELECT * FROM `%s`&quot;, tables_df$tableName[[1]]))
+  sample_df &lt;- data.world::query(sample_qry, dataset = dataset_key)
+  sample_df
+}</code></pre>
+<pre><code>## # A tibble: 494 x 14
+##    state_ut   crime_head  `2001` `2002` `2003` `2004` `2005` `2006` `2007`
+##    &lt;chr&gt;      &lt;chr&gt;        &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;
+##  1 ANDHRA PR… INFANTICIDE      1      1      3      0      0      0      1
+##  2 ARUNACHAL… INFANTICIDE      0      0      0      0      0      0      0
+##  3 JHARKHAND  INFANTICIDE      0      0      0      0      0      0      0
+##  4 TRIPURA    RAPE OF CH…      0      0      0     28      6     28     14
+##  5 UTTAR PRA… RAPE OF CH…    820    550    429    602    531    480    694
+##  6 UTTARAKHA… RAPE OF CH…     10      8     11     35     25     39     22
+##  7 WEST BENG… RAPE OF CH…     11     16     17     17      6     33     43
+##  8 TOTAL (ST… RAPE OF CH…   2546   2642   3213   4001   4359   4996   5312
+##  9 A &amp; N ISL… RAPE OF CH…      0      0      2      0      6      6      3
+## 10 CHANDIGARH RAPE OF CH…     14      5     16      0     23      7     11
+## # ... with 484 more rows, and 5 more variables: `2008` &lt;int&gt;,
+## #   `2009` &lt;int&gt;, `2010` &lt;int&gt;, `2011` &lt;int&gt;, `2012` &lt;int&gt;</code></pre>
+</div>
+<div id="data-cleaning" class="section level3">
+<h3>Data Cleaning</h3>
+<p>Now that we have data to work with, it makes sense to check for missing data, misspellings, and generally reshaping the data to make it easier to work with.</p>
+<p>First, I’ll check for NA’s.</p>
+<pre class="r"><code># check for NA&#39;s
+any(is.na(sample_df))</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<p>Since there are no NA’s, I’ll move on to checking for duplicates and typos in the state and crime columns.</p>
+<pre class="r"><code># check for duplicate states
+sample_df %&gt;%
+  arrange(state_ut) %&gt;%
+  select(state_ut) %&gt;%
+  unique()</code></pre>
+<pre><code>## # A tibble: 38 x 1
+##    state_ut         
+##    &lt;chr&gt;            
+##  1 ANDHRA PRADESH   
+##  2 A &amp; N ISLANDS    
+##  3 ARUNACHAL PRADESH
+##  4 ASSAM            
+##  5 BIHAR            
+##  6 CHANDIGARH       
+##  7 CHHATTISGARH     
+##  8 DAMAN &amp; DIU      
+##  9 DELHI            
+## 10 D &amp; N HAVELI     
+## # ... with 28 more rows</code></pre>
+<pre class="r"><code># check for typos in crime type
+sample_df %&gt;%
+  arrange(crime_head) %&gt;%
+  select(crime_head) %&gt;%
+  unique()</code></pre>
+<pre><code>## # A tibble: 13 x 1
+##    crime_head                          
+##    &lt;chr&gt;                               
+##  1 ABETMENT OF SUICIDE                 
+##  2 BUYING OF GIRLS FOR PROSTITUTION    
+##  3 EXPOSURE AND ABANDONMENT            
+##  4 FOETICIDE                           
+##  5 INFANTICIDE                         
+##  6 KIDNAPPING and ABDUCTION OF CHILDREN
+##  7 MURDER OF CHILDREN                  
+##  8 OTHER CRIMES AGAINST CHILDREN       
+##  9 PROCURATION OF MINOR GILRS          
+## 10 PROHIBITION OF CHILD MARRIAGE ACT   
+## 11 RAPE OF CHILDREN                    
+## 12 SELLING OF GIRLS FOR PROSTITUTION   
+## 13 TOTAL CRIMES AGAINST CHILDREN</code></pre>
+<p>There are number of observations labeled “total” in the states column that I don’t really need so I’ll exclude them when creating a new dataframe (leaving the totals in the crime column). I’ll fix a typo and convert to states and crimes to title case.</p>
+<pre class="r"><code>#remove totals from state column -- NOTE that I leave the total in the crime column
+df &lt;- sample_df[!grepl(&quot;TOTAL&quot;, sample_df$state_ut),]
+
+# fix typo
+df$crime_head[df$crime_head==&quot;PROCURATION OF MINOR GILRS&quot;] &lt;- &quot;PROCURATION OF MINOR GIRLS&quot;
+
+#convert to title case
+df$crime_head &lt;- str_to_title(df$crime_head)
+df$state_ut &lt;- str_to_title(df$state_ut)</code></pre>
+</div>
+<div id="exploratory-data-analysis" class="section level3">
+<h3>Exploratory Data Analysis</h3>
+<p>I am still new to this and I suspect it makes more sense to begin with macro level analysis, but I started by focusing on the state of Tamil Nadu since that’s where I live. I was curious to see what crimes are most prevalent in this state.</p>
+<pre class="r"><code>df %&gt;%
+  gather(&quot;year&quot;, df, -state_ut, -crime_head, convert = T) %&gt;%
+  filter(state_ut == &quot;Tamil Nadu&quot; &amp; year == 2012) %&gt;%
+  arrange(desc(df))</code></pre>
+<pre><code>## # A tibble: 13 x 4
+##    state_ut   crime_head                            year    df
+##    &lt;chr&gt;      &lt;chr&gt;                                &lt;int&gt; &lt;int&gt;
+##  1 Tamil Nadu Total Crimes Against Children         2012  1105
+##  2 Tamil Nadu Kidnapping And Abduction Of Children  2012   560
+##  3 Tamil Nadu Rape Of Children                      2012   333
+##  4 Tamil Nadu Murder Of Children                    2012   118
+##  5 Tamil Nadu Other Crimes Against Children         2012    49
+##  6 Tamil Nadu Procuration Of Minor Girls            2012    41
+##  7 Tamil Nadu Abetment Of Suicide                   2012     2
+##  8 Tamil Nadu Infanticide                           2012     1
+##  9 Tamil Nadu Exposure And Abandonment              2012     1
+## 10 Tamil Nadu Foeticide                             2012     0
+## 11 Tamil Nadu Buying Of Girls For Prostitution      2012     0
+## 12 Tamil Nadu Selling Of Girls For Prostitution     2012     0
+## 13 Tamil Nadu Prohibition Of Child Marriage Act     2012     0</code></pre>
+<p>After identifying the most significant crimes in 2012, I chart how these crimes changed over time.</p>
+<pre class="r"><code>crimes &lt;- c(&quot;Kidnapping And Abduction Of Children&quot;,
+            &quot;Murder Of Children&quot;,
+            &quot;Other Crimes Against Children&quot;,
+            &quot;Procuration Of Minor Girls&quot;,
+            &quot;Rape Of Children&quot;)
+
+df %&gt;%
+  gather(&quot;year&quot;, df, -state_ut, -crime_head, convert = T) %&gt;%
+  filter((state_ut == &quot;Tamil Nadu&quot;) &amp; (crime_head %in% crimes )) %&gt;%
+  ggplot(aes(year,df)) + geom_line(color = &quot;DarkViolet&quot;) + 
+    facet_wrap(~ crime_head, ncol = 2) +
+    labs(y = &quot;Count&quot;, x = &quot;&quot;) +
+    scale_x_continuous(labels = function(x) as.integer(x))</code></pre>
+<p><img src="/post/2018-02-22-crime-against-children-in-india_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>Kidnapping and rape appear to have the most alarming trajectories. I’m curious what average annual growth looks like.</p>
+<pre class="r"><code>df %&gt;%
+  gather(&quot;year&quot;, df, -state_ut, -crime_head, convert = T) %&gt;%
+  filter(state_ut == &quot;Tamil Nadu&quot;, crime_head %in% crimes) %&gt;% 
+  group_by(crime_head) %&gt;%
+  summarize(CAGR = 100 * ((df[year == 2012] / df[year == 2001]) ^ (1/11) - 1)) %&gt;%
+  arrange(desc(CAGR))</code></pre>
+<pre><code>## # A tibble: 5 x 2
+##   crime_head                            CAGR
+##   &lt;chr&gt;                                &lt;dbl&gt;
+## 1 Procuration Of Minor Girls           Inf  
+## 2 Kidnapping And Abduction Of Children  47.1
+## 3 Rape Of Children                      28.0
+## 4 Murder Of Children                    17.5
+## 5 Other Crimes Against Children         12.1</code></pre>
+<p>Note that ‘Procuration Of Minor Girls’ is <strong>Inf</strong> since it was 0 in 2001.</p>
+<p>To add a little more context, I’ll take a look at kidnapping and abductions by state.</p>
+<pre class="r"><code>df %&gt;%
+  gather(&quot;year&quot;, df, -state_ut, -crime_head, convert = F) %&gt;%
+  filter(crime_head == &quot;Kidnapping And Abduction Of Children&quot;, df[year == &#39;2012&#39;] &gt; 200) %&gt;%
+  ggplot(aes(x=year,y=df, fill=state_ut)) + geom_bar(stat=&#39;identity&#39;) + 
+    facet_wrap(~state_ut) + 
+    labs(title = &#39;Kidnapping And Abduction Of Children by State (2001 - 2012)&#39;,
+         y = &#39;Number of Crimes&#39;, x=&#39;&#39;) +
+    theme(legend.position=&#39;none&#39;, 
+        axis.text.x = element_text(angle = 90, vjust = 0.5),
+        axis.ticks.x = element_blank()) +
+    scale_fill_manual(values = colorRampPalette(brewer.pal(8, &quot;Dark2&quot;))(14))</code></pre>
+<p><img src="/post/2018-02-22-crime-against-children-in-india_files/figure-html/kidnapping%20by%20state%20all-1.png" width="864" /></p>
+<p>Uttar Pradesh seems to stand out quite a bit, especially in 2012. Taking a closer look, we see it has had more than 4x the number of kidnappings than any other state in 2012!</p>
+<pre class="r"><code>df %&gt;%
+  gather(&quot;year&quot;, df, -state_ut, -crime_head, convert = F) %&gt;%
+  group_by(crime_head) %&gt;%
+  filter(df &gt; 100) %&gt;%
+  ungroup() %&gt;%
+  filter(crime_head == &quot;Kidnapping And Abduction Of Children&quot;, year == &#39;2012&#39;, df[year==&#39;2012&#39;] &gt; 10) %&gt;%
+  mutate(state_ut = reorder(state_ut, df)) %&gt;%
+  ggplot(aes(x=state_ut,y=df)) + geom_bar(stat=&#39;identity&#39;, aes(fill=state_ut)) + coord_flip() +
+    geom_text(aes(y = df, x = state_ut, label = df), nudge_y = 350) +
+    labs(title = &#39;Number of Kidnappings And Abductions Of Children by State in 2012&#39;,
+         y = &#39;&#39;, x=&#39;&#39;) +
+    theme(legend.position=&#39;none&#39;,
+          panel.background = element_blank(),
+          axis.ticks = element_blank(),
+          axis.text.x = element_blank(),
+          panel.border = element_blank(),
+          panel.grid = element_blank()) +
+    scale_fill_manual(values = colorRampPalette(brewer.pal(8, &quot;Dark2&quot;))(15))</code></pre>
+<p><img src="/post/2018-02-22-crime-against-children-in-india_files/figure-html/kidnapping%20by%20state%2012-1.png" width="672" /></p>
+<p>Shifting to a more macro view, we’ll take a look at total crimes by state over time. I filter out states that have relatively less crime based on this data. From the charts below, it appears that Madhya Pradesh and Maharashtra have had higher crime, but with low growth, over time. Crime in Uttar Pradesh, however, has been sporadic and grown significantly between 2010 and 2012.</p>
+<p><img src="/post/2018-02-22-crime-against-children-in-india_files/figure-html/crimes%20by%20state-1.png" width="864" /></p>
+<p>Again, I’m interested in average annual growth, but here I take a look at total crimes by state. Tamil Nadu comes out on top. That is likely because we’re dealing with smaller numbers, but the trajectory is still quite steep. Uttar Pradesh had an average annual growth in crime of about 6% from 2001 to 2012, but crime fell from 2001 to 2002. Average growth from 2002 to 2012 was about 13%, which is twice as fast as indicated, but still places low on the chart below.</p>
+<pre class="r"><code>growth.tbl &lt;- df %&gt;%
+  gather(&quot;year&quot;, df, -state_ut, -crime_head, convert = F) %&gt;%
+  filter(crime_head == &quot;Total Crimes Against Children&quot;, year %in% c(&quot;2001&quot;, &quot;2012&quot;), df[year==2001] &gt; 0) %&gt;%
+  group_by(state_ut) %&gt;%
+  summarize(growth = 100 * ((df[year == 2012] / df[year == 2001]) ^ (1/11) - 1) ) %&gt;%
+  arrange(desc(growth))
+  
+growth.tbl %&gt;%
+  slice(1:15) %&gt;%
+  mutate(state_ut = reorder(state_ut, growth)) %&gt;%
+  ggplot(aes(x=state_ut,y=growth)) + geom_bar(stat=&#39;identity&#39;, aes(fill=state_ut)) + coord_flip() +
+    geom_text(aes(y = growth, x = seq(15,1), label = paste0(round(growth),&quot;%&quot;)), nudge_y = -1, color=&quot;white&quot; ) +
+    labs(title = &#39;Geometric Growth Of Total Crimes Against Children (2001 - 2012)&#39;, 
+         y = &#39;&#39;, x=&#39;&#39;) +
+    theme(legend.position=&#39;none&#39;, 
+          panel.background = element_blank(),
+          axis.line = element_blank(),
+          axis.ticks = element_blank(),
+          axis.text.x = element_blank(),
+          panel.border = element_blank(),
+          panel.grid = element_blank()) +
+    scale_fill_manual(values = colorRampPalette(brewer.pal(8, &quot;Dark2&quot;))(15))</code></pre>
+<p><img src="/post/2018-02-22-crime-against-children-in-india_files/figure-html/geometric-1.png" width="672" /></p>
+</div>
+<div id="maps" class="section level2">
+<h2>Maps</h2>
+<p>Since I’m working with geographic data, I’d like to map it to visualize the relationship between crime and neighboring states. First, I have to prepare the dataframes for mapping and load the shape file for the states of India. I found a really helpful blogpost on this <a href="https://rforpublichealth.blogspot.in/2015/10/mapping-with-ggplot-create-nice.html">here</a>.</p>
+<pre class="r"><code># subset df for 2001 
+total_by_state_01 &lt;- df %&gt;%
+  gather(&quot;year&quot;, df, -state_ut, -crime_head, convert = F) %&gt;%
+  filter(crime_head == &quot;Total Crimes Against Children&quot;, year == &#39;2001&#39;, df[year==&#39;2001&#39;] &gt;= 0) %&gt;%
+  mutate(state_ut = reorder(state_ut, df)) %&gt;%
+  select(state_ut, df)
+
+# subset df for 2012 
+total_by_state &lt;- df %&gt;%
+  gather(&quot;year&quot;, df, -state_ut, -crime_head, convert = F) %&gt;%
+  filter(crime_head == &quot;Total Crimes Against Children&quot;, year == &#39;2012&#39;, df[year==&#39;2012&#39;]) %&gt;%
+  mutate(state_ut = reorder(state_ut, df)) %&gt;%
+  select(state_ut, df)
+
+# subset df to display median number crime of crimes for entire period
+med_by_state &lt;- df %&gt;%
+  gather(&quot;year&quot;, df, -state_ut, -crime_head, convert = F) %&gt;%
+  filter(crime_head == &quot;Total Crimes Against Children&quot;, df[year==&#39;2001&#39;] &gt;= 0) %&gt;%
+  group_by(state_ut) %&gt;%
+  summarise(median = median(df)) %&gt;%
+  arrange(desc(median))
+
+# load shape file
+states.shp &lt;- rgdal::readOGR(&quot;India_Shape/IND_adm1.shp&quot;)</code></pre>
+<pre><code>## OGR data source with driver: ESRI Shapefile 
+## Source: &quot;India_Shape/IND_adm1.shp&quot;, layer: &quot;IND_adm1&quot;
+## with 37 features
+## It has 12 fields</code></pre>
+<pre class="r"><code>states.shp.f &lt;- fortify(states.shp, region = &quot;ID_1&quot;)
+
+# create a temporary datafrome from names and ID&#39;s
+tem_df &lt;- data.frame(states.shp$ID_1, states.shp$NAME_1)
+
+# join mapping dataframes with tem_df to facilitate merging later
+total_by_state &lt;- left_join(total_by_state, tem_df, by=c(&quot;state_ut&quot; = &quot;states.shp.NAME_1&quot;))
+total_by_state_01 &lt;- left_join(total_by_state_01, tem_df, by=c(&quot;state_ut&quot; = &quot;states.shp.NAME_1&quot;))
+med_by_state &lt;- left_join(med_by_state, tem_df, by=c(&quot;state_ut&quot; = &quot;states.shp.NAME_1&quot;))
+
+# renamed columns for readability
+colnames(total_by_state) &lt;- c(&quot;state&quot;,&quot;count&quot;,&quot;id&quot;)
+colnames(med_by_state) &lt;- c(&quot;state&quot;,&quot;median&quot;,&quot;id&quot;)
+colnames(total_by_state_01) &lt;- c(&quot;state&quot;,&quot;count&quot;,&quot;id&quot;)
+
+# fix ID&#39;s that didn&#39;t quite match up for each dataframe
+total_by_state$id[total_by_state$state == &quot;A &amp; N Islands&quot;] &lt;- 1
+total_by_state$id[total_by_state$state == &quot;Jammu &amp; Kashmir&quot;] &lt;- 9
+total_by_state$id[total_by_state$state == &quot;D &amp; N Haveli&quot;] &lt;- 8
+total_by_state$id[total_by_state$state == &quot;Daman &amp; Diu&quot;] &lt;- 14
+total_by_state$id[total_by_state$state == &quot;Delhi&quot;] &lt;- 25
+
+total_by_state_01$id[total_by_state_01$state == &quot;A &amp; N Islands&quot;] &lt;- 1
+total_by_state_01$id[total_by_state_01$state == &quot;Jammu &amp; Kashmir&quot;] &lt;- 9
+total_by_state_01$id[total_by_state_01$state == &quot;D &amp; N Haveli&quot;] &lt;- 8
+total_by_state_01$id[total_by_state_01$state == &quot;Daman &amp; Diu&quot;] &lt;- 14
+total_by_state_01$id[total_by_state_01$state == &quot;Delhi&quot;] &lt;- 25
+
+med_by_state$id[med_by_state$state == &quot;A &amp; N Islands&quot;] &lt;- 1
+med_by_state$id[med_by_state$state == &quot;Jammu &amp; Kashmir&quot;] &lt;- 9
+med_by_state$id[med_by_state$state == &quot;D &amp; N Haveli&quot;] &lt;- 8
+med_by_state$id[med_by_state$state == &quot;Daman &amp; Diu&quot;] &lt;- 14
+med_by_state$id[med_by_state$state == &quot;Delhi&quot;] &lt;- 25
+
+# I found Tamil Nadu was duplicated so the following code removes all duplicates
+total_by_state &lt;- total_by_state[!duplicated(total_by_state),]
+total_by_state_01 &lt;- total_by_state_01[!duplicated(total_by_state_01),]
+med_by_state &lt;- med_by_state[!duplicated(med_by_state),]
+
+# rename columns in growth table (used for geometric mean previously)
+colnames(growth.tbl) &lt;- c(&quot;state&quot;,&quot;growth&quot;)
+
+# merge growth figures with dataframes -- I decided not to use this in the end but leave it
+# so as not to break anything I can&#39;t fix
+total_by_state &lt;- merge(total_by_state, growth.tbl, by=&quot;state&quot;, all.x=T)
+total_by_state_01 &lt;- merge(total_by_state_01, growth.tbl, by=&quot;state&quot;, all.x=T)
+med_by_state &lt;- merge(med_by_state, growth.tbl, by=&quot;state&quot;, all.x=T)
+
+# create and sort tables for mapping
+merge_tbl &lt;- merge(states.shp.f, total_by_state, by=&quot;id&quot;, all.x=T)
+merge_tbl_01 &lt;- merge(states.shp.f, total_by_state_01, by=&quot;id&quot;, all.x=T)
+merge_tbl_med &lt;- merge(states.shp.f, med_by_state, by=&quot;id&quot;, all.x=T)
+
+final.plt &lt;- merge_tbl[order(merge_tbl$order),]
+final.plt.01 &lt;- merge_tbl_01[order(merge_tbl_01$order),]
+final.plt.med &lt;- merge_tbl_med[order(merge_tbl_med$order),]</code></pre>
+<p>First, a comparison between the total number of crimes in 2001 and 2012. Note the grey state just below the center, Telangana. This state was formed from the northwest part of Andhra Pradesh in 2014, after this dataset was created.</p>
+<pre class="r"><code>plot_2001 &lt;- ggplot() +
+  geom_polygon(data = final.plt.01, 
+               aes(x = long, y = lat, group = group, fill = count), 
+               color = &quot;grey90&quot;, size = 0.25) + 
+  coord_map() +
+  scale_fill_gradient(name=&quot;No. of\nCrimes&quot;, limits=c(0,12000), low=&quot;white&quot;, high=&quot;steelblue&quot;)+
+  labs(title=&quot;2001&quot;, x = &quot;&quot;, y=&quot;&quot;) +
+  theme(panel.background = element_blank(),
+        plot.title = element_text(size=rel(1.5), hjust = 0.5),
+        axis.text = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        panel.border = element_blank(),
+        panel.grid = element_blank(),
+        legend.position = c(1, 0), 
+        legend.justification = c(0, 0),
+        legend.title = element_text(size = rel(.9)),
+        legend.text = element_text(size = rel(.7)))
+
+
+plot_2012 &lt;- ggplot() +
+  geom_polygon(data = final.plt, 
+               aes(x = long, y = lat, group = group, fill = count), 
+               color = &quot;grey90&quot;, size = 0.25) + 
+  coord_map() +
+  scale_fill_gradient(name=&quot;No. of\nCrimes&quot;, limits=c(0,12000), low=&quot;white&quot;, high=&quot;steelblue&quot;)+
+  labs(title=&quot;2012&quot;, x = &quot;&quot;, y=&quot;&quot;) +
+  theme(panel.background = element_blank(),
+        plot.title = element_text(size=rel(1.5), hjust = 0.5),
+        axis.text = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        panel.border = element_blank(),
+        panel.grid = element_blank(),
+        legend.position = &#39;none&#39;)
+
+comp_plot &lt;- plot_2001 + plot_2012
+comp_plot</code></pre>
+<p><img src="/post/2018-02-22-crime-against-children-in-india_files/figure-html/unnamed-chunk-9-1.png" width="864" /></p>
+<p>Crime has grown over time, particularly in northern India, and from there, it spread to middle states as well. Without population data, it’s difficult to draw much more insight.</p>
+<p>A quick look at the median number of crimes over that period tells a similar story, but crime is concentrated a little differently.</p>
+<pre class="r"><code>median.table &lt;- med_by_state %&gt;% arrange(desc(median)) %&gt;% select(state,median) %&gt;% slice(1:5)
+colnames(median.table) &lt;- c(&quot;State&quot;, &quot;Median&quot;)
+
+median_plot &lt;- ggplot() +
+  geom_polygon(data = final.plt.med, 
+               aes(x = long, y = lat, group = group, fill = median), 
+               color = &quot;grey80&quot;, size = 0.25) + 
+  coord_map() +
+  scale_fill_gradient(name=&quot;Median&quot;, limits=c(0,5200), low=&quot;white&quot;, high=&quot;steelblue&quot;) +
+  labs(title=&quot;Median Number of Crimes Against Children (2001 - 2012)&quot;, x = &quot;&quot;, y = &quot;&quot;) + 
+  theme(panel.background = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        axis.line = element_blank(),
+        panel.border = element_blank(),
+        panel.grid = element_blank(),
+        legend.title = element_text(size = rel(.8)),
+        legend.text = element_text(size = rel(.6)))
+
+median_plot + annotation_custom(tableGrob(median.table,rows=NULL, theme = ttheme_default(base_size = 8)), xmin=88, xmax=98, ymin=8, ymax=18) + coord_cartesian()</code></pre>
+<p><img src="/post/2018-02-22-crime-against-children-in-india_files/figure-html/unnamed-chunk-10-1.png" width="576" /></p>
+<p>Similar to the faceted bar charts (above) depicting total crime by state, Madhya Pradesh and Maharashtra have had consistently high crime with little variance. Uttar Pradesh has had significant variance from year to year, but still falls in the top three in terms of median number of crimes.</p>
+</div>
+</div>
+<div id="next-steps-.-.-." class="section level1">
+<h1>Next steps . . .</h1>
+<p>Any time I see maps like the ones I just made, I am reminded of this comic from xkcd:</p>
+<p><a href="https://xkcd.com/1138/"><img src="https://imgs.xkcd.com/comics/heatmap.png" /></a></p>
+<p>Comparing growth rates in crime versus population would likely yield a much better assessment of crime rates, but I haven’t found the right data (yet).</p>
+<p>Ideally, I’d like to get current crime and total population data. By city would also be great. If I can find this data, I’ll put together another post.</p>
+</div>
