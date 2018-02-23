@@ -21,6 +21,8 @@ slug: crime-against-children-in-india
 
 I found this dataset by chance on [data.world](https://data.world) and it immediately sparked in interest as I have two small children and recently moved to India in 2017. The data is organized by state and specific crime from 2001 to 2012. It is a bit dated and not as granular as I would like (by city would have been nice), but the dataset is still worth exploring and practicing some basic skills. 
 
+It should be noted that there generally isn't any information about how this data was collected. There are certain crimes that appear more prevalent across all states and some for which there is no account. Perhaps people are less likely to report some crimes and more likely to report others.  
+
 The dataset can be found [here](https://data.world/bhavnachawla/crime-rate-against-children-india-2001-2012). 
 
 
@@ -139,7 +141,7 @@ df %>%
   summarize(CAGR = 100 * ((df[year == 2012] / df[year == 2001]) ^ (1/11) - 1)) %>%
   arrange(desc(CAGR))
 ```
-Note that 'Procuration Of Minor Girls' is __Inf__ since it was 0 in 2001.
+Note that 'Procuration Of Minor Girls' is __Inf__ since it was 0 in 2001. Kidnappings have grown by almost 50% a year! 
 
 To add a little more context, I'll take a look at kidnapping and abductions by state. 
 ```{r kidnapping by state all, fig.height=6, fig.width=9}
@@ -181,6 +183,28 @@ df %>%
     scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(15))
 
 ```
+
+The next question I have is _what crimes are most significant in each state?_ A heatmap might be the best way to visualize this.
+```{r heatmap, fig.height=9}
+df %>%
+  gather("year", df, -state_ut, -crime_head) %>%
+  filter(year == '2012', crime_head != "Total Crimes Against Children") %>% 
+  ggplot(aes(x=crime_head,y=reorder(state_ut, desc(state_ut)), z=df)) +
+    geom_tile(aes(fill = df)) + 
+    theme(axis.text.x = element_text(angle=90, hjust=1),
+          panel.background = element_blank(),
+          axis.ticks = element_blank(),
+          panel.border = element_blank(),
+          panel.grid = element_blank(),
+          #legend.position = c(1.1, 1), 
+          #legend.justification = c(1, 1)
+          ) +
+    scale_fill_gradient(name = "No. of\nCrimes",low="white", high="steelblue") +
+    labs(x = "", y = "", title = "Number of Crimes by State - 2012")
+    
+```
+
+As you can see, kidnappings and rape seem most significant across India. 'Other' crime is also significant -- more research is necessary to learn what that comprises. 
 
 Shifting to a more macro view, we'll take a look at total crimes by state over time. I filter out states that have relatively less crime based on this data. From the charts below, it appears that Madhya Pradesh and Maharashtra have had higher crime, but with low growth, over time. Crime in Uttar Pradesh, however, has been sporadic and grown significantly between 2010 and 2012. 
 
