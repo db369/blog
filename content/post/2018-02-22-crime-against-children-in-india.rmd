@@ -196,11 +196,16 @@ df %>%
 #### Levelplot
 The next question I have is _what crimes are most significant in each state?_ A heatmap (or levelplot) might be the best way to visualize this. This also allows us to visualize the most prevalent crimes throughout India.
 ```{r heatmap, fig.height=9}
-lplot <- df %>%
+level_data <- df %>%
   gather("year", df, -state_ut, -crime_head) %>%
-  filter(year == '2012', crime_head != "Total Crimes Against Children") %>% 
-  ggplot(aes(x=crime_head,y=reorder(state_ut, desc(state_ut)), z=df)) +
-    geom_tile(aes(fill = df)) + 
+  filter(year == '2012', crime_head != "Total Crimes Against Children") 
+
+colnames(level_data) <- c("State","Crime","Year","Count")
+
+lplot <- level_data %>% 
+  mutate(State = reorder(State, desc(State))) %>%
+  ggplot(aes(x=Crime,y=State, z=Count)) +
+    geom_tile(aes(fill = Count)) + 
     theme(axis.text.x = element_text(angle=90, hjust=1),
           panel.background = element_blank(),
           axis.ticks = element_blank(),
@@ -212,7 +217,9 @@ lplot <- df %>%
     scale_fill_gradient(name = "No. of\nCrimes",low="white", high="steelblue") +
     labs(x = "", y = "", title = "Number of Crimes by State - 2012")
 
-ggplotly(lplot)
+ggplotly(lplot, tooltip = c("x","y","z"))
+
+
 ```
 
 As you can see, kidnappings and rape seem most significant across India. 'Other' crime is also significant -- more research is necessary to learn what that comprises. It also appears that about half of the crimes are very low or 0 by count, which makes me suspect that data was unavaliable or that such crimes don't often get reported or prosecuted.
