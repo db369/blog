@@ -31,7 +31,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
   # set to show or to hide categories in the sidebar
   showSidebarCategories = true
   # Sets Estimated Reading Time to appear in post headers
-  includeReadingTime   = true
+  includeReadingTime   = false
   # Sets the Favicon and Version for the site. Default support is for
   # apple-touch-icon-precomposed.png, favicon.png, favicon.ico, and mstile.png.
   # These are stored in the favicon folder. See the following for more information:
@@ -41,14 +41,14 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
   # Sets Social Share links to appear on posts
   socialShare          = false
   # Sets specific share to appear on posts (default behavior is to appear)
-  socialShareTwitter   = false
-  socialShareGoogleplus = false
-  socialShareFacebook  = false
-  socialShareReddit    = false
-  socialShareLinkedin  = false
+  socialShareTwitter   = true
+  socialShareGoogleplus = true
+  socialShareFacebook  = true
+  socialShareReddit    = true
+  socialShareLinkedin  = true
   socialShareStumbleupon = false
   socialSharePinterest = false
-  socialShareEmail     = false
+  socialShareEmail     = true
 
   # Load custom CSS or JavaScript files. The variable is an array so that you
   # can load multiple files if necessary. You can also load the standard theme
@@ -149,7 +149,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
   # Coding Communities
   github           = "db369"
   gitlab           = ""
-  stackoverflow    = "" # User Number
+  stackoverflow    = "8938203" # User Number
   bitbucket        = ""
   jsfiddle         = ""
   codepen          = ""
