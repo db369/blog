@@ -38,6 +38,7 @@ library(RColorBrewer)
 library(patchwork)
 library(gridExtra)
 library(ggthemes)
+library(plotly)
 
 ```
 
@@ -132,7 +133,9 @@ df %>%
     facet_wrap(~ crime_head, ncol = 2) +
     labs(y = "Count", x = "") +
     scale_x_continuous(labels = function(x) as.integer(x)) +
-    theme_light()
+    theme_light() + theme(strip.background = element_rect(color = "#93a1a1"))
+
+
 ```
 
 Kidnapping and rape appear to have the most alarming trajectories. I'm curious what average annual growth looks like.
@@ -143,6 +146,7 @@ df %>%
   group_by(crime_head) %>%
   summarize(CAGR = 100 * ((df[year == 2012] / df[year == 2001]) ^ (1/11) - 1)) %>%
   arrange(desc(CAGR))
+
 ```
 Note that 'Procuration Of Minor Girls' is __Inf__ since it was 0 in 2001. Kidnappings have grown by almost 50% a year! 
 
@@ -157,7 +161,7 @@ df %>%
     facet_wrap(~state_ut) + 
     labs(title = 'Kidnapping And Abduction Of Children by State (2001 - 2012)',
          y = 'Number of Crimes', x='') +
-    theme_light() +
+    theme_light() + theme(strip.background = element_rect(color = "#93a1a1")) +
     theme(legend.position='none', 
         axis.text.x = element_text(angle = 90, vjust = 0.5),
         axis.ticks.x = element_blank()) +
@@ -192,7 +196,7 @@ df %>%
 #### Levelplot
 The next question I have is _what crimes are most significant in each state?_ A heatmap (or levelplot) might be the best way to visualize this. This also allows us to visualize the most prevalent crimes throughout India.
 ```{r heatmap, fig.height=9}
-df %>%
+lplot <- df %>%
   gather("year", df, -state_ut, -crime_head) %>%
   filter(year == '2012', crime_head != "Total Crimes Against Children") %>% 
   ggplot(aes(x=crime_head,y=reorder(state_ut, desc(state_ut)), z=df)) +
@@ -207,7 +211,8 @@ df %>%
           ) +
     scale_fill_gradient(name = "No. of\nCrimes",low="white", high="steelblue") +
     labs(x = "", y = "", title = "Number of Crimes by State - 2012")
-    
+
+ggplotly(lplot)
 ```
 
 As you can see, kidnappings and rape seem most significant across India. 'Other' crime is also significant -- more research is necessary to learn what that comprises. It also appears that about half of the crimes are very low or 0 by count, which makes me suspect that data was unavaliable or that such crimes don't often get reported or prosecuted.
@@ -229,7 +234,8 @@ df %>%
     theme_light() + 
     theme(legend.position='none', 
           axis.text.x = element_text(angle = 90, vjust = 0.5),
-          axis.ticks.x = element_blank()) +
+          axis.ticks.x = element_blank(),
+          strip.background = element_rect(color = "#93a1a1")) +
     scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(15))
 ```
 
