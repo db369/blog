@@ -39,6 +39,7 @@ library(patchwork)
 library(gridExtra)
 library(ggthemes)
 library(plotly)
+library(DT)
 
 ```
 
@@ -61,7 +62,7 @@ Next, we query the table found.
 if (length(tables_df$tableName) > 0) {
   sample_qry <- data.world::qry_sql(sprintf("SELECT * FROM `%s`", tables_df$tableName[[1]]))
   sample_df <- data.world::query(sample_qry, dataset = dataset_key)
-  sample_df
+  datatable(sample_df, rownames = F, colnames = c("State" = 1, "Crime" = 2))
 }
 ```
 
@@ -115,7 +116,8 @@ I am still new to this and I suspect it makes more sense to begin with macro lev
 df %>%
   gather("year", df, -state_ut, -crime_head, convert = T) %>%
   filter(state_ut == "Tamil Nadu" & year == 2012) %>%
-  arrange(desc(df))
+  arrange(desc(df)) %>%
+  datatable(rownames = F, colnames = c("State" = 1, "Crime" = 2))
 ```
 
 After identifying the most significant crimes in 2012, I chart how these crimes changed over time.
@@ -145,8 +147,8 @@ df %>%
   filter(state_ut == "Tamil Nadu", crime_head %in% crimes) %>% 
   group_by(crime_head) %>%
   summarize(CAGR = 100 * ((df[year == 2012] / df[year == 2001]) ^ (1/11) - 1)) %>%
-  arrange(desc(CAGR))
-
+  arrange(desc(CAGR)) %>%
+  datatable(rownames = F, colnames = c("Crime" = 1))
 ```
 Note that 'Procuration Of Minor Girls' is __Inf__ since it was 0 in 2001. Kidnappings have grown by almost 50% a year! 
 
@@ -366,44 +368,34 @@ First, a comparison between the total number of crimes in 2001 and 2012. Note th
 
 ```{r fig.width=9}
 
+map_theme <- theme(panel.background = element_blank(),
+                   plot.title = element_text(size=rel(1.5), hjust = 0.5),
+                   axis.text = element_blank(),
+                   axis.line = element_blank(),
+                   axis.ticks = element_blank(),
+                   panel.border = element_blank(),
+                   panel.grid = element_blank())
+
 plot_2001 <- ggplot() +
   geom_polygon(data = final.plt.01, 
-               aes(x = long, y = lat, group = group, fill = count), 
+               aes(x = long, y = lat, group = group, fill = count, text = paste0(state,": ",count)), 
                color = "grey90", size = 0.25) + 
   coord_map() +
   scale_fill_gradient(name="No. of\nCrimes", limits=c(0,12000), low="white", high="steelblue")+
   labs(title="2001", x = "", y="") +
-  theme(panel.background = element_blank(),
-        plot.title = element_text(size=rel(1.5), hjust = 0.5),
-        axis.text = element_blank(),
-        axis.line = element_blank(),
-        axis.ticks = element_blank(),
-        panel.border = element_blank(),
-        panel.grid = element_blank(),
-        legend.position = c(1, 0), 
-        legend.justification = c(0, 0),
-        legend.title = element_text(size = rel(.9)),
-        legend.text = element_text(size = rel(.7)))
-
+  map_theme
 
 plot_2012 <- ggplot() +
   geom_polygon(data = final.plt, 
-               aes(x = long, y = lat, group = group, fill = count), 
+               aes(x = long, y = lat, group = group, fill = count, text = paste0(state,": ",count,"\nCAGR: ",scales::percent(growth/100))), 
                color = "grey90", size = 0.25) + 
   coord_map() +
   scale_fill_gradient(name="No. of\nCrimes", limits=c(0,12000), low="white", high="steelblue")+
-  labs(title="2012", x = "", y="") +
-  theme(panel.background = element_blank(),
-        plot.title = element_text(size=rel(1.5), hjust = 0.5),
-        axis.text = element_blank(),
-        axis.line = element_blank(),
-        axis.ticks = element_blank(),
-        panel.border = element_blank(),
-        panel.grid = element_blank(),
-        legend.position = 'none')
+  labs(title="Number of Crimes in India<br>2001 vs 2012", x = "", y="") +
+  map_theme
 
-comp_plot <- plot_2001 + plot_2012
-comp_plot
+subplot(ggplotly(plot_2001, tooltip = c("text")), ggplotly(plot_2012, tooltip = c("text")))
+
 ```
 
 Crime has grown over time, particularly in northern India, and from there, it spread to middle states as well. Without population data, it's difficult to draw much more insight.
@@ -411,26 +403,17 @@ Crime has grown over time, particularly in northern India, and from there, it sp
 A quick look at the median number of crimes over that period tells a similar story, but crime is concentrated a little differently.
 ```{r fig.height=6, fig.width=6, message=FALSE, warning=FALSE}
 
-median.table <- med_by_state %>% arrange(desc(median)) %>% select(state,median) %>% slice(1:5)
-colnames(median.table) <- c("State", "Median")
-
 median_plot <- ggplot() +
   geom_polygon(data = final.plt.med, 
-               aes(x = long, y = lat, group = group, fill = median), 
+               aes(x = long, y = lat, group = group, fill = median, text = paste0(state,": ",median)), 
                color = "grey80", size = 0.25) + 
   coord_map() +
   scale_fill_gradient(name="Median", limits=c(0,5200), low="white", high="steelblue") +
-  labs(title="Median Number of Crimes Against Children (2001 - 2012)", x = "", y = "") + 
-  theme(panel.background = element_blank(),
-        axis.text = element_blank(),
-        axis.ticks = element_blank(),
-        axis.line = element_blank(),
-        panel.border = element_blank(),
-        panel.grid = element_blank(),
-        legend.title = element_text(size = rel(.8)),
-        legend.text = element_text(size = rel(.6)))
+  labs(title="Median Number of Crimes Against Children (2001 - 2012)", x = "", y = "") +
+  map_theme
 
-median_plot + annotation_custom(tableGrob(median.table,rows=NULL, theme = ttheme_default(base_size = 8)), xmin=88, xmax=98, ymin=8, ymax=18) + coord_cartesian()
+ggplotly(median_plot, tooltip = c("text"))
+
 ```
 
 Similar to the faceted bar charts (above) depicting total crime by state, Madhya Pradesh and Maharashtra have had consistently high crime with little variance. Uttar Pradesh has had significant variance from year to year, but still falls in the top three in terms of median number of crimes.
