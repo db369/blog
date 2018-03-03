@@ -116,7 +116,8 @@ I am still new to this and I suspect it makes more sense to begin with macro lev
 df %>%
   gather("year", df, -state_ut, -crime_head, convert = T) %>%
   filter(state_ut == "Tamil Nadu" & year == 2012) %>%
-  arrange(desc(df))
+  arrange(desc(df)) %>% 
+  knitr::kable(col.names = c("State","Crime","Year","Count"))
 ```
 
 After identifying the most significant crimes in 2012, I chart how these crimes changed over time.
@@ -145,7 +146,8 @@ df %>%
   filter(state_ut == "Tamil Nadu", crime_head %in% crimes) %>% 
   group_by(crime_head) %>%
   summarize(CAGR =  scales::percent((df[year == 2012] / df[year == 2001]) ^ (1/11) - 1)) %>%
-  arrange(desc(CAGR))
+  arrange(desc(CAGR)) %>%
+  knitr::kable(col.names = c("Crime","CAGR"))
 ```
 Note that 'Procuration Of Minor Girls' is __Inf__ since it was 0 in 2001. Kidnappings have grown by almost 50% a year! 
 
@@ -165,8 +167,6 @@ df %>%
         axis.text.x = element_text(angle = 90, vjust = 0.5),
         axis.ticks.x = element_blank()) +
     scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(14)) 
-
-kidnapping_plot
 
 ```
 
@@ -232,7 +232,7 @@ Shifting to a more macro view, we'll take a look at total crimes by state over t
 df %>%
   gather("year", df, -state_ut, -crime_head, convert = F) %>%
   group_by(crime_head) %>%
-  filter(df > 500) %>%
+  filter(df > 400) %>%
   ungroup() %>%
   filter(crime_head == "Total Crimes Against Children") %>%
   ggplot(aes(x=year,y=df, fill=state_ut)) + geom_bar(stat='identity') + 
@@ -244,7 +244,7 @@ df %>%
           axis.text.x = element_text(angle = 90, vjust = 0.5),
           axis.ticks.x = element_blank(),
           strip.background = element_rect(color = "#93a1a1")) +
-    scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(15))
+    scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(16))
 
 ```
 
