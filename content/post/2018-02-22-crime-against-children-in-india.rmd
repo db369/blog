@@ -147,9 +147,11 @@ df %>%
   filter(state_ut == "Tamil Nadu", crime_head %in% crimes) %>% 
   group_by(crime_head) %>%
   summarize(CAGR =  scales::percent((df[year == 2012] / df[year == 2001]) ^ (1/11) - 1)) %>%
-  arrange(desc(CAGR)) 
+  arrange(desc(CAGR)) %>%
+  knitr::kable(col.names = c("Crime","CAGR"))
 ```
-Note that 'Procuration Of Minor Girls' is __Inf__ since it was 0 in 2001. Kidnappings have grown by almost 50% a year! 
+
+Note that 'Procuration Of Minor Girls' is __NaN%__ since it was 0 in 2001. Kidnappings have grown by almost 50% a year! 
 
 #### Kidnappings and Abductions by State
 To add a little more context, I'll take a look at kidnapping and abductions by state. 
