@@ -62,7 +62,7 @@ Next, we query the table found.
 if (length(tables_df$tableName) > 0) {
   sample_qry <- data.world::qry_sql(sprintf("SELECT * FROM `%s`", tables_df$tableName[[1]]))
   sample_df <- data.world::query(sample_qry, dataset = dataset_key)
-  datatable(sample_df, rownames = F, colnames = c("State" = 1, "Crime" = 2))
+  sample_df
 }
 ```
 
@@ -116,8 +116,7 @@ I am still new to this and I suspect it makes more sense to begin with macro lev
 df %>%
   gather("year", df, -state_ut, -crime_head, convert = T) %>%
   filter(state_ut == "Tamil Nadu" & year == 2012) %>%
-  arrange(desc(df)) %>%
-  datatable(rownames = F, colnames = c("State" = 1, "Crime" = 2))
+  arrange(desc(df))
 ```
 
 After identifying the most significant crimes in 2012, I chart how these crimes changed over time.
@@ -137,7 +136,6 @@ df %>%
     scale_x_continuous(labels = function(x) as.integer(x)) +
     theme_light() + theme(strip.background = element_rect(color = "#93a1a1"))
 
-
 ```
 
 Kidnapping and rape appear to have the most alarming trajectories. I'm curious what average annual growth looks like.
@@ -146,9 +144,8 @@ df %>%
   gather("year", df, -state_ut, -crime_head, convert = T) %>%
   filter(state_ut == "Tamil Nadu", crime_head %in% crimes) %>% 
   group_by(crime_head) %>%
-  summarize(CAGR = 100 * ((df[year == 2012] / df[year == 2001]) ^ (1/11) - 1)) %>%
-  arrange(desc(CAGR)) %>%
-  datatable(rownames = F, colnames = c("Crime" = 1))
+  summarize(CAGR =  scales::percent((df[year == 2012] / df[year == 2001]) ^ (1/11) - 1)) %>%
+  arrange(desc(CAGR))
 ```
 Note that 'Procuration Of Minor Girls' is __Inf__ since it was 0 in 2001. Kidnappings have grown by almost 50% a year! 
 
@@ -160,14 +157,16 @@ df %>%
   gather("year", df, -state_ut, -crime_head, convert = F) %>%
   filter(crime_head == "Kidnapping And Abduction Of Children", df[year == '2012'] > 200) %>%
   ggplot(aes(x=year,y=df, fill=state_ut)) + geom_bar(stat='identity') + 
-    facet_wrap(~state_ut) + 
     labs(title = 'Kidnapping And Abduction Of Children by State (2001 - 2012)',
          y = 'Number of Crimes', x='') +
+    facet_wrap(~state_ut) + 
     theme_light() + theme(strip.background = element_rect(color = "#93a1a1")) +
     theme(legend.position='none', 
         axis.text.x = element_text(angle = 90, vjust = 0.5),
         axis.ticks.x = element_blank()) +
     scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(14)) 
+
+kidnapping_plot
 
 ```
 
@@ -246,6 +245,7 @@ df %>%
           axis.ticks.x = element_blank(),
           strip.background = element_rect(color = "#93a1a1")) +
     scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(15))
+
 ```
 
 Again, I'm interested in average annual growth, but here I take a look at total crimes by state. Tamil Nadu comes out on top. That is likely because we're dealing with smaller numbers, but the trajectory is still quite steep. Uttar Pradesh had an average annual growth in crime of about 6% from 2001 to 2012, but crime fell from 2001 to 2002. Average growth from 2002 to 2012 was about `r df %>% gather("year", df, -state_ut, -crime_head, convert = F) %>% filter(crime_head == "Total Crimes Against Children", year %in% c("2002", "2012"), state_ut == "Uttar Pradesh") %>% summarize(growth = paste0(round(100 * ((df[year == 2012] / df[year == 2002]) ^ (1/11) - 1),1),"%"))`, which is twice as fast as indicated, but still places low on the chart below.
