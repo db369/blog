@@ -119,6 +119,10 @@ df %>%
 
 After identifying the most significant crimes in 2012, I chart how these crimes changed over time.
 ```{r tamil_nadu_crimes_charts}
+
+strip_theme <- theme(strip.background = element_rect(fill = "#a0a0a0", color = "#888888"),
+                     strip.text = element_text(size = rel(1.1)))
+
 crimes <- c("Kidnapping And Abduction Of Children",
             "Murder Of Children",
             "Other Crimes Against Children",
@@ -132,7 +136,7 @@ df %>%
     facet_wrap(~ crime_head, ncol = 2) +
     labs(y = "Count", x = "") +
     scale_x_continuous(labels = function(x) as.integer(x)) +
-    theme_light() + theme(strip.background = element_rect(color = "#93a1a1"))
+    theme_light() + strip_theme
 
 ```
 
@@ -162,6 +166,7 @@ df %>%
     theme(legend.position='none', 
         axis.text.x = element_text(angle = 90, vjust = 0.5),
         axis.ticks.x = element_blank()) +
+    strip_theme +
     scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(14)) 
 
 ```
@@ -238,8 +243,8 @@ df %>%
     theme_light() + 
     theme(legend.position='none', 
           axis.text.x = element_text(angle = 90, vjust = 0.5),
-          axis.ticks.x = element_blank(),
-          strip.background = element_rect(color = "#93a1a1")) +
+          axis.ticks.x = element_blank()) +
+    strip_theme +
     scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(16))
 
 ```
