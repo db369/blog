@@ -114,12 +114,11 @@ I am still new to this and I suspect it makes more sense to begin with macro lev
 df %>%
   gather("year", df, -state_ut, -crime_head, convert = T) %>%
   filter(state_ut == "Tamil Nadu" & year == 2012) %>%
-  arrange(desc(df)) %>% 
-  knitr::kable(col.names = c("State","Crime","Year","Count"))
+  arrange(desc(df)) 
 ```
 
 After identifying the most significant crimes in 2012, I chart how these crimes changed over time.
-```{r}
+```{r tamil_nadu_crimes}
 crimes <- c("Kidnapping And Abduction Of Children",
             "Murder Of Children",
             "Other Crimes Against Children",
@@ -138,20 +137,19 @@ df %>%
 ```
 
 Kidnapping and rape appear to have the most alarming trajectories. I'm curious what average annual growth looks like.
-```{r}
+```{r cagr}
 df %>%
   gather("year", df, -state_ut, -crime_head, convert = T) %>%
   filter(state_ut == "Tamil Nadu", crime_head %in% crimes) %>% 
   group_by(crime_head) %>%
   summarize(CAGR =  scales::percent((df[year == 2012] / df[year == 2001]) ^ (1/11) - 1)) %>%
-  arrange(desc(CAGR)) %>%
-  knitr::kable(col.names = c("Crime","CAGR"))
+  arrange(desc(CAGR)) 
 ```
 Note that 'Procuration Of Minor Girls' is __Inf__ since it was 0 in 2001. Kidnappings have grown by almost 50% a year! 
 
 #### Kidnappings and Abductions by State
 To add a little more context, I'll take a look at kidnapping and abductions by state. 
-```{r kidnapping by state all, fig.height=6, fig.width=9}
+```{r kidnapping_by_state_all, fig.height=6, fig.width=9}
 
 df %>%
   gather("year", df, -state_ut, -crime_head, convert = F) %>%
@@ -169,7 +167,7 @@ df %>%
 ```
 
 Uttar Pradesh seems to stand out quite a bit, especially in 2012. Taking a closer look, we see it has had more than 4x the number of kidnappings than any other state in 2012!
-```{r kidnapping by state 12, message=FALSE, warning=FALSE}
+```{r kidnapping_by_state_12, message=FALSE, warning=FALSE}
 
 df %>%
   gather("year", df, -state_ut, -crime_head, convert = F) %>%
@@ -226,7 +224,7 @@ As you can see, kidnappings and rape seem most significant across India. 'Other'
 ####Total Crime By State
 Shifting to a more macro view, we'll take a look at total crimes by state over time. I filter out states that have relatively less crime based on this data. From the charts below, it appears that Madhya Pradesh and Maharashtra have had higher crime, but with low growth, over time. Crime in Uttar Pradesh, however, has been sporadic and grew significantly between 2010 and 2012. 
 
-```{r crimes by state, echo=FALSE, fig.height=6, fig.width=9}
+```{r crimes_by_state, echo=FALSE, fig.height=6, fig.width=9}
 df %>%
   gather("year", df, -state_ut, -crime_head, convert = F) %>%
   group_by(crime_head) %>%
@@ -364,7 +362,7 @@ final.plt.med <- merge_tbl_med[order(merge_tbl_med$order),]
 
 First, a comparison between the total number of crimes in 2001 and 2012. Note the grey state just below the center, Telangana. This state was formed from the northwest part of Andhra Pradesh in 2014, after this dataset was created. 
 
-```{r fig.width=9}
+```{r fig.width=9, message=FALSE, warning=FALSE}
 
 map_theme <- theme(panel.background = element_blank(),
                    plot.title = element_text(size=rel(1.5), hjust = 0.5),
