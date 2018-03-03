@@ -399,16 +399,20 @@ Crime has grown over time, particularly in northern India, and from there, it sp
 A quick look at the median number of crimes over that period tells a similar story, but crime is concentrated a little differently.
 ```{r map_median, fig.height=6, fig.width=6, message=FALSE, warning=FALSE}
 
+median.table <- med_by_state %>% arrange(desc(median)) %>% select(state,median) %>% slice(1:5)
+colnames(median.table) <- c("State", "Median")
+
 median_plot <- ggplot() +
   geom_polygon(data = final.plt.med, 
                aes(x = long, y = lat, group = group, fill = median, text = paste0(state,": ",median)), 
                color = "grey80", size = 0.25) + 
   coord_map() +
   scale_fill_gradient(name="Median", limits=c(0,5200), low="white", high="steelblue") +
-  labs(title="Median Number of Crimes Against Children (2001 - 2012)", x = "", y = "") +
+  labs(title="Median Number of Crimes Against Children\n2001 - 2012", x = "", y = "") +
   map_theme
 
-ggplotly(median_plot, tooltip = c("text"))
+median_plot + annotation_custom(tableGrob(median.table,rows=NULL, theme = ttheme_default(base_size = 8)), xmin=88, xmax=98, ymin=8, ymax=18) + coord_cartesian()
+
 
 ```
 
