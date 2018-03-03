@@ -35,12 +35,10 @@ library(tidyverse)
 library(stringr)
 library(maptools)
 library(RColorBrewer)
-library(patchwork)
 library(gridExtra)
 library(ggthemes)
 library(plotly)
-library(DT)
-
+#library(patchwork)
 ```
 
 
