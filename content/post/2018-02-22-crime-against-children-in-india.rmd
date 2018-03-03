@@ -5,6 +5,7 @@ date: '2018-02-22'
 featured: "india_children.jpg"
 featuredalt: "children of India"
 featuredpath: "img/main"
+type: "post"
 categories:
   - EDA
   - R
@@ -92,7 +93,7 @@ sample_df %>%
 ```
 
 There are number of observations labeled "total" in the states column that I don't really need so I'll exclude them when creating a new dataframe (leaving the totals in the crime column). I'll fix a typo and convert to states and crimes to title case.
-```{r}
+```{r }
 #remove totals from state column -- NOTE that I leave the total in the crime column
 df <- sample_df[!grepl("TOTAL", sample_df$state_ut),]
 
@@ -109,7 +110,7 @@ df$state_ut <- str_to_title(df$state_ut)
 #### Identify prevalent crimes in Tamil Nadu in 2012
 I am still new to this and I suspect it makes more sense to begin with macro level analysis, but I started by focusing on the state of Tamil Nadu since that's where I live. I was curious to see what crimes are most prevalent in this state. 
 
-```{r }
+```{r tamil_nadu_crimes}
 
 df %>%
   gather("year", df, -state_ut, -crime_head, convert = T) %>%
@@ -118,7 +119,7 @@ df %>%
 ```
 
 After identifying the most significant crimes in 2012, I chart how these crimes changed over time.
-```{r tamil_nadu_crimes}
+```{r tamil_nadu_crimes_charts}
 crimes <- c("Kidnapping And Abduction Of Children",
             "Murder Of Children",
             "Other Crimes Against Children",
@@ -274,7 +275,7 @@ growth.tbl %>%
 ### Geographic Distribution of Total Crime
 
 Since I'm working with geographic data, I'd like to map it to visualize the relationship between crime and neighboring states. First, I have to prepare the dataframes for mapping and load the shape file for the states of India. I found a really helpful blogpost on this [here](https://rforpublichealth.blogspot.in/2015/10/mapping-with-ggplot-create-nice.html).
-```{r Map Prepartion, message=FALSE, warning=FALSE}
+```{r Map Preparation, message=FALSE, warning=FALSE}
 
 # subset df for 2001 
 total_by_state_01 <- df %>%
@@ -362,7 +363,7 @@ final.plt.med <- merge_tbl_med[order(merge_tbl_med$order),]
 
 First, a comparison between the total number of crimes in 2001 and 2012. Note the grey state just below the center, Telangana. This state was formed from the northwest part of Andhra Pradesh in 2014, after this dataset was created. 
 
-```{r fig.width=9, message=FALSE, warning=FALSE}
+```{r map_2001_2012, fig.width=9, message=FALSE, warning=FALSE}
 
 map_theme <- theme(panel.background = element_blank(),
                    plot.title = element_text(size=rel(1.5), hjust = 0.5),
@@ -397,7 +398,7 @@ subplot(ggplotly(plot_2001, tooltip = c("text")), ggplotly(plot_2012, tooltip = 
 Crime has grown over time, particularly in northern India, and from there, it spread to middle states as well. Without population data, it's difficult to draw much more insight.
 
 A quick look at the median number of crimes over that period tells a similar story, but crime is concentrated a little differently.
-```{r fig.height=6, fig.width=6, message=FALSE, warning=FALSE}
+```{r map_median, fig.height=6, fig.width=6, message=FALSE, warning=FALSE}
 
 median_plot <- ggplot() +
   geom_polygon(data = final.plt.med, 
