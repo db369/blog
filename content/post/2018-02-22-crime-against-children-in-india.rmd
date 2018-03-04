@@ -153,7 +153,7 @@ df %>%
 Note that 'Procuration Of Minor Girls' is __NaN%__ since it was 0 in 2001. Kidnappings have grown by almost 50% a year! 
 
 #### Kidnappings and Abductions by State
-To add a little more context, I'll take a look at kidnapping and abductions by state. 
+To add a little more context, I'll take a look at kidnapping and abductions by state. Below, I select 12 states that have had the most kidnappings over the 12-year period.
 ```{r kidnapping_by_state_all, fig.height=6, fig.width=9, message=FALSE, warning=FALSE}
 top_k <- 12
 
@@ -179,7 +179,8 @@ kidnapping_plot <- df %>%
     strip_theme +
     scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(top_k)) 
 
-ggplotly(kidnapping_plot, tooltip = c("text")) %>% add_annotations(
+ggplotly(kidnapping_plot, tooltip = c("text")) %>% 
+  add_annotations(
     yref="paper", 
     xref="paper", 
     y=1.15, 
@@ -240,7 +241,8 @@ lplot <- level_data %>%
     scale_fill_gradient(name = "No. of\nCrimes",low="white", high="steelblue") +
     labs(x = "", y = "")
 
-ggplotly(lplot, tooltip = c("x","y","z")) %>% add_annotations(
+ggplotly(lplot, tooltip = c("x","y","z")) %>% 
+  add_annotations(
     yref="paper", 
     xref="paper", 
     y=1.08, 
@@ -259,7 +261,7 @@ ggplotly(lplot, tooltip = c("x","y","z")) %>% add_annotations(
 As you can see, kidnappings and rape seem most significant across India. 'Other' crime is also significant -- more research is necessary to learn what that comprises. It also appears that about half of the crimes are very low or 0 by count, which makes me suspect that data was unavaliable or that such crimes don't often get reported or prosecuted.
 
 ####Total Crime By State
-Shifting to a more macro view, we'll take a look at total crimes by state over time. I filter out states that have relatively less crime based on this data. From the charts below, it appears that Madhya Pradesh and Maharashtra have had higher crime, but with low growth, over time. Crime in Uttar Pradesh, however, has been sporadic and grew significantly between 2010 and 2012. 
+Shifting to a more macro view, we'll take a look at total crimes by state over time. I select the top 12 states by cumulative total crime over the period. From the charts below, it appears that Madhya Pradesh and Maharashtra have had higher crime, but with low growth, over time. Crime in Uttar Pradesh, however, has been sporadic and grew significantly between 2010 and 2012. 
 
 ```{r crimes_by_state, echo=FALSE, fig.height=6, fig.width=9, message=FALSE, warning=FALSE}
 top <- 12
@@ -285,7 +287,8 @@ total_by_st_plot <- df %>%
     strip_theme +
     scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(top))
 
-ggplotly(total_by_st_plot, tooltip = c("text")) %>% add_annotations(
+ggplotly(total_by_st_plot, tooltip = c("text")) %>% 
+  add_annotations(
     yref="paper", 
     xref="paper", 
     y=1.15, 
@@ -434,7 +437,7 @@ plot_2001 <- ggplot() +
                color = "grey90", size = 0.25) + 
   coord_map() +
   scale_fill_gradient(name="No. of\nCrimes", limits=c(0,12000), low="white", high="steelblue")+
-  labs(title="2001", x = "", y="") +
+  labs(title="", x = "", y="") +
   map_theme
 
 plot_2012 <- ggplot() +
@@ -443,10 +446,22 @@ plot_2012 <- ggplot() +
                color = "grey90", size = 0.25) + 
   coord_map() +
   scale_fill_gradient(name="No. of\nCrimes", limits=c(0,12000), low="white", high="steelblue")+
-  labs(title="Number of Crimes in India<br>2001 vs 2012", x = "", y="") +
+  labs(title="", x = "", y="") +
   map_theme
 
-subplot(ggplotly(plot_2001, tooltip = c("text")), ggplotly(plot_2012, tooltip = c("text"))) 
+subplot(ggplotly(plot_2001, tooltip = c("text")), ggplotly(plot_2012, tooltip = c("text"))) %>%
+  add_annotations(
+    yref="paper", 
+    xref="paper", 
+    y=1.15, 
+    x=0, 
+    text="Number of Crimes in India<br>2001 vs 2012",
+    align = "left",
+    valign = "bottom",
+    showarrow=F, 
+    font=list(size=20)
+  ) %>% 
+  layout(margin = list(t=80))
 
 ```
 
@@ -465,7 +480,7 @@ median_plot <- ggplot() +
   coord_map() +
   scale_fill_gradient(name="Median", limits=c(0,5200), low="white", high="steelblue") +
   labs(title="Median Number of Crimes Against Children\n2001 - 2012", x = "", y = "") +
-  map_theme
+  map_theme + theme(plot.title = element_text(hjust=0))
 
 median_plot + annotation_custom(tableGrob(median.table,rows=NULL, theme = ttheme_default(base_size = 8)), xmin=88, xmax=98, ymin=8, ymax=18) + coord_cartesian()
 
