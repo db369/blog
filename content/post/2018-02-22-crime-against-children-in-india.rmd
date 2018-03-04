@@ -147,30 +147,51 @@ df %>%
   filter(state_ut == "Tamil Nadu", crime_head %in% crimes) %>% 
   group_by(crime_head) %>%
   summarize(CAGR =  scales::percent((df[year == 2012] / df[year == 2001]) ^ (1/11) - 1)) %>%
-  arrange(desc(CAGR)) %>%
-  knitr::kable(col.names = c("Crime","CAGR"), "html") %>%
-  kableExtra::kable_styling(bootstrap_options =  c("striped", "hover", "condensed", "responsive"), font_size = 12, full_width = F)
+  arrange(desc(CAGR))
 ```
 
 Note that 'Procuration Of Minor Girls' is __NaN%__ since it was 0 in 2001. Kidnappings have grown by almost 50% a year! 
 
 #### Kidnappings and Abductions by State
 To add a little more context, I'll take a look at kidnapping and abductions by state. 
-```{r kidnapping_by_state_all, fig.height=6, fig.width=9}
+```{r kidnapping_by_state_all, message=FALSE, warning=FALSE}
+top_k <- 12
 
-df %>%
+high_ka_states <- df %>%
   gather("year", df, -state_ut, -crime_head, convert = F) %>%
-  filter(crime_head == "Kidnapping And Abduction Of Children", df[year == '2012'] > 200) %>%
-  ggplot(aes(x=year,y=df, fill=state_ut)) + geom_bar(stat='identity') + 
-    labs(title = 'Kidnapping And Abduction Of Children by State (2001 - 2012)',
+  group_by(state_ut) %>%
+  filter(crime_head == "Kidnapping And Abduction Of Children") %>%
+  summarise(stotal = sum(df)) %>%
+  top_n(top_k)
+
+kidnapping_plot <- df %>%
+  gather("year", df, -state_ut, -crime_head, convert = F) %>%
+  filter(crime_head == "Kidnapping And Abduction Of Children", state_ut %in% high_ka_states$state_ut) %>%
+  ggplot(aes(x=year,y=df, fill=state_ut, text = paste0("Year:", year,"\nTotal: ", df))) +
+  geom_bar(stat='identity') + 
+    labs(title = '',
          y = 'Number of Crimes', x='') +
     facet_wrap(~state_ut) + 
     theme_light() + theme(strip.background = element_rect(color = "#93a1a1")) +
     theme(legend.position='none', 
-        axis.text.x = element_text(angle = 90, vjust = 0.5),
-        axis.ticks.x = element_blank()) +
+#          plot.title = element_text(vjust = 1, hjust = 0, face = "bold", lineheight = 20),
+          axis.text.x = element_text(angle = 90, vjust = 0.5),
+          axis.ticks.x = element_blank()) +
     strip_theme +
-    scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(14)) 
+    scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(top_k)) 
+
+ggplotly(kidnapping_plot, tooltip = c("text")) %>% add_annotations(
+    yref="paper", 
+    xref="paper", 
+    y=1.2, 
+    x=0, 
+    text="Kidnapping And Abduction Of Children by State, 2001 - 2012",
+    align = "left",
+    valign = "bottom",
+    showarrow=F, 
+    font=list(size=19)
+  ) %>% 
+  layout(margin = list(t=80))
 
 ```
 
@@ -215,14 +236,23 @@ lplot <- level_data %>%
           panel.background = element_blank(),
           axis.ticks = element_blank(),
           panel.border = element_blank(),
-          panel.grid = element_blank(),
-          #legend.position = c(1.1, 1), 
-          #legend.justification = c(1, 1)
-          ) +
+          panel.grid = element_blank(), 
+          plot.title = element_text(hjust = 0, face = "bold")) +
     scale_fill_gradient(name = "No. of\nCrimes",low="white", high="steelblue") +
-    labs(x = "", y = "", title = "Number of Crimes by State - 2012")
+    labs(x = "", y = "")
 
-ggplotly(lplot, tooltip = c("x","y","z"))
+ggplotly(lplot, tooltip = c("x","y","z")) %>% add_annotations(
+    yref="paper", 
+    xref="paper", 
+    y=1.05, 
+    x=0, 
+    text="Number of Crimes by State - 2012",
+    align = "left",
+    valign = "bottom",
+    showarrow=F, 
+    font=list(size=19)
+  ) %>% 
+  layout(margin = list(t=50))
 
 
 ```
@@ -232,23 +262,42 @@ As you can see, kidnappings and rape seem most significant across India. 'Other'
 ####Total Crime By State
 Shifting to a more macro view, we'll take a look at total crimes by state over time. I filter out states that have relatively less crime based on this data. From the charts below, it appears that Madhya Pradesh and Maharashtra have had higher crime, but with low growth, over time. Crime in Uttar Pradesh, however, has been sporadic and grew significantly between 2010 and 2012. 
 
-```{r crimes_by_state, echo=FALSE, fig.height=6, fig.width=9}
-df %>%
+```{r crimes_by_state, echo=FALSE, fig.height=6, fig.width=9, message=FALSE, warning=FALSE}
+top <- 12
+
+high_crime_states <- df %>%
   gather("year", df, -state_ut, -crime_head, convert = F) %>%
-  group_by(crime_head) %>%
-  filter(df > 400) %>%
-  ungroup() %>%
+  group_by(state_ut) %>%
   filter(crime_head == "Total Crimes Against Children") %>%
-  ggplot(aes(x=year,y=df, fill=state_ut)) + geom_bar(stat='identity') + 
+  summarise(stotal = sum(df)) %>%
+  top_n(top)
+
+total_by_st_plot <- df %>%
+  gather("year", df, -state_ut, -crime_head, convert = F) %>%
+  filter(crime_head == "Total Crimes Against Children", state_ut %in% high_crime_states$state_ut) %>%
+  ggplot(aes(x=year,y=df, fill=state_ut, text = paste0("Year:", year,"\nTotal: ", df))) +
+  geom_bar(stat='identity') + 
     facet_wrap(~state_ut) + 
-    labs(title = 'Total Crimes Against Children by State (2001 - 2012)',
-         y = 'Number of Crimes', x='') +
+    labs(y = 'Number of Crimes', x='') +
     theme_light() + 
     theme(legend.position='none', 
           axis.text.x = element_text(angle = 90, vjust = 0.5),
           axis.ticks.x = element_blank()) +
     strip_theme +
-    scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(16))
+    scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(top))
+
+ggplotly(total_by_st_plot, tooltip = c("text")) %>% add_annotations(
+    yref="paper", 
+    xref="paper", 
+    y=1.15, 
+    x=0, 
+    text="Total Crimes Against Children by State, 2001 - 2012",
+    align = "left",
+    valign = "bottom",
+    showarrow=F, 
+    font=list(size=19)
+  ) %>% 
+  layout(margin = list(t=80))
 
 ```
 
@@ -398,7 +447,7 @@ plot_2012 <- ggplot() +
   labs(title="Number of Crimes in India<br>2001 vs 2012", x = "", y="") +
   map_theme
 
-subplot(ggplotly(plot_2001, tooltip = c("text")), ggplotly(plot_2012, tooltip = c("text")))
+subplot(ggplotly(plot_2001, tooltip = c("text")), ggplotly(plot_2012, tooltip = c("text"))) 
 
 ```
 

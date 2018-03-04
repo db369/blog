@@ -4,3 +4,6 @@
   is an official part of the theme (ex. Pull Requests) should be included in main.css
   within the formating given.
 */
+		table > tbody > tr > td:not(:first-child):hover {
+			background-color: RGBA(190, 190, 190, .3);
+		}
