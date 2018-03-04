@@ -154,7 +154,7 @@ Note that 'Procuration Of Minor Girls' is __NaN%__ since it was 0 in 2001. Kidna
 
 #### Kidnappings and Abductions by State
 To add a little more context, I'll take a look at kidnapping and abductions by state. 
-```{r kidnapping_by_state_all, message=FALSE, warning=FALSE}
+```{r kidnapping_by_state_all, fig.height=6, fig.width=9, message=FALSE, warning=FALSE}
 top_k <- 12
 
 high_ka_states <- df %>%
@@ -174,7 +174,6 @@ kidnapping_plot <- df %>%
     facet_wrap(~state_ut) + 
     theme_light() + theme(strip.background = element_rect(color = "#93a1a1")) +
     theme(legend.position='none', 
-#          plot.title = element_text(vjust = 1, hjust = 0, face = "bold", lineheight = 20),
           axis.text.x = element_text(angle = 90, vjust = 0.5),
           axis.ticks.x = element_blank()) +
     strip_theme +
@@ -183,7 +182,7 @@ kidnapping_plot <- df %>%
 ggplotly(kidnapping_plot, tooltip = c("text")) %>% add_annotations(
     yref="paper", 
     xref="paper", 
-    y=1.2, 
+    y=1.15, 
     x=0, 
     text="Kidnapping And Abduction Of Children by State, 2001 - 2012",
     align = "left",
@@ -244,13 +243,13 @@ lplot <- level_data %>%
 ggplotly(lplot, tooltip = c("x","y","z")) %>% add_annotations(
     yref="paper", 
     xref="paper", 
-    y=1.05, 
+    y=1.08, 
     x=0, 
     text="Number of Crimes by State - 2012",
     align = "left",
     valign = "bottom",
     showarrow=F, 
-    font=list(size=19)
+    font=list(size=20)
   ) %>% 
   layout(margin = list(t=50))
 
