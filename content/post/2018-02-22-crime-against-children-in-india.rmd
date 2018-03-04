@@ -65,7 +65,6 @@ if (length(tables_df$tableName) > 0) {
 ```
 
 
-
 ### Data Cleaning
 Now that we have data to work with, it makes sense to check for missing data, misspellings, and generally reshaping the data to make it easier to work with.
 
@@ -75,15 +74,15 @@ First, I'll check for NA's.
 any(is.na(sample_df))
 ```
 
-Since there are no NA's, I'll move on to checking for duplicates and typos in the state and crime columns.
+Since there are no NA's, I'll move on to checking for duplicates and typos (or _duplicates caused by typos_) in the state and crime columns. Below, we identify 35 unique states (38 less 3 totals) and 12 unique crimes (also excluding total crime).
 ```{r}
-# check for duplicate states
+# check for duplicates / typos states
 sample_df %>%
   arrange(state_ut) %>%
   select(state_ut) %>%
   unique()
 
-# check for typos in crime type
+# check for duplicates / typos in crime type
 sample_df %>%
   arrange(crime_head) %>%
   select(crime_head) %>%
@@ -104,6 +103,12 @@ df$crime_head <- str_to_title(df$crime_head)
 df$state_ut <- str_to_title(df$state_ut)
 ```
 
+#### Tidy Data
+The data table appears to be set up to be readable in Excel (from my point of view). Gathering the years into one variable will make it easier to work with.
+```{r}
+df <- df %>% gather("year", df, -state_ut, -crime_head, convert = T)
+```
+
 
 ### Exploratory Data Analysis
 #### Identify prevalent crimes in Tamil Nadu in 2012
@@ -112,7 +117,6 @@ I am still new to this and I suspect it makes more sense to begin with macro lev
 ```{r tamil_nadu_crimes}
 
 df %>%
-  gather("year", df, -state_ut, -crime_head, convert = T) %>%
   filter(state_ut == "Tamil Nadu" & year == 2012) %>%
   arrange(desc(df)) 
 ```
@@ -130,20 +134,19 @@ crimes <- c("Kidnapping And Abduction Of Children",
             "Rape Of Children")
 
 df %>%
-  gather("year", df, -state_ut, -crime_head, convert = T) %>%
   filter((state_ut == "Tamil Nadu") & (crime_head %in% crimes )) %>%
   ggplot(aes(year,df)) + geom_line(color = "DarkViolet") + 
     facet_wrap(~ crime_head, ncol = 2) +
     labs(y = "Count", x = "") +
     scale_x_continuous(labels = function(x) as.integer(x)) +
-    theme_light() + strip_theme
+    theme_light() + strip_theme +
+    theme(axis.text.x = element_text(hjust=1))
 
 ```
 
 Kidnapping and rape appear to have the most alarming trajectories. I'm curious what average annual growth looks like.
 ```{r cagr}
 df %>%
-  gather("year", df, -state_ut, -crime_head, convert = T) %>%
   filter(state_ut == "Tamil Nadu", crime_head %in% crimes) %>% 
   group_by(crime_head) %>%
   summarize(CAGR =  scales::percent((df[year == 2012] / df[year == 2001]) ^ (1/11) - 1)) %>%
@@ -158,14 +161,12 @@ To add a little more context, I'll take a look at kidnapping and abductions by s
 top_k <- 12
 
 high_ka_states <- df %>%
-  gather("year", df, -state_ut, -crime_head, convert = F) %>%
   group_by(state_ut) %>%
   filter(crime_head == "Kidnapping And Abduction Of Children") %>%
   summarise(stotal = sum(df)) %>%
   top_n(top_k)
 
 kidnapping_plot <- df %>%
-  gather("year", df, -state_ut, -crime_head, convert = F) %>%
   filter(crime_head == "Kidnapping And Abduction Of Children", state_ut %in% high_ka_states$state_ut) %>%
   ggplot(aes(x=year,y=df, fill=state_ut, text = paste0("Year: ", year,"\nTotal: ", df))) +
   geom_bar(stat='identity') + 
@@ -199,7 +200,6 @@ Uttar Pradesh seems to stand out quite a bit, especially in 2012. Taking a close
 ```{r kidnapping_by_state_12, message=FALSE, warning=FALSE}
 
 df %>%
-  gather("year", df, -state_ut, -crime_head, convert = F) %>%
   group_by(crime_head) %>%
   filter(df > 100) %>%
   ungroup() %>%
@@ -223,7 +223,6 @@ df %>%
 The next question I have is _what crimes are most significant in each state?_ A heatmap (or levelplot) might be the best way to visualize this. This also allows us to visualize the most prevalent crimes throughout India.
 ```{r heatmap, fig.height=9}
 level_data <- df %>%
-  gather("year", df, -state_ut, -crime_head) %>%
   filter(year == '2012', crime_head != "Total Crimes Against Children") 
 
 colnames(level_data) <- c("State","Crime","Year","Count")
@@ -267,14 +266,12 @@ Shifting to a more macro view, we'll take a look at total crimes by state over t
 top <- 12
 
 high_crime_states <- df %>%
-  gather("year", df, -state_ut, -crime_head, convert = F) %>%
   group_by(state_ut) %>%
   filter(crime_head == "Total Crimes Against Children") %>%
   summarise(stotal = sum(df)) %>%
   top_n(top)
 
 total_by_st_plot <- df %>%
-  gather("year", df, -state_ut, -crime_head, convert = F) %>%
   filter(crime_head == "Total Crimes Against Children", state_ut %in% high_crime_states$state_ut) %>%
   ggplot(aes(x=year,y=df, fill=state_ut, text = paste0("Year: ", year,"\nTotal: ", df))) +
   geom_bar(stat='identity') + 
@@ -307,7 +304,6 @@ Again, I'm interested in average annual growth, but here I take a look at total 
 
 ```{r geometric}
 growth.tbl <- df %>%
-  gather("year", df, -state_ut, -crime_head, convert = F) %>%
   filter(crime_head == "Total Crimes Against Children", year %in% c("2001", "2012"), df[year==2001] > 0) %>%
   group_by(state_ut) %>%
   summarize(growth = 100 * ((df[year == 2012] / df[year == 2001]) ^ (1/11) - 1) ) %>%
@@ -337,21 +333,18 @@ Since I'm working with geographic data, I'd like to map it to visualize the rela
 
 # subset df for 2001 
 total_by_state_01 <- df %>%
-  gather("year", df, -state_ut, -crime_head, convert = F) %>%
   filter(crime_head == "Total Crimes Against Children", year == '2001', df[year=='2001'] >= 0) %>%
   mutate(state_ut = reorder(state_ut, df)) %>%
   select(state_ut, df)
 
 # subset df for 2012 
 total_by_state <- df %>%
-  gather("year", df, -state_ut, -crime_head, convert = F) %>%
   filter(crime_head == "Total Crimes Against Children", year == '2012', df[year=='2012']) %>%
   mutate(state_ut = reorder(state_ut, df)) %>%
   select(state_ut, df)
 
 # subset df to display median number crime of crimes for entire period
 med_by_state <- df %>%
-  gather("year", df, -state_ut, -crime_head, convert = F) %>%
   filter(crime_head == "Total Crimes Against Children", df[year=='2001'] >= 0) %>%
   group_by(state_ut) %>%
   summarise(median = median(df)) %>%
