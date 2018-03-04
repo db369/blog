@@ -167,7 +167,7 @@ high_ka_states <- df %>%
 kidnapping_plot <- df %>%
   gather("year", df, -state_ut, -crime_head, convert = F) %>%
   filter(crime_head == "Kidnapping And Abduction Of Children", state_ut %in% high_ka_states$state_ut) %>%
-  ggplot(aes(x=year,y=df, fill=state_ut, text = paste0("Year:", year,"\nTotal: ", df))) +
+  ggplot(aes(x=year,y=df, fill=state_ut, text = paste0("Year: ", year,"\nTotal: ", df))) +
   geom_bar(stat='identity') + 
     labs(title = '',
          y = 'Number of Crimes', x='') +
@@ -276,7 +276,7 @@ high_crime_states <- df %>%
 total_by_st_plot <- df %>%
   gather("year", df, -state_ut, -crime_head, convert = F) %>%
   filter(crime_head == "Total Crimes Against Children", state_ut %in% high_crime_states$state_ut) %>%
-  ggplot(aes(x=year,y=df, fill=state_ut, text = paste0("Year:", year,"\nTotal: ", df))) +
+  ggplot(aes(x=year,y=df, fill=state_ut, text = paste0("Year: ", year,"\nTotal: ", df))) +
   geom_bar(stat='identity') + 
     facet_wrap(~state_ut) + 
     labs(y = 'Number of Crimes', x='') +
