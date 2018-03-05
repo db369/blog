@@ -192,7 +192,7 @@ ggplotly(kidnapping_plot, tooltip = c("text")) %>%
     showarrow=F, 
     font=list(size=19)
   ) %>% 
-  layout(margin = list(t=80))
+  layout(margin = list(t=80), hovermode='x')
 
 ```
 
@@ -296,11 +296,11 @@ ggplotly(total_by_st_plot, tooltip = c("text")) %>%
     showarrow=F, 
     font=list(size=19)
   ) %>% 
-  layout(margin = list(t=80))
+  layout(margin = list(t=80), hovermode='x')
 
 ```
 
-Again, I'm interested in average annual growth, but here I take a look at total crimes by state. Tamil Nadu comes out on top. That is likely because we're dealing with smaller numbers, but the trajectory is still quite steep. Uttar Pradesh had an average annual growth in crime of about 6% from 2001 to 2012, but crime fell from 2001 to 2002. Average growth from 2002 to 2012 was about `r df %>% gather("year", df, -state_ut, -crime_head, convert = F) %>% filter(crime_head == "Total Crimes Against Children", year %in% c("2002", "2012"), state_ut == "Uttar Pradesh") %>% summarize(growth = paste0(round(100 * ((df[year == 2012] / df[year == 2002]) ^ (1/11) - 1),1),"%"))`, which is twice as fast as indicated, but still places low on the chart below.
+Again, I'm interested in average annual growth, but here I take a look at total crimes by state. Tamil Nadu comes out on top. That is likely because we're dealing with smaller numbers, but the trajectory is still quite steep. Uttar Pradesh had an average annual growth in crime of about 6% from 2001 to 2012, but crime fell from 2001 to 2002. Average growth from 2002 to 2012 was about `r df %>% filter(crime_head == "Total Crimes Against Children", year %in% c("2002", "2012"), state_ut == "Uttar Pradesh") %>% summarize(growth = paste0(round(100 * ((df[year == 2012] / df[year == 2002]) ^ (1/10) - 1),1),"%"))`, which is more than twice as fast as indicated, but still places in the lower half of the chart below.
 
 ```{r geometric}
 growth.tbl <- df %>%
