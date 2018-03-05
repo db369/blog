@@ -468,7 +468,7 @@ colnames(median.table) <- c("State", "Median")
 
 median_plot <- ggplot() +
   geom_polygon(data = final.plt.med, 
-               aes(x = long, y = lat, group = group, fill = median, text = paste0(state,": ",median)), 
+               aes(x = long, y = lat, group = group, fill = median), 
                color = "grey80", size = 0.25) + 
   coord_map() +
   scale_fill_gradient(name="Median", limits=c(0,5200), low="white", high="steelblue") +
