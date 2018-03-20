@@ -369,23 +369,18 @@ colnames(med_by_state) <- c("state","median","id")
 colnames(total_by_state_01) <- c("state","count","id")
 
 # fix ID's that didn't quite match up for each dataframe
-total_by_state$id[total_by_state$state == "A & N Islands"] <- 1
-total_by_state$id[total_by_state$state == "Jammu & Kashmir"] <- 9
-total_by_state$id[total_by_state$state == "D & N Haveli"] <- 8
-total_by_state$id[total_by_state$state == "Daman & Diu"] <- 14
-total_by_state$id[total_by_state$state == "Delhi"] <- 25
+fix_states <- function(df){
+  df$id[df$state == "A & N Islands"] <- 1
+  df$id[df$state == "Jammu & Kashmir"] <- 14
+  df$id[df$state == "D & N Haveli"] <- 8
+  df$id[df$state == "Daman & Diu"] <- 9
+  df$id[df$state == "Delhi"] <- 25
+  return(df)
+}
 
-total_by_state_01$id[total_by_state_01$state == "A & N Islands"] <- 1
-total_by_state_01$id[total_by_state_01$state == "Jammu & Kashmir"] <- 9
-total_by_state_01$id[total_by_state_01$state == "D & N Haveli"] <- 8
-total_by_state_01$id[total_by_state_01$state == "Daman & Diu"] <- 14
-total_by_state_01$id[total_by_state_01$state == "Delhi"] <- 25
-
-med_by_state$id[med_by_state$state == "A & N Islands"] <- 1
-med_by_state$id[med_by_state$state == "Jammu & Kashmir"] <- 9
-med_by_state$id[med_by_state$state == "D & N Haveli"] <- 8
-med_by_state$id[med_by_state$state == "Daman & Diu"] <- 14
-med_by_state$id[med_by_state$state == "Delhi"] <- 25
+total_by_state <- fix_states(total_by_state)
+total_by_state_01 <- fix_states(total_by_state_01)
+med_by_state <- fix_states(med_by_state)
 
 # I found Tamil Nadu was duplicated so the following code removes all duplicates
 total_by_state <- total_by_state[!duplicated(total_by_state),]
