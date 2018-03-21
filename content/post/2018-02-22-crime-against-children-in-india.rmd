@@ -135,7 +135,7 @@ crimes <- c("Kidnapping And Abduction Of Children",
 
 df %>%
   filter((state_ut == "Tamil Nadu") & (crime_head %in% crimes )) %>%
-  ggplot(aes(year,df)) + geom_line(color = "DarkViolet") + 
+  ggplot(aes(year,df)) + geom_line(color = "#54203F") + 
     facet_wrap(~ crime_head, ncol = 2) +
     labs(y = "Count", x = "") +
     scale_x_continuous(labels = function(x) as.integer(x)) +
@@ -237,7 +237,7 @@ lplot <- level_data %>%
           panel.border = element_blank(),
           panel.grid = element_blank(), 
           plot.title = element_text(hjust = 0, face = "bold")) +
-    scale_fill_gradient(name = "No. of\nCrimes",low="white", high="steelblue") +
+    scale_fill_gradient(name = "No. of\nCrimes",low="white", high="#54203F") +
     labs(x = "", y = "")
 
 ggplotly(lplot, tooltip = c("x","y","z")) %>% 
@@ -422,18 +422,18 @@ map_theme <- theme(panel.background = element_blank(),
 plot_2001 <- ggplot() +
   geom_polygon(data = final.plt.01, 
                aes(x = long, y = lat, group = group, fill = count, text = paste0(state,": ",count)), 
-               color = "grey90", size = 0.25) + 
+               color = "white", size = 0.25) + 
   coord_map() +
-  scale_fill_gradient(name="No. of\nCrimes", limits=c(0,12000), low="white", high="steelblue")+
+  scale_fill_gradient(name="No. of\nCrimes", limits=c(0,12000), low="#ede5cf", high="#54203F")+
   labs(title="", x = "", y="") +
   map_theme
 
 plot_2012 <- ggplot() +
   geom_polygon(data = final.plt, 
                aes(x = long, y = lat, group = group, fill = count, text = paste0(state,": ",count,"\nCAGR: ",scales::percent(growth/100))), 
-               color = "grey90", size = 0.25) + 
+               color = "white", size = 0.25) + 
   coord_map() +
-  scale_fill_gradient(name="No. of\nCrimes", limits=c(0,12000), low="white", high="steelblue")+
+  scale_fill_gradient(name="No. of\nCrimes", limits=c(0,12000), low="#ede5cf", high="#54203F")+
   labs(title="", x = "", y="") +
   map_theme
 
@@ -466,7 +466,7 @@ median_plot <- ggplot() +
                aes(x = long, y = lat, group = group, fill = median), 
                color = "grey80", size = 0.25) + 
   coord_map() +
-  scale_fill_gradient(name="Median", limits=c(0,5200), low="white", high="steelblue") +
+  scale_fill_gradient(name="Median", limits=c(0,5200), low="#ede5cf", high="#54203F") +
   labs(title="Median Number of Crimes Against Children\n2001 - 2012", x = "", y = "") +
   map_theme + theme(plot.title = element_text(hjust=0))
 
