@@ -305,8 +305,8 @@ Again, I'm interested in average annual growth, but here I take a look at total 
 
 ```{r geometric}
 
-gr_ch_cols <- rep("one", 15)
-gr_ch_cols[1] <- "two"
+# Create vector to highlight first bar in chart
+gr_ch_cols <- c("two", rep("one", 14))
 
 growth.tbl <- df %>%
   filter(crime_head == "Total Crimes Against Children", year %in% c("2001", "2012"), df[year==2001] > 0) %>%
