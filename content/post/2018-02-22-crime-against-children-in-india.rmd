@@ -38,7 +38,7 @@ library(RColorBrewer)
 library(gridExtra)
 library(ggthemes)
 library(plotly)
-#library(patchwork)
+library(rcartocolor)
 ```
 
 
@@ -124,8 +124,9 @@ df %>%
 After identifying the most significant crimes in 2012, I chart how these crimes changed over time.
 ```{r tamil_nadu_crimes_charts}
 
-strip_theme <- theme(strip.background = element_rect(fill = "#a0a0a0", color = "#888888"),
-                     strip.text = element_text(size = rel(1.1)))
+strip_theme <- theme(strip.background = element_rect(fill = "#EDE5CF", color = "#EDE5CF"),
+                     strip.text = element_text(color = "#54203F", size = rel(1.1)),
+                     panel.border = element_rect(color = "#EDE5CF"))
 
 crimes <- c("Kidnapping And Abduction Of Children",
             "Murder Of Children",
@@ -170,8 +171,8 @@ kidnapping_plot <- df %>%
   filter(crime_head == "Kidnapping And Abduction Of Children", state_ut %in% high_ka_states$state_ut) %>%
   ggplot(aes(x=year,y=df, fill=state_ut, text = paste0("Year: ", year,"\nTotal: ", df))) +
   geom_bar(stat='identity') + 
-    labs(title = '',
-         y = 'Number of Crimes', x='') +
+    labs(title = '', y = 'Number of Crimes', x='') +
+    scale_x_continuous(labels = function(x) as.integer(x)) +
     facet_wrap(~state_ut) + 
     theme_light() + theme(strip.background = element_rect(color = "#93a1a1")) +
     theme(legend.position='none', 
@@ -205,7 +206,7 @@ df %>%
   ungroup() %>%
   filter(crime_head == "Kidnapping And Abduction Of Children", year == '2012', df[year=='2012'] > 10) %>%
   mutate(state_ut = reorder(state_ut, df)) %>%
-  ggplot(aes(x=state_ut,y=df)) + geom_bar(stat='identity', aes(fill=state_ut)) + coord_flip() +
+  ggplot(aes(x=state_ut,y=df)) + geom_bar(stat='identity', fill="#813753") + coord_flip() +
     geom_text(aes(y = df, x = state_ut, label = df), nudge_y = 350) +
     labs(title = 'Number of Kidnappings And Abductions Of Children by State in 2012',
          y = '', x='') +
@@ -214,8 +215,7 @@ df %>%
           axis.ticks = element_blank(),
           axis.text.x = element_blank(),
           panel.border = element_blank(),
-          panel.grid = element_blank()) +
-    scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(15))
+          panel.grid = element_blank()) 
 
 ```
 
@@ -277,6 +277,7 @@ total_by_st_plot <- df %>%
   geom_bar(stat='identity') + 
     facet_wrap(~state_ut) + 
     labs(y = 'Number of Crimes', x='') +
+    scale_x_continuous(labels = function(x) as.integer(x)) +
     theme_light() + 
     theme(legend.position='none', 
           axis.text.x = element_text(angle = 90, vjust = 0.5),
@@ -303,6 +304,10 @@ ggplotly(total_by_st_plot, tooltip = c("text")) %>%
 Again, I'm interested in average annual growth, but here I take a look at total crimes by state. Tamil Nadu comes out on top. That is likely because we're dealing with smaller numbers, but the trajectory is still quite steep. Uttar Pradesh had an average annual growth in crime of about 6% from 2001 to 2012, but crime fell from 2001 to 2002. Average growth from 2002 to 2012 was about `r df %>% filter(crime_head == "Total Crimes Against Children", year %in% c("2002", "2012"), state_ut == "Uttar Pradesh") %>% summarize(growth = paste0(round(100 * ((df[year == 2012] / df[year == 2002]) ^ (1/10) - 1),1),"%"))`, which is more than twice as fast as indicated, but still places in the lower half of the chart below.
 
 ```{r geometric}
+
+(gr_ch_cols <- rep("one", 15))
+gr_ch_cols[1] <- "two"
+
 growth.tbl <- df %>%
   filter(crime_head == "Total Crimes Against Children", year %in% c("2001", "2012"), df[year==2001] > 0) %>%
   group_by(state_ut) %>%
@@ -312,7 +317,8 @@ growth.tbl <- df %>%
 growth.tbl %>%
   slice(1:15) %>%
   mutate(state_ut = reorder(state_ut, growth)) %>%
-  ggplot(aes(x=state_ut,y=growth)) + geom_bar(stat='identity', aes(fill=state_ut)) + coord_flip() +
+  ggplot(aes(x = state_ut, y = growth)) + geom_bar(stat='identity', aes(fill = gr_ch_cols)) +
+  scale_fill_manual(values = c("#813753","#54203F")) + coord_flip() +
     geom_text(aes(y = growth, x = seq(15,1), label = paste0(round(growth),"%")), nudge_y = -1, color="white" ) +
     labs(title = 'Geometric Growth Of Total Crimes Against Children (2001 - 2012)', 
          y = '', x='') +
@@ -322,8 +328,8 @@ growth.tbl %>%
           axis.ticks = element_blank(),
           axis.text.x = element_blank(),
           panel.border = element_blank(),
-          panel.grid = element_blank()) +
-    scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(15))
+          panel.grid = element_blank()) 
+#    scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(15))
 ```
 
 ### Geographic Distribution of Total Crime
