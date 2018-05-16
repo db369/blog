@@ -62,6 +62,8 @@ if (length(tables_df$tableName) > 0) {
   sample_df <- data.world::query(sample_qry, dataset = dataset_key)
   sample_df
 }
+#write.csv("crime_india.csv")
+
 ```
 
 
@@ -122,7 +124,7 @@ df %>%
 ```
 
 After identifying the most significant crimes in 2012, I chart how these crimes changed over time.
-```{r tamil_nadu_crimes_charts}
+```{r tamil_nadu_crimes_charts, collapse=TRUE}
 
 strip_theme <- theme(strip.background = element_rect(fill = "white", color = "#EDE5CF"),
                      strip.text = element_text(color = "#54203F", size = rel(1.1)),
@@ -222,6 +224,8 @@ df %>%
 #### Levelplot
 The next question I have is _what crimes are most significant in each state?_ A heatmap (or levelplot) might be the best way to visualize this. This also allows us to visualize the most prevalent crimes throughout India.
 ```{r heatmap, fig.height=9}
+
+
 level_data <- df %>%
   filter(year == '2012', crime_head != "Total Crimes Against Children") 
 
@@ -329,12 +333,17 @@ growth.tbl %>%
           axis.text.x = element_blank(),
           panel.border = element_blank(),
           panel.grid = element_blank()) 
+
+```
+```{r eval=FALSE, include=FALSE}
 #    scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(15))
 ```
 
 ### Geographic Distribution of Total Crime
 
 Since I'm working with geographic data, I'd like to map it to visualize the relationship between crime and neighboring states. First, I have to prepare the dataframes for mapping and load the shape file for the states of India. I found a really helpful blogpost on this [here](https://rforpublichealth.blogspot.in/2015/10/mapping-with-ggplot-create-nice.html).
+
+<details>
 ```{r Map Preparation, message=FALSE, warning=FALSE}
 
 # subset df for 2001 
@@ -412,6 +421,7 @@ final.plt.01 <- merge_tbl_01[order(merge_tbl_01$order),]
 final.plt.med <- merge_tbl_med[order(merge_tbl_med$order),]
 
 ```
+</details>
 
 First, a comparison between the total number of crimes in 2001 and 2012. Note the grey state just below the center, Telangana. This state was formed from the northwest part of Andhra Pradesh in 2014, after this dataset was created. 
 
