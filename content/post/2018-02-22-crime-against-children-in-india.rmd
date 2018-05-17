@@ -474,15 +474,11 @@ A quick look at the median number of crimes over that period tells a similar sto
 ```{r map_median, fig.height=6, fig.width=6, message=FALSE, warning=FALSE}
 
 myt <- ttheme_default(
-         # Use hjust and x to left justify the text
-         # Alternate the row fill colours
-          base_size = 8,
-                 core = list(fg_params=list(hjust = 0.5, x=0.5),
-                             bg_params=list(fill=c("#EAE0CE", "#C9B5AC"))),
-
-         # Change column header to white text and red background
-                 colhead = list(fg_params=list(col="white"),
-                                bg_params=list(fill="#54213F"))
+  base_size = 8,
+  core = list(fg_params=list(hjust = 0.5, x=0.5),
+              bg_params=list(fill=c("#EAE0CE", "#C9B5AC"))),
+  colhead = list(fg_params=list(col="white"),
+                 bg_params=list(fill="#54213F"))
  )
 
 
