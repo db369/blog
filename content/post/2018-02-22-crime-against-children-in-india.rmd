@@ -473,6 +473,19 @@ Crime has grown over time, particularly in northern India, and from there, it sp
 A quick look at the median number of crimes over that period tells a similar story, but crime is concentrated a little differently.
 ```{r map_median, fig.height=6, fig.width=6, message=FALSE, warning=FALSE}
 
+myt <- ttheme_default(
+         # Use hjust and x to left justify the text
+         # Alternate the row fill colours
+          base_size = 8,
+                 core = list(fg_params=list(hjust = 0.5, x=0.5),
+                             bg_params=list(fill=c("#EAE0CE", "#C9B5AC"))),
+
+         # Change column header to white text and red background
+                 colhead = list(fg_params=list(col="white"),
+                                bg_params=list(fill="#54213F"))
+ )
+
+
 median.table <- med_by_state %>% arrange(desc(median)) %>% select(state,median) %>% slice(1:5)
 colnames(median.table) <- c("State", "Median")
 
@@ -485,7 +498,7 @@ median_plot <- ggplot() +
   labs(title="Median Number of Crimes Against Children\n2001 - 2012", x = "", y = "") +
   map_theme + theme(plot.title = element_text(hjust=0))
 
-median_plot + annotation_custom(tableGrob(median.table,rows=NULL, theme = ttheme_default(base_size = 8)), xmin=88, xmax=98, ymin=8, ymax=18) + coord_cartesian()
+median_plot + annotation_custom(tableGrob(median.table,rows=NULL, theme = myt), xmin=88, xmax=98, ymin=8, ymax=18) + coord_cartesian()
 
 
 ```
