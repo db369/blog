@@ -173,29 +173,32 @@ kidnapping_plot <- df %>%
   filter(crime_head == "Kidnapping And Abduction Of Children", state_ut %in% high_ka_states$state_ut) %>%
   ggplot(aes(x=year,y=df, fill=state_ut, text = paste0("Year: ", year,"\nTotal: ", df))) +
   geom_bar(stat='identity') + 
-    labs(title = '', y = 'Number of Crimes', x='') +
+    labs(title = 'Kidnapping And Abduction Of Children by State, 2001 - 2012', y = 'Number of Crimes', x='') +
     scale_x_continuous(labels = function(x) as.integer(x)) +
     facet_wrap(~state_ut) + 
     theme_light() + theme(strip.background = element_rect(color = "#93a1a1")) +
-    theme(legend.position='none', 
+    theme(text = element_text(family = "Noto Sans"),
+          legend.position='none', 
           axis.text.x = element_text(angle = 90, vjust = 0.5),
           axis.ticks.x = element_blank()) +
     strip_theme +
     scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(top_k)) 
 
-ggplotly(kidnapping_plot, tooltip = c("text")) %>% 
-  add_annotations(
-    yref="paper", 
-    xref="paper", 
-    y=1.15, 
-    x=0, 
-    text="Kidnapping And Abduction Of Children by State, 2001 - 2012",
-    align = "left",
-    valign = "bottom",
-    showarrow=F, 
-    font=list(size=19)
-  ) %>% 
-  layout(margin = list(t=80), hovermode='x')
+kidnapping_plot
+
+# ggplotly(kidnapping_plot, tooltip = c("text")) %>% 
+#   add_annotations(
+#     yref="paper", 
+#     xref="paper", 
+#     y=1.15, 
+#     x=0, 
+#     text="Kidnapping And Abduction Of Children by State, 2001 - 2012",
+#     align = "left",
+#     valign = "bottom",
+#     showarrow=F, 
+#     font=list(size=19)
+#   ) %>% 
+#  layout(margin = list(t=80), hovermode='x')
 
 ```
 
@@ -210,9 +213,11 @@ df %>%
   mutate(state_ut = reorder(state_ut, df)) %>%
   ggplot(aes(x=state_ut,y=df)) + geom_bar(stat='identity', fill="#813753") + coord_flip() +
     geom_text(aes(y = df, x = state_ut, label = df), nudge_y = 350) +
-    labs(title = 'Number of Kidnappings And Abductions Of Children by State in 2012',
+    labs(title = 'Number of Kidnappings And Abductions Of Children',
+         subtitle = 'By State, 2012', 
          y = '', x='') +
-    theme(legend.position='none',
+    theme(text = element_text(family = "Noto Sans"),
+          legend.position='none',
           panel.background = element_blank(),
           axis.ticks = element_blank(),
           axis.text.x = element_blank(),
@@ -235,7 +240,8 @@ lplot <- level_data %>%
   mutate(State = reorder(State, desc(State))) %>%
   ggplot(aes(x=Crime,y=State, z=Count)) +
     geom_tile(aes(fill = Count)) + 
-    theme(axis.text.x = element_text(angle=90, hjust=1),
+    theme(text = element_text(family = "Noto Sans"),
+          axis.text.x = element_text(angle=90, hjust=1),
           panel.background = element_blank(),
           axis.ticks = element_blank(),
           panel.border = element_blank(),
@@ -280,7 +286,8 @@ total_by_st_plot <- df %>%
   ggplot(aes(x=year,y=df, fill=state_ut, text = paste0("Year: ", year,"\nTotal: ", df))) +
   geom_bar(stat='identity') + 
     facet_wrap(~state_ut) + 
-    labs(y = 'Number of Crimes', x='') +
+    labs(title = 'Total Crimes Against Children by State, 2001 - 2012', 
+         y = 'Number of Crimes', x='') +
     scale_x_continuous(labels = function(x) as.integer(x)) +
     theme_light() + 
     theme(legend.position='none', 
@@ -289,19 +296,21 @@ total_by_st_plot <- df %>%
     strip_theme +
     scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(top))
 
-ggplotly(total_by_st_plot, tooltip = c("text")) %>% 
-  add_annotations(
-    yref="paper", 
-    xref="paper", 
-    y=1.15, 
-    x=0, 
-    text="Total Crimes Against Children by State, 2001 - 2012",
-    align = "left",
-    valign = "bottom",
-    showarrow=F, 
-    font=list(size=19)
-  ) %>% 
-  layout(margin = list(t=80), hovermode='x')
+total_by_st_plot
+
+# ggplotly(total_by_st_plot, tooltip = c("text")) %>% 
+#   add_annotations(
+#     yref="paper", 
+#     xref="paper", 
+#     y=1.15, 
+#     x=0, 
+#     text="Total Crimes Against Children by State, 2001 - 2012",
+#     align = "left",
+#     valign = "bottom",
+#     showarrow=F, 
+#     font=list(size=19)
+#   ) %>% 
+#   layout(margin = list(t=80), hovermode='x')
 
 ```
 
@@ -326,7 +335,8 @@ growth.tbl %>%
     geom_text(aes(y = growth, x = seq(15,1), label = paste0(round(growth),"%")), nudge_y = -1, color="white" ) +
     labs(title = 'Geometric Growth Of Total Crimes Against Children (2001 - 2012)', 
          y = '', x='') +
-    theme(legend.position='none', 
+    theme(text = element_text(family = "Noto Sans"),
+          legend.position='none', 
           panel.background = element_blank(),
           axis.line = element_blank(),
           axis.ticks = element_blank(),
@@ -426,7 +436,8 @@ First, a comparison between the total number of crimes in 2001 and 2012. Note th
 
 ```{r map_2001_2012, fig.width=9, message=FALSE, warning=FALSE}
 
-map_theme <- theme(panel.background = element_blank(),
+map_theme <- theme(text = element_text(family = "Noto Sans"),
+                   panel.background = element_blank(),
                    plot.title = element_text(size=rel(1.5), hjust = 0.5),
                    axis.text = element_blank(),
                    axis.line = element_blank(),
