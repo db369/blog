@@ -33,6 +33,7 @@ The dataset can be found [here](https://data.world/bhavnachawla/crime-rate-again
 library(data.world)
 library(tidyverse)
 library(stringr)
+library(stringi)
 library(maptools)
 library(RColorBrewer)
 library(gridExtra)
@@ -465,7 +466,7 @@ plot_2012 <- ggplot() +
 
 subplot(ggplotly(plot_2001, tooltip = c("text")), ggplotly(plot_2012, tooltip = c("text"))) %>%
   add_annotations(
-    yref="paper", 
+    # yref="paper", 
     xref="paper", 
     y=1.15, 
     x=0, 
@@ -496,10 +497,16 @@ myt <- ttheme_default(
 median.table <- med_by_state %>% arrange(desc(median)) %>% select(state,median) %>% slice(1:5)
 colnames(median.table) <- c("State", "Median")
 
+# Create dataframe of state names and state centers (lat, long)
+cnames <- aggregate(cbind(long, lat) ~ state, data=final.plt.med, FUN=function(x)mean(range(x)))
+# Process names by replacing last space with newline char
+cnames$state <- stri_replace_last_charclass(cnames$state, "\\p{WHITE_SPACE}", "\n")
+
 median_plot <- ggplot() +
   geom_polygon(data = final.plt.med, 
                aes(x = long, y = lat, group = group, fill = median), 
                color = "grey80", size = 0.25) + 
+  geom_text(data=cnames, aes(long, lat, label = state), size=2) +
   coord_map() +
   scale_fill_gradient(name="Median", limits=c(0,5200), low="#ede5cf", high="#54203F") +
   labs(title="Median Number of Crimes Against Children\n2001 - 2012", x = "", y = "") +
