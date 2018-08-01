@@ -487,10 +487,10 @@ A quick look at the median number of crimes over that period tells a similar sto
 
 myt <- ttheme_default(
   base_size = 8,
-  core = list(fg_params=list(hjust = 0.5, x=0.5),
-              bg_params=list(fill=c("#EAE0CE", "#C9B5AC"))),
-  colhead = list(fg_params=list(col="white"),
-                 bg_params=list(fill="#54213F"))
+  core = list(fg_params=list(hjust = 0, x=0.1),
+              bg_params=list(fill=c("white", "#EFEFEF"))),
+  colhead = list(fg_params=list(col="black", fontface="bold.italic", hjust = 0, x=0.1),
+                 bg_params=list(fill="#DEDEDE"))
  )
 
 
@@ -499,6 +499,7 @@ colnames(median.table) <- c("State", "Median")
 
 # Create dataframe of state names and state centers (lat, long)
 cnames <- aggregate(cbind(long, lat) ~ state, data=final.plt.med, FUN=function(x)mean(range(x)))
+
 # Process names by replacing last space with newline char
 cnames$state <- stri_replace_last_charclass(cnames$state, "\\p{WHITE_SPACE}", "\n")
 
@@ -512,8 +513,9 @@ median_plot <- ggplot() +
   labs(title="Median Number of Crimes Against Children\n2001 - 2012", x = "", y = "") +
   map_theme + theme(plot.title = element_text(hjust=0))
 
-median_plot + annotation_custom(tableGrob(median.table,rows=NULL, theme = myt), xmin=88, xmax=98, ymin=8, ymax=18) + coord_cartesian()
+g <- tableGrob(median.table,rows=NULL, theme = myt) 
 
+median_plot + annotation_custom(g, xmin=88, xmax=98, ymin=8, ymax=18) + coord_cartesian()
 
 ```
 

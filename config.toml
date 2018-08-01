@@ -63,7 +63,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
   highlightjsVersion = "9.12.0"
   highlightjsCDN = "//cdnjs.cloudflare.com/ajax/libs"
   highlightjsLang = ["r", "yaml", "css", "python", "bash"]
-  highlightjsTheme = "github"
+  highlightjsTheme = "ocean"
   
 # Disqus will take priority over Staticman (github.com/eduardoboucas/staticman)
 # due to its ease of use. Feel free to check out both and decide what you would
@@ -119,7 +119,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
   weight = 2
 
 [[menu.main]]
-  name = "Blog"
+  name = "Post"
   url = "/post/"
   identifier = "fa fa-newspaper-o"
   weight = 3

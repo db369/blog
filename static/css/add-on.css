@@ -7,3 +7,7 @@
 		table > tbody > tr > td:not(:first-child):hover {
 			background-color: RGBA(190, 190, 190, .3);
 		}
+		/* My additions to css */
+		code {
+		  font-family: "monospace";
+		}
