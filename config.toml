@@ -15,7 +15,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
   # Sets the navbarTitle that appears in the top left of the navigation bar
   navbarTitle          = "dave bloom"
   # Sets where "View More Posts" links
-  viewMorePostLink     = "/post/"
+  viewMorePostLink     = "/blog/"
 
 # Optional Params
   # Sets navbarTitle to match the section of the website
@@ -108,7 +108,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 # Identifier prepends a Font Awesome icon to the menu item
 [[menu.main]]
   name = "Home"
-  url = "/post/"
+  url = "/"
   identifier = "fa fa-home"
   weight = 1
 
@@ -119,8 +119,8 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
   weight = 2
 
 [[menu.main]]
-  name = "Post"
-  url = "/post/"
+  name = "Blog"
+  url = "/blog/"
   identifier = "fa fa-newspaper-o"
   weight = 3
 
@@ -129,18 +129,18 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 #  url = "/itemized/"
 #  identifier = "fa fa-list"
 #  weight = 4
-#
+
 [[menu.main]]
   name = "Categories"
   url = "/categories/"
   identifier = "fa fa-sitemap"
-  weight = 5
+  weight = 4
 
 [[menu.main]]
   name = "Contact"
   url = "/contact/"
   identifier = "fa fa-envelope-o"
-  weight = 6
+  weight = 5
 
 # Sets Social Media icons to appear and link to your account. Value should be your
 # username unless otherwise noted. These are the icons affected by socialAppearAtTop
