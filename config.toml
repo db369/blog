@@ -108,7 +108,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 # Identifier prepends a Font Awesome icon to the menu item
 [[menu.main]]
   name = "Home"
-  url = "/"
+  url = "/post/"
   identifier = "fa fa-home"
   weight = 1
 
