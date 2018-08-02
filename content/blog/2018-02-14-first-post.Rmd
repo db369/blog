@@ -2,11 +2,11 @@
 title: First Post!
 author: dave
 date: '2018-02-14'
+categories:
+  - about
+tags:
+  - about
 slug: first-post
-categories: 
-  - about
-tags: 
-  - about
 featured: pic1.jpg
 featuredalt: me and kids
 featuredpath: img/main
