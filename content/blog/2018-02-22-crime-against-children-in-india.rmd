@@ -15,9 +15,7 @@ featuredalt: children of India
 featuredpath: img/main
 linktitle: ''
 slug: crime-against-children-in-india
-type:
-  - post
-  - blog
+type: post
 ---
 
 
