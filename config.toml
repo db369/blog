@@ -62,7 +62,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
   disable_highlight = false # set to true to disable Highlight
   highlightjsVersion = "9.12.0"
   highlightjsCDN = "//cdnjs.cloudflare.com/ajax/libs"
-  highlightjsLang = ["r", "yaml", "css", "python", "bash"]
+  highlightjsLang = ["r", "python", "bash"]
   highlightjsTheme = "ocean"
   
 # Disqus will take priority over Staticman (github.com/eduardoboucas/staticman)
