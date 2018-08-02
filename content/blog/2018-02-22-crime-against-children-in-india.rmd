@@ -439,7 +439,7 @@ First, a comparison between the total number of crimes in 2001 and 2012. Note th
 
 map_theme <- theme(text = element_text(family = "Noto Sans"),
                    panel.background = element_blank(),
-                   plot.title = element_text(size=rel(1.5), hjust = 0.5),
+                   plot.title = element_text(size=rel(1.5), hjust = 0),
                    axis.text = element_blank(),
                    axis.line = element_blank(),
                    axis.ticks = element_blank(),
@@ -466,7 +466,7 @@ plot_2012 <- ggplot() +
 
 subplot(ggplotly(plot_2001, tooltip = c("text")), ggplotly(plot_2012, tooltip = c("text"))) %>%
   add_annotations(
-    # yref="paper", 
+    yref="paper", 
     xref="paper", 
     y=1.15, 
     x=0, 
