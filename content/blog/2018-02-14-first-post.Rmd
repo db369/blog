@@ -10,7 +10,9 @@ slug: first-post
 featured: pic1.jpg
 featuredalt: me and kids
 featuredpath: img/main
-type: post
+type: 
+  - post
+  - blog
 ---
 
 ## Introduction

@@ -13,8 +13,11 @@ tags:
 featured: india_children.jpg
 featuredalt: children of India
 featuredpath: img/main
+linktitle: ''
 slug: crime-against-children-in-india
-type: post
+type:
+  - post
+  - blog
 ---
 
 
