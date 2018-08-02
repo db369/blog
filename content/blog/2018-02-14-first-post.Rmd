@@ -1,16 +1,15 @@
-+++
-title = "First Post!"
-author = "dave"
-date = "2018-02-14"
-slug = "first-post"
-url = "/blog/"
-featured = "pic1.jpg"
-featuredalt = "me and kids"
-featuredpath = "img/main"
-categories = ["about"]
-tags = ["about"]
-
-+++
+---
+title: First Post!
+author: dave
+date: '2018-02-14'
+slug: first-post
+categories: []
+tags: []
+featured: pic1.jpg
+featuredalt: me and kids
+featuredpath: img/main
+url: /blog/
+---
 
 ## Introduction
 
