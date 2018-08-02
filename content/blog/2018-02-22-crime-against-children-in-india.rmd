@@ -1,7 +1,7 @@
 ---
 title: Crime Against Children in India
 author: dave
-date: '2018-02-22'
+date: "2018-02-22"
 categories:
   - EDA
   - R
@@ -13,7 +13,6 @@ tags:
 featured: india_children.jpg
 featuredalt: children of India
 featuredpath: img/main
-linktitle: ''
 slug: crime-against-children-in-india
 type: post
 ---
