@@ -230,7 +230,7 @@ df %>%
 
 #### Levelplot
 The next question I have is _what crimes are most significant in each state?_ A heatmap (or levelplot) might be the best way to visualize this. This also allows us to visualize the most prevalent crimes throughout India.
-```{r heatmap, fig.height=9}
+```{r heatmap, eval=FALSE, fig.height=9, include=FALSE}
 
 
 level_data <- df %>%
@@ -269,6 +269,43 @@ ggplotly(lplot, tooltip = c("x","y","z")) %>%
 
 ```
 
+```{r heatmap_v2, fig.height=9}
+
+data <- df %>%
+  filter(year == '2012', crime_head != "Total Crimes Against Children")  %>%
+  arrange(desc(state_ut))
+
+upper_limit <- max(data$df)
+hm_pal <- colorRamp(c("white","#54203F"))
+aTitle <- list(yref="paper", 
+               xref="paper", 
+               y=1.05, 
+               x=-0.2, 
+               text="<b>Number of Crimes by State - 2012</b>",
+               showarrow=F, 
+               font=list(size=20))
+
+plot_ly(data, x = ~crime_head, y = ~state_ut, z = ~df, colors = hm_pal, hoverinfo = 'text',
+        text = ~paste0(" Crime:  ",crime_head," \n State:  ", state_ut," \n Count:  ", df),
+        width = 750, height = 900) %>%
+  add_heatmap() %>%
+  colorbar(limits = c(0, upper_limit), title = "", y=0.8, yanchor="top") %>%
+  add_annotations(yref="paper", 
+               xref="paper", 
+               x=1.02, xanchor="left",
+               y=0.8, yanchor="bottom",
+               legendtitle=TRUE, showarrow=FALSE,
+               text="<b>No. of\n Crimes</b>",
+               showarrow=F, 
+               font=list(size=14)) %>%
+  layout(xaxis = list(title = "", tickangle = -90), 
+         yaxis = list(title = "", categoryorder = "array", categoryarray = ~unique(state_ut)), 
+         annotations = aTitle) %>%
+  config(displayModeBar = F)
+
+```
+
+
 As you can see, kidnappings and rape seem most significant across India. 'Other' crime is also significant -- more research is necessary to learn what that comprises. It also appears that about half of the crimes are very low or 0 by count, which makes me suspect that data was unavaliable or that such crimes don't often get reported or prosecuted.
 
 ####Total Crime By State
@@ -300,6 +337,10 @@ total_by_st_plot <- df %>%
 
 total_by_st_plot
 
+
+```
+
+```{r eval=FALSE, include=FALSE}
 # ggplotly(total_by_st_plot, tooltip = c("text")) %>% 
 #   add_annotations(
 #     yref="paper", 
