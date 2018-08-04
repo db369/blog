@@ -128,9 +128,11 @@ df %>%
 After identifying the most significant crimes in 2012, I chart how these crimes changed over time.
 ```{r tamil_nadu_crimes_charts, collapse=TRUE}
 
-strip_theme <- theme(strip.background = element_rect(fill = "white", color = "#EDE5CF"),
+strip_theme <- theme(strip.background = element_rect(fill = "white", color = "white"),
                      strip.text = element_text(color = "#54203F", size = rel(1.1)),
-                     panel.border = element_rect(color = "#EDE5CF"))
+                     panel.border = element_rect(color = "#EDE5CF"),
+                     plot.background = element_rect(color = "#EDE5CF")
+                    )
 
 crimes <- c("Kidnapping And Abduction Of Children",
             "Murder Of Children",
@@ -188,6 +190,10 @@ kidnapping_plot <- df %>%
 
 kidnapping_plot
 
+```
+
+```{r eval=FALSE, include=FALSE}
+
 # ggplotly(kidnapping_plot, tooltip = c("text")) %>% 
 #   add_annotations(
 #     yref="paper", 
@@ -203,6 +209,7 @@ kidnapping_plot
 #  layout(margin = list(t=80), hovermode='x')
 
 ```
+
 
 Uttar Pradesh seems to stand out quite a bit, especially in 2012. Taking a closer look, we see it has had more than 4x the number of kidnappings than any other state in 2012!
 ```{r kidnapping_by_state_12, message=FALSE, warning=FALSE}
@@ -230,7 +237,7 @@ df %>%
 
 #### Levelplot
 The next question I have is _what crimes are most significant in each state?_ A heatmap (or levelplot) might be the best way to visualize this. This also allows us to visualize the most prevalent crimes throughout India.
-```{r heatmap, eval=FALSE, fig.height=9, include=FALSE}
+```{r heatmap, fig.height=8, fig.width=5}
 
 
 level_data <- df %>%
@@ -238,7 +245,7 @@ level_data <- df %>%
 
 colnames(level_data) <- c("State","Crime","Year","Count")
 
-lplot <- level_data %>% 
+level_data %>% 
   mutate(State = reorder(State, desc(State))) %>%
   ggplot(aes(x=Crime,y=State, z=Count)) +
     geom_tile(aes(fill = Count)) + 
@@ -250,26 +257,29 @@ lplot <- level_data %>%
           panel.grid = element_blank(), 
           plot.title = element_text(hjust = 0, face = "bold")) +
     scale_fill_gradient(name = "No. of\nCrimes",low="white", high="#54203F") +
-    labs(x = "", y = "")
+    labs(x = "", y = "",
+         title = "Number of Crimes by State - 2012",
+         subtitle = "")
 
-ggplotly(lplot, tooltip = c("x","y","z")) %>% 
-  add_annotations(
-    yref="paper", 
-    xref="paper", 
-    y=1.08, 
-    x=0, 
-    text="Number of Crimes by State - 2012",
-    align = "left",
-    valign = "bottom",
-    showarrow=F, 
-    font=list(size=20)
-  ) %>% 
-  layout(margin = list(t=50))
+
+# ggplotly(lplot, tooltip = c("x","y","z")) %>% 
+#   add_annotations(
+#     yref="paper", 
+#     xref="paper", 
+#     y=1.08, 
+#     x=0, 
+#     text="Number of Crimes by State - 2012",
+#     align = "left",
+#     valign = "bottom",
+#     showarrow=F, 
+#     font=list(size=20)
+#   ) %>% 
+#   layout(margin = list(t=50))
 
 
 ```
 
-```{r heatmap_v2, fig.height=9}
+```{r heatmap_v2, eval=FALSE, fig.height=9, include=FALSE}
 
 data <- df %>%
   filter(year == '2012', crime_head != "Total Crimes Against Children")  %>%
@@ -308,7 +318,7 @@ plot_ly(data, x = ~crime_head, y = ~state_ut, z = ~df, colors = hm_pal, hoverinf
 
 As you can see, kidnappings and rape seem most significant across India. 'Other' crime is also significant -- more research is necessary to learn what that comprises. It also appears that about half of the crimes are very low or 0 by count, which makes me suspect that data was unavaliable or that such crimes don't often get reported or prosecuted.
 
-####Total Crime By State
+#### Total Crime By State
 Shifting to a more macro view, we'll take a look at total crimes by state over time. I select the top 12 states by cumulative total crime over the period. From the charts below, it appears that Madhya Pradesh and Maharashtra have had higher crime, but with low growth, over time. Crime in Uttar Pradesh, however, has been sporadic and grew significantly between 2010 and 2012. 
 
 ```{r crimes_by_state, echo=FALSE, fig.height=6, fig.width=9, message=FALSE, warning=FALSE}
