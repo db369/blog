@@ -12,3 +12,7 @@
 		  font-family: "monospace";
 		  font-size: 0.8em;
 		}
+    p embed {
+      width: 900;
+      height: 600;
+    }

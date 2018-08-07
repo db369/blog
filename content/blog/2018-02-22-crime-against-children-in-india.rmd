@@ -487,7 +487,7 @@ final.plt.med <- merge_tbl_med[order(merge_tbl_med$order),]
 
 First, a comparison between the total number of crimes in 2001 and 2012. Note the grey state just below the center, Telangana. This state was formed from the northwest part of Andhra Pradesh in 2014, after this dataset was created. 
 
-```{r map_2001_2012, fig.width=9, message=FALSE, warning=FALSE}
+```{r map_2001_2012, echo=TRUE, fig.width=9, message=FALSE, warning=FALSE}
 
 map_theme <- theme(text = element_text(family = "Noto Sans"),
                    panel.background = element_blank(),
@@ -498,7 +498,7 @@ map_theme <- theme(text = element_text(family = "Noto Sans"),
                    panel.border = element_blank(),
                    panel.grid = element_blank())
 
-plot_2001 <- ggplot() +
+plot_2001 <- ggplot( width = 300, height = 500 ) +
   geom_polygon(data = final.plt.01, 
                aes(x = long, y = lat, group = group, fill = count, text = paste0(state,": ",count)), 
                color = "white", size = 0.25) + 
@@ -507,7 +507,7 @@ plot_2001 <- ggplot() +
   labs(title="", x = "", y="") +
   map_theme
 
-plot_2012 <- ggplot() +
+plot_2012 <- ggplot(width = 300, height = 500 ) +
   geom_polygon(data = final.plt, 
                aes(x = long, y = lat, group = group, fill = count, text = paste0(state,": ",count,"\nCAGR: ",scales::percent(growth/100))), 
                color = "white", size = 0.25) + 
@@ -516,7 +516,7 @@ plot_2012 <- ggplot() +
   labs(title="", x = "", y="") +
   map_theme
 
-subplot(ggplotly(plot_2001, tooltip = c("text")), ggplotly(plot_2012, tooltip = c("text"))) %>%
+p <- subplot(ggplotly(plot_2001, tooltip = c("text")), ggplotly(plot_2012, tooltip = c("text"))) %>%
   add_annotations(
     yref="paper", 
     xref="paper", 
@@ -529,6 +529,9 @@ subplot(ggplotly(plot_2001, tooltip = c("text")), ggplotly(plot_2012, tooltip = 
     font=list(size=20)
   ) %>% 
   layout(margin = list(t=80))
+
+p
+#htmlwidgets::saveWidget(as_widget(p, selfcontained = FAlSE), "graph.html")
 
 ```
 
