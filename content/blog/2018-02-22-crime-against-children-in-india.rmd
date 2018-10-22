@@ -10,13 +10,13 @@ tags:
   - India
   - R
   - crime
-featured: india_children.jpg
+featured: thomas-young-634092-unsplash.jpg
 featuredalt: children of India
 featuredpath: img/main
 slug: crime-against-children-in-india
 type: post
 ---
-
+_Photo by [Thomas Young](https://unsplash.com/@tryoung) on [Unsplash](https://unsplash.com/)_
 
 # Introduction
 
@@ -404,7 +404,7 @@ growth.tbl %>%
 
 ### Geographic Distribution of Total Crime
 
-Since I'm working with geographic data, I'd like to map it to visualize the relationship between crime and neighboring states. First, I have to prepare the dataframes for mapping and load the shape file for the states of India. I found a really helpful blogpost on this [here](https://rforpublichealth.blogspot.in/2015/10/mapping-with-ggplot-create-nice.html).
+<!-- Since I'm working with geographic data, I'd like to map it to visualize the relationship between crime and neighboring states. First, I have to prepare the dataframes for mapping and load the shape file for the states of India. I found a really helpful blogpost on this [here](https://rforpublichealth.blogspot.in/2015/10/mapping-with-ggplot-create-nice.html). -->
 
 ```{r Map Preparation, message=FALSE, warning=FALSE}
 
@@ -429,7 +429,7 @@ med_by_state <- df %>%
 
 # load shape file
 states.shp <- rgdal::readOGR("India_Shape/IND_adm1.shp")
-
+gpclibPermit()
 states.shp.f <- fortify(states.shp, region = "ID_1")
 
 # create a temporary datafrome from names and ID's
@@ -535,7 +535,7 @@ p
 
 ```
 
-Crime has grown over time, particularly in northern India, and from there, it spread to middle states as well. Without population data, it's difficult to draw much more insight.
+Crime has grown over time, particularly in northern India, and from there, it appears to bve growing in nearby states as well. Without population data, it's difficult to draw much more insight.
 
 A quick look at the median number of crimes over that period tells a similar story, but crime is concentrated a little differently.
 ```{r map_median, fig.height=6, fig.width=6, message=FALSE, warning=FALSE}
@@ -580,7 +580,7 @@ Similar to the faceted bar charts (above) depicting total crime by state, Madhya
 
 Any time I see maps like the ones I just made, I am reminded of this comic from xkcd:
 
-[![](https://imgs.xkcd.com/comics/heatmap.png)](https://xkcd.com/1138/)
+[![(https://imgs.xkcd.com/comics/heatmap.png)](https://xkcd.com/1138/)
 
 Comparing growth rates in crime versus population would likely yield a much better assessment of crime rates, but I haven't found the right data (yet).
 
