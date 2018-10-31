@@ -10,7 +10,7 @@ tags:
   - India
   - R
   - crime
-featured: thomas-young-634092-unsplash.jpg
+featured: thomas-young-634092-unsplash_alt.jpg
 featuredalt: children of India
 featuredpath: img/main
 slug: crime-against-children-in-india
@@ -31,6 +31,7 @@ The dataset can be found [here](https://data.world/bhavnachawla/crime-rate-again
 ### Load the necessary libraries
 
 ```{r setup, message=FALSE, warning=FALSE, paged.print=FALSE}
+library(plotly)
 library(data.world)
 library(tidyverse)
 library(stringr)
@@ -39,8 +40,8 @@ library(maptools)
 library(RColorBrewer)
 library(gridExtra)
 library(ggthemes)
-library(plotly)
 library(rcartocolor)
+library(lubridate)
 ```
 
 
@@ -484,10 +485,28 @@ final.plt.med <- merge_tbl_med[order(merge_tbl_med$order),]
 
 ```
 
+```{r}
+# subset df for 2012 
+total_by_state_01_12 <- df %>%
+  filter(crime_head == "Total Crimes Against Children", year == c('2001','2012')) %>%
+  mutate(state_ut = reorder(state_ut, df)) %>%
+  select(state_ut, year, df)
+
+total_by_state_01_12 <- left_join(total_by_state_01_12, tem_df, by=c("state_ut" = "states.shp.NAME_1"))
+colnames(total_by_state_01_12) <- c("state","year","count","id")
+total_by_state_01_12 <- fix_states(total_by_state_01_12)
+total_by_state_01_12 <- total_by_state_01_12[!duplicated(total_by_state_01_12),]
+total_by_state_01_12 <- merge(total_by_state_01_12, growth.tbl, by="state", all.x=T)
+merge_tbl_01_12 <- merge(states.shp.f, total_by_state_01_12, by="id")
+final.plt.01_12 <- merge_tbl_01_12[order(merge_tbl_01_12$order),]
+
+
+```
+
 
 First, a comparison between the total number of crimes in 2001 and 2012. Note the grey state just below the center, Telangana. This state was formed from the northwest part of Andhra Pradesh in 2014, after this dataset was created. 
 
-```{r map_2001_2012, echo=TRUE, fig.width=9, message=FALSE, warning=FALSE}
+```{r map_2001_2012, echo=FALSE, fig.width=9, message=FALSE, warning=FALSE}
 
 map_theme <- theme(text = element_text(family = "Noto Sans"),
                    panel.background = element_blank(),
@@ -509,12 +528,14 @@ plot_2001 <- ggplot( width = 300, height = 500 ) +
 
 plot_2012 <- ggplot(width = 300, height = 500 ) +
   geom_polygon(data = final.plt, 
-               aes(x = long, y = lat, group = group, fill = count, text = paste0(state,": ",count,"\nCAGR: ",scales::percent(growth/100))), 
+               aes(x = long, y = lat, group = group, fill = count, 
+                   text = paste0(state,": ",count,"\nCAGR: ",scales::percent(growth/100))), 
                color = "white", size = 0.25) + 
   coord_map() +
   scale_fill_gradient(name="No. of\nCrimes", limits=c(0,12000), low="#ede5cf", high="#54203F")+
   labs(title="", x = "", y="") +
   map_theme
+
 
 p <- subplot(ggplotly(plot_2001, tooltip = c("text")), ggplotly(plot_2012, tooltip = c("text"))) %>%
   add_annotations(
@@ -530,12 +551,52 @@ p <- subplot(ggplotly(plot_2001, tooltip = c("text")), ggplotly(plot_2012, toolt
   ) %>% 
   layout(margin = list(t=80))
 
-p
+#p
 #htmlwidgets::saveWidget(as_widget(p, selfcontained = FAlSE), "graph.html")
 
 ```
 
-Crime has grown over time, particularly in northern India, and from there, it appears to bve growing in nearby states as well. Without population data, it's difficult to draw much more insight.
+```{r map_2001_2012_alt, message=FALSE, warning=FALSE}
+
+# Create dataframe aggregating all crime for all years
+total_all_yr <- df %>%
+  group_by(year) %>%
+  filter(crime_head == "Total Crimes Against Children") %>%
+  mutate(state_ut = reorder(state_ut, df)) %>%
+  select(state_ut, df)
+
+# Process and merge with map data
+total_by_state_all <- left_join(total_all_yr, tem_df, by=c("state_ut" = "states.shp.NAME_1"))
+colnames(total_by_state_all) <- c("year","state","count","id")
+total_by_state_all <- fix_states(total_by_state_all)
+total_by_state_all <- total_by_state_all[!duplicated(total_by_state_all),]
+total_by_state_all <- merge(total_by_state_all, growth.tbl, by="state", all.x=T)
+merge_tbl_01_12 <- merge(states.shp.f, total_by_state_all, by="id")
+final.plt.01_12 <- merge_tbl_01_12[order(merge_tbl_01_12$order),]
+final.plt.01_12$year <- parse_date_time(final.plt.01_12$year,"%Y")
+
+final.plt.01_12 %>%
+  filter(year(year) %in% c(2001,2012)) %>%
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, fill = count, group = group), color = "white", size = 0.25) + 
+  coord_map() +
+  scale_fill_gradient(name="No. of\nCrimes", limits=c(0,12000), low="#ede5cf", high="#54203F") +
+  facet_wrap(.~year(year)) +
+  map_theme +
+  theme(plot.title = element_text(hjust = 0.5),
+        strip.background = element_blank(),
+        strip.text = element_text(face="bold", size = 12),
+        legend.key.height = unit(12, "mm"), 
+        legend.key.width = unit(4, "mm"),
+        legend.box.just = "top") +
+  labs(x="",y="",
+       title = "Number of Crimes in India")
+
+
+```
+
+
+Crime has grown over time, particularly in northern India, and from there, it appears to be growing in nearby states as well. Without population data, it's difficult to draw much more insight.
 
 A quick look at the median number of crimes over that period tells a similar story, but crime is concentrated a little differently.
 ```{r map_median, fig.height=6, fig.width=6, message=FALSE, warning=FALSE}
