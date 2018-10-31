@@ -256,26 +256,15 @@ level_data %>%
           axis.ticks = element_blank(),
           panel.border = element_blank(),
           panel.grid = element_blank(), 
-          plot.title = element_text(hjust = 0, face = "bold")) +
+          plot.title = element_text(hjust = 0, face = "bold"),
+          legend.key.height = unit(18, "mm"), 
+          legend.key.width = unit(4, "mm"),
+          legend.box.just = "top") +
     scale_fill_gradient(name = "No. of\nCrimes",low="white", high="#54203F") +
     labs(x = "", y = "",
          title = "Number of Crimes by State - 2012",
          subtitle = "")
 
-
-# ggplotly(lplot, tooltip = c("x","y","z")) %>% 
-#   add_annotations(
-#     yref="paper", 
-#     xref="paper", 
-#     y=1.08, 
-#     x=0, 
-#     text="Number of Crimes by State - 2012",
-#     align = "left",
-#     valign = "bottom",
-#     showarrow=F, 
-#     font=list(size=20)
-#   ) %>% 
-#   layout(margin = list(t=50))
 
 
 ```
@@ -351,7 +340,7 @@ total_by_st_plot
 
 ```
 
-```{r eval=FALSE, include=FALSE}
+```{r echo=FALSE, eval=FALSE, include=FALSE}
 # ggplotly(total_by_st_plot, tooltip = c("text")) %>% 
 #   add_annotations(
 #     yref="paper", 
@@ -627,7 +616,10 @@ median_plot <- ggplot() +
   coord_map() +
   scale_fill_gradient(name="Median", limits=c(0,5200), low="#ede5cf", high="#54203F") +
   labs(title="Median Number of Crimes Against Children\n2001 - 2012", x = "", y = "") +
-  map_theme + theme(plot.title = element_text(hjust=0))
+  map_theme + theme(plot.title = element_text(hjust=0),
+                    legend.key.height = unit(18, "mm"), 
+                    legend.key.width = unit(4, "mm"),
+                    legend.box.just = "top")
 
 g <- tableGrob(median.table,rows=NULL, theme = myt) 
 

@@ -266,25 +266,15 @@ level_data %&gt;%
           axis.ticks = element_blank(),
           panel.border = element_blank(),
           panel.grid = element_blank(), 
-          plot.title = element_text(hjust = 0, face = &quot;bold&quot;)) +
+          plot.title = element_text(hjust = 0, face = &quot;bold&quot;),
+          legend.key.height = unit(18, &quot;mm&quot;), 
+          legend.key.width = unit(4, &quot;mm&quot;),
+          legend.box.just = &quot;top&quot;) +
     scale_fill_gradient(name = &quot;No. of\nCrimes&quot;,low=&quot;white&quot;, high=&quot;#54203F&quot;) +
     labs(x = &quot;&quot;, y = &quot;&quot;,
          title = &quot;Number of Crimes by State - 2012&quot;,
          subtitle = &quot;&quot;)</code></pre>
 <p><img src="/blog/2018-02-22-crime-against-children-in-india_files/figure-html/heatmap-1.png" width="480" /></p>
-<pre class="r"><code># ggplotly(lplot, tooltip = c(&quot;x&quot;,&quot;y&quot;,&quot;z&quot;)) %&gt;% 
-#   add_annotations(
-#     yref=&quot;paper&quot;, 
-#     xref=&quot;paper&quot;, 
-#     y=1.08, 
-#     x=0, 
-#     text=&quot;Number of Crimes by State - 2012&quot;,
-#     align = &quot;left&quot;,
-#     valign = &quot;bottom&quot;,
-#     showarrow=F, 
-#     font=list(size=20)
-#   ) %&gt;% 
-#   layout(margin = list(t=50))</code></pre>
 <p>As you can see, kidnappings and rape seem most significant across India. ‘Other’ crime is also significant – more research is necessary to learn what that comprises. It also appears that about half of the crimes are very low or 0 by count, which makes me suspect that data was unavaliable or that such crimes don’t often get reported or prosecuted.</p>
 </div>
 <div id="total-crime-by-state" class="section level4">
@@ -480,7 +470,10 @@ median_plot &lt;- ggplot() +
   coord_map() +
   scale_fill_gradient(name=&quot;Median&quot;, limits=c(0,5200), low=&quot;#ede5cf&quot;, high=&quot;#54203F&quot;) +
   labs(title=&quot;Median Number of Crimes Against Children\n2001 - 2012&quot;, x = &quot;&quot;, y = &quot;&quot;) +
-  map_theme + theme(plot.title = element_text(hjust=0))
+  map_theme + theme(plot.title = element_text(hjust=0),
+                    legend.key.height = unit(18, &quot;mm&quot;), 
+                    legend.key.width = unit(4, &quot;mm&quot;),
+                    legend.box.just = &quot;top&quot;)
 
 g &lt;- tableGrob(median.table,rows=NULL, theme = myt) 
 
