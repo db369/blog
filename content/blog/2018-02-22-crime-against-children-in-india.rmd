@@ -641,7 +641,7 @@ Similar to the faceted bar charts (above) depicting total crime by state, Madhya
 
 Any time I see maps like the ones I just made, I am reminded of this comic from xkcd:
 
-[![(https://imgs.xkcd.com/comics/heatmap.png)](https://xkcd.com/1138/)
+![(https://imgs.xkcd.com/comics/heatmap.png)](https://xkcd.com/1138/)
 
 Comparing growth rates in crime versus population would likely yield a much better assessment of crime rates, but I haven't found the right data (yet).
 
