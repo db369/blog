@@ -79,9 +79,9 @@ tables_df$tableName</code></pre>
 <pre class="r"><code># check for NA&#39;s
 any(is.na(sample_df))</code></pre>
 <pre><code>## [1] FALSE</code></pre>
-<p>Since there are no NA’s, I’ll move on to checking for duplicates and typos (or <em>duplicates caused by typos</em>) in the state and crime columns. Below, we identify 35 unique states (38 less 3 totals) and 12 unique crimes (also excluding total crime).</p>
-<pre class="r"><code># check for duplicates / typos states
-sample_df %&gt;%
+<p>Since there isn’t any missing values, I’ll move on to checking for duplicates and typos (or <em>duplicates caused by typos</em>) in the state and crime columns. Below, we identify 35 unique states (38 less 3 totals) and 12 unique crimes (also excluding total crime).</p>
+<p>Check for duplicate states:</p>
+<pre class="r"><code>sample_df %&gt;%
   arrange(state_ut) %&gt;%
   select(state_ut) %&gt;%
   unique()</code></pre>
@@ -99,8 +99,8 @@ sample_df %&gt;%
 ##  9 DAMAN &amp; DIU      
 ## 10 DELHI            
 ## # ... with 28 more rows</code></pre>
-<pre class="r"><code># check for duplicates / typos in crime type
-sample_df %&gt;%
+<p>Check for duplicate crime types:</p>
+<pre class="r"><code>sample_df %&gt;%
   arrange(crime_head) %&gt;%
   select(crime_head) %&gt;%
   unique()</code></pre>
@@ -392,21 +392,8 @@ merge_tbl_med &lt;- merge(states.shp.f, med_by_state, by=&quot;id&quot;, all.x=T
 final.plt &lt;- merge_tbl[order(merge_tbl$order),]
 final.plt.01 &lt;- merge_tbl_01[order(merge_tbl_01$order),]
 final.plt.med &lt;- merge_tbl_med[order(merge_tbl_med$order),]</code></pre>
-<pre class="r"><code># subset df for 2012 
-total_by_state_01_12 &lt;- df %&gt;%
-  filter(crime_head == &quot;Total Crimes Against Children&quot;, year == c(&#39;2001&#39;,&#39;2012&#39;)) %&gt;%
-  mutate(state_ut = reorder(state_ut, df)) %&gt;%
-  select(state_ut, year, df)
-
-total_by_state_01_12 &lt;- left_join(total_by_state_01_12, tem_df, by=c(&quot;state_ut&quot; = &quot;states.shp.NAME_1&quot;))</code></pre>
 <pre><code>## Warning: Column `state_ut`/`states.shp.NAME_1` joining factors with
 ## different levels, coercing to character vector</code></pre>
-<pre class="r"><code>colnames(total_by_state_01_12) &lt;- c(&quot;state&quot;,&quot;year&quot;,&quot;count&quot;,&quot;id&quot;)
-total_by_state_01_12 &lt;- fix_states(total_by_state_01_12)
-total_by_state_01_12 &lt;- total_by_state_01_12[!duplicated(total_by_state_01_12),]
-total_by_state_01_12 &lt;- merge(total_by_state_01_12, growth.tbl, by=&quot;state&quot;, all.x=T)
-merge_tbl_01_12 &lt;- merge(states.shp.f, total_by_state_01_12, by=&quot;id&quot;)
-final.plt.01_12 &lt;- merge_tbl_01_12[order(merge_tbl_01_12$order),]</code></pre>
 <p>First, a comparison between the total number of crimes in 2001 and 2012. Note the grey state just below the center, Telangana. This state was formed from the northwest part of Andhra Pradesh in 2014, after this dataset was created.</p>
 <pre class="r"><code># Create dataframe aggregating all crime for all years
 total_all_yr &lt;- df %&gt;%
