@@ -397,7 +397,7 @@ growth.tbl %>%
 
 ### Geographic Distribution of Total Crime
 
-<!-- Since I'm working with geographic data, I'd like to map it to visualize the relationship between crime and neighboring states. First, I have to prepare the dataframes for mapping and load the shape file for the states of India. I found a really helpful blogpost on this [here](https://rforpublichealth.blogspot.in/2015/10/mapping-with-ggplot-create-nice.html). -->
+Since I'm working with geographic data, I'd like to map it to visualize the relationship between crime and neighboring states. First, I have to prepare the dataframes for mapping and load the shape file for the states of India. I found a really helpful blogpost on this [here](https://rforpublichealth.blogspot.in/2015/10/mapping-with-ggplot-create-nice.html).
 
 ```{r Map_Preparation, message=FALSE, warning=FALSE, paged.print=FALSE}
 
@@ -494,7 +494,8 @@ final.plt.01_12 <- merge_tbl_01_12[order(merge_tbl_01_12$order),]
 
 
 ```
-First, a comparison between the total number of crimes in 2001 and 2012. Note the grey state just below the center, Telangana. This state was formed from the northwest part of Andhra Pradesh in 2014, after this dataset was created. 
+
+First, a comparison between the total number of crimes in 2001 and 2012. Note the white state (grey in the median map) just below the center, Telangana. This state was formed from the northwest part of Andhra Pradesh in 2014, after this dataset was created. 
 
 ```{r map_2001_2012, echo=FALSE, fig.width=9, message=FALSE, warning=FALSE}
 

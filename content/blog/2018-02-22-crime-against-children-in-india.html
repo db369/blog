@@ -312,7 +312,7 @@ growth.tbl %&gt;%
 </div>
 <div id="geographic-distribution-of-total-crime" class="section level3">
 <h3>Geographic Distribution of Total Crime</h3>
-<!-- Since I'm working with geographic data, I'd like to map it to visualize the relationship between crime and neighboring states. First, I have to prepare the dataframes for mapping and load the shape file for the states of India. I found a really helpful blogpost on this [here](https://rforpublichealth.blogspot.in/2015/10/mapping-with-ggplot-create-nice.html). -->
+<p>Since I’m working with geographic data, I’d like to map it to visualize the relationship between crime and neighboring states. First, I have to prepare the dataframes for mapping and load the shape file for the states of India. I found a really helpful blogpost on this <a href="https://rforpublichealth.blogspot.in/2015/10/mapping-with-ggplot-create-nice.html">here</a>.</p>
 <pre class="r"><code># subset df for 2001 
 total_by_state_01 &lt;- df %&gt;%
   filter(crime_head == &quot;Total Crimes Against Children&quot;, year == &#39;2001&#39;, df[year==&#39;2001&#39;] &gt;= 0) %&gt;%
@@ -394,7 +394,7 @@ final.plt.01 &lt;- merge_tbl_01[order(merge_tbl_01$order),]
 final.plt.med &lt;- merge_tbl_med[order(merge_tbl_med$order),]</code></pre>
 <pre><code>## Warning: Column `state_ut`/`states.shp.NAME_1` joining factors with
 ## different levels, coercing to character vector</code></pre>
-<p>First, a comparison between the total number of crimes in 2001 and 2012. Note the grey state just below the center, Telangana. This state was formed from the northwest part of Andhra Pradesh in 2014, after this dataset was created.</p>
+<p>First, a comparison between the total number of crimes in 2001 and 2012. Note the white state (grey in the median map) just below the center, Telangana. This state was formed from the northwest part of Andhra Pradesh in 2014, after this dataset was created.</p>
 <pre class="r"><code># Create dataframe aggregating all crime for all years
 total_all_yr &lt;- df %&gt;%
   group_by(year) %&gt;%
