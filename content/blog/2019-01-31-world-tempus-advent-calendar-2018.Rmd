@@ -196,6 +196,6 @@ sankeyNetwork(Links = links, Nodes = names, Source = "source",
               fontSize = 12, fontFamily = my_font, nodeWidth = 50, nodePadding	= 2)
 ```
 
-Success! I'm glad I pu the extra effort into learning how to create this chart. I definitely learned a lot!
+Success! I'm glad I put the extra effort into learning how to create this chart. I definitely learned a lot!
 
 Most of the winners were from France, the UK, and Belgium. We also see that there were three prizes from Louis Vuitton and two from each of Omega, Carl F Bucherer, and Bovet. And we see this in a very clear and pleasing format. 
