@@ -51,7 +51,7 @@ theme_set(theme_light() + my_theme)
 ```
 
 
-# Scraping the web
+## Scraping the web
 Below I use rvest's read_html function to load the url. The content is parsed using html_nodes that I identified using the SelectorGadget browser plugin. 
 
 ```{r}
@@ -65,7 +65,7 @@ df <- read_html(url) %>%
 ```
 
 
-# Data Cleaning and Munging
+## Data Cleaning and Munging
 Cleaning the data and pulling out features (like 'Country' and 'Brand') required brushing up on regular expressions. It took some trial and error, but it was very good practice.
 
 ```{r}
@@ -125,7 +125,9 @@ A quick view of the data to make sure it looks ok.
 knitr::kable(head(data,10), format = "html")
 ```
 
-## Which countries had the most contest winners? And what brands were most commonly offered as prizes?
+</br>
+
+### Which countries had the most contest winners? And what brands were most commonly offered as prizes?
 
 ```{r warning=FALSE}
  
@@ -135,12 +137,13 @@ data %>%
   ggplot(aes(Country, fill=Brand)) +
   geom_histogram(stat="count", show.legend = F) +
   coord_flip() +
-  labs(x="",y="Count")
+  labs(x="",y="Count") +
+  theme(axis.text = element_text(size = 14))
 
 ```
+</br>
 
-
-## What is the relationship between countries and brands?
+### What is the relationship between countries and brands?
 
 ```{r}
 
@@ -149,9 +152,9 @@ network_data <- data %>% select(Country, Brand)
 simpleNetwork(network_data, fontSize = 14, fontFamily = my_font, opacity = 0.8, linkDistance = 100, charge = -10, zoom = F)
 
 ```
+</br>
 
-
-## Can I build a cleaner visualization of this relationship? 
+### Can I build a cleaner visualization of this relationship? 
 I think a Sankey diagram would work well here, but I've never successfully built one before. 
 
 ```{r}
@@ -183,9 +186,9 @@ names <- data.frame(node = seq(0,n_distinct(data$Country)+n_distinct(data$Brand)
 ```
 
 
-
 ```{r}
 
+# create sankey chart using Network3D
 sankeyNetwork(Links = links, Nodes = names, Source = "source",
               Target = "target", Value = "value", NodeID = "name",
               colourScale = JS("d3.scaleOrdinal(d3.schemeCategory20);"),
