@@ -1,6 +1,6 @@
 ---
 title: Crime Against Children in India
-author: dave
+author: Dave Bloom
 date: "2018-02-22"
 categories:
   - EDA

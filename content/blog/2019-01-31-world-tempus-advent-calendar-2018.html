@@ -1,0 +1,393 @@
+---
+title: World Tempus Advent Calendar 2018
+author: Dave Bloom
+date: '2019-01-31'
+slug: world-tempus-advent-calendar-2018
+categories:
+  - R
+  - web scraping
+  - EDA
+  - network analysis
+tags:
+  - EDA
+description: ''
+featured: 'cover-avent_crop.png'
+featuredalt: ''
+featuredpath: 'img/main'
+linktitle: ''
+type: post
+---
+
+<script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
+<script src="/rmarkdown-libs/d3/d3.min.js"></script>
+<script src="/rmarkdown-libs/forceNetwork-binding/forceNetwork.js"></script>
+<script src="/rmarkdown-libs/sankey/sankey.js"></script>
+<script src="/rmarkdown-libs/sankeyNetwork-binding/sankeyNetwork.js"></script>
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>I love watches! For many, it is a dying (or dead) art. We have phones, computers, and smart watches. But, to me, mechanical watches are the perfect example of form and function. I find it amazing that a selection of gears and long spring can measure something like time with more than reasonable accuracy.</p>
+<p>As a result, I enjoy reading and watching horological content and entering the occasional contest. So when World Tempus had their annual contest, I entered whenever I saw something of interest. I didn’t win. And that’s ok.</p>
+<p>Sometime after Christmas, they announced the winners on their web site and I was immediately struck by how many winners were from France. I wondered what else I could glean from the small amount of data on that page so I set off to learn how to use rvest to scrape the data and regular expressions to clean and parse the data. I also had the idea to visualize how some features are related and finally learned how to construct a simple Sankey diagram.</p>
+</div>
+<div id="setup" class="section level1">
+<h1>Setup</h1>
+<p>First step is to load in some libraries and set up some aesthetics.</p>
+<pre class="r"><code>library(tidyverse)
+library(lubridate)
+library(rvest)
+library(networkD3)
+
+my_font &lt;- &quot;Comfortaa&quot;
+my_bkgd &lt;- &quot;#f5f5f2&quot;
+my_theme &lt;- theme(text = element_text(family = my_font, color = &quot;#22211d&quot;),
+                  rect = element_rect(fill = my_bkgd), 
+                  plot.background = element_rect(fill = my_bkgd, color = NA), 
+                  panel.background = element_rect(fill = my_bkgd, color = NA), 
+                  panel.border = element_blank(),
+                  legend.background = element_rect(fill = my_bkgd, color = NA),
+                  legend.key = element_rect(fill = my_bkgd),
+                  plot.caption = element_text(size = 6))
+
+theme_set(theme_light() + my_theme)</code></pre>
+</div>
+<div id="scraping-the-web" class="section level1">
+<h1>Scraping the web</h1>
+<p>Below I use rvest’s read_html function to load the url. The content is parsed using html_nodes that I identified using the SelectorGadget browser plugin.</p>
+<pre class="r"><code>url &lt;- &quot;http://en.worldtempus.com/article/events/arts-and-culture/advent-calendar-here-are-the-winners-26936.html?utm_source=Worldtempus+Concours+EN&amp;utm_campaign=d835784c43-EMAIL_CAMPAIGN_2018_avent_gagnant_generale_EN&amp;utm_medium=email&amp;utm_term=0_1b496ba624-d835784c43-119672677&quot;
+
+df &lt;- read_html(url) %&gt;%
+  html_nodes(&quot;.theContent , .theContent p , .theContent li&quot;) %&gt;%
+  html_text() </code></pre>
+</div>
+<div id="data-cleaning-and-munging" class="section level1">
+<h1>Data Cleaning and Munging</h1>
+<p>Cleaning the data and pulling out features (like ‘Country’ and ‘Brand’) required brushing up on regular expressions. It took some trial and error, but it was very good practice.</p>
+<pre class="r"><code>df &lt;- df[3:48] 
+
+col1 &lt;- character(length(df)/2)
+col2 &lt;- character(length(df)/2)
+x &lt;- 1
+for (i in 1:length(df)) {
+  if (i %% 2 == 0) {
+    col1[x] &lt;- df[i-1]
+    col2[x] &lt;- df[i]
+    x &lt;- x + 1
+  }
+}
+
+data &lt;- data.frame(col1,col2)
+
+# Create basic structure including the prize, winner&#39;s name, and date
+data &lt;- data %&gt;%
+  mutate(col3 = str_extract(col1, &quot;\\d{2}.\\d{2}.\\d{4}&quot;),
+         col1 = str_remove(col1, &quot;\\d{2}.\\d{2}.\\d{4}&quot;),
+         col1 = str_trim(str_remove(col1, &quot;–&quot;), side = &quot;both&quot;),
+         col3 = dmy(col3)) 
+
+# rename the columns to something useful
+colnames(data) &lt;- c(&quot;Prize&quot;,&quot;Winner&quot;,&quot;Date&quot;)
+
+# helper function that splits out brand name from prize description
+splitby &lt;- function(x) {
+  case_when(str_detect(x, &quot; from &quot;) ~ str_sub(x ,str_locate(x ,&quot; from &quot;)[2]+1), 
+            str_detect(x, &quot; by &quot;) ~ str_sub(x ,str_locate(x ,&quot; by &quot;)[2]+1))
+}
+
+# create features from from data 
+data &lt;- data %&gt;%
+  mutate(City = str_extract(Winner, &quot;from [a-zA-Z\\-\\é ]+ \\(&quot;),
+         City = str_remove(City, &quot;from &quot;),
+         City = str_remove(City, &quot; \\(&quot;),
+         Country = str_extract(Winner, &quot;\\([a-zA-Z\\-\\é ]+\\)&quot;),
+         Country = str_remove(Country, &quot;\\(&quot;),
+         Country = str_remove(Country, &quot;\\)&quot;),
+         Winner = str_remove(Winner, &quot; from [a-zA-Z\\-\\é ]+ \\([a-zA-Z\\-]+\\)&quot;),
+         Brand = sapply(Prize, splitby))
+
+# manual cleanup that general functions didn&#39;t catch
+data$Brand[3] = &quot;Louis Vuitton&quot;
+data$Brand[11] = &quot;Ralph Lauren&quot;</code></pre>
+<p>A quick view of the data to make sure it looks ok.</p>
+<pre class="r"><code>knitr::kable(head(data,10), format = &quot;html&quot;)</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+Prize
+</th>
+<th style="text-align:left;">
+Winner
+</th>
+<th style="text-align:left;">
+Date
+</th>
+<th style="text-align:left;">
+City
+</th>
+<th style="text-align:left;">
+Country
+</th>
+<th style="text-align:left;">
+Brand
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+A Bulgari “Thé Bleu” gift set from Bulgari
+</td>
+<td style="text-align:left;">
+Jacques Fontaine
+</td>
+<td style="text-align:left;">
+2018-12-01
+</td>
+<td style="text-align:left;">
+Boussu
+</td>
+<td style="text-align:left;">
+Belgium
+</td>
+<td style="text-align:left;">
+Bulgari
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A leather vanity kit and card holder offered by Bovet 1822
+</td>
+<td style="text-align:left;">
+Christine Billon
+</td>
+<td style="text-align:left;">
+2018-12-02
+</td>
+<td style="text-align:left;">
+Nancy
+</td>
+<td style="text-align:left;">
+France
+</td>
+<td style="text-align:left;">
+Bovet 1822
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A set with a matryoshka and a City Guide Moscow from Louis Vuitton offered by Hublot
+</td>
+<td style="text-align:left;">
+Dominique Albrecq
+</td>
+<td style="text-align:left;">
+2018-12-03
+</td>
+<td style="text-align:left;">
+Jemeppe-sur-Sambre
+</td>
+<td style="text-align:left;">
+Belgium
+</td>
+<td style="text-align:left;">
+Louis Vuitton
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A leather travel wallet from Ulysse Nardin
+</td>
+<td style="text-align:left;">
+Sandor Szucs
+</td>
+<td style="text-align:left;">
+2018-12-04
+</td>
+<td style="text-align:left;">
+Budapest
+</td>
+<td style="text-align:left;">
+Hungary
+</td>
+<td style="text-align:left;">
+Ulysse Nardin
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A travel notepad from Louis Vuitton
+</td>
+<td style="text-align:left;">
+Julien Klingenmeyer
+</td>
+<td style="text-align:left;">
+2018-12-05
+</td>
+<td style="text-align:left;">
+Montbeliard
+</td>
+<td style="text-align:left;">
+France
+</td>
+<td style="text-align:left;">
+Louis Vuitton
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+The book “From Seamaster to Seamaster : the first 70 years” from Omega
+</td>
+<td style="text-align:left;">
+Christelle Janny
+</td>
+<td style="text-align:left;">
+2018-12-06
+</td>
+<td style="text-align:left;">
+Benfeld
+</td>
+<td style="text-align:left;">
+France
+</td>
+<td style="text-align:left;">
+Omega
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A Ladies’ purse from Seiko
+</td>
+<td style="text-align:left;">
+Sandrine Coeurdevey
+</td>
+<td style="text-align:left;">
+2018-12-08
+</td>
+<td style="text-align:left;">
+Saint-Front-de-Pradoux
+</td>
+<td style="text-align:left;">
+France
+</td>
+<td style="text-align:left;">
+Seiko
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A leather folder with a notepad from Carl F. Bucherer
+</td>
+<td style="text-align:left;">
+Stephen Morgan
+</td>
+<td style="text-align:left;">
+2018-12-09
+</td>
+<td style="text-align:left;">
+Saint-Athan
+</td>
+<td style="text-align:left;">
+UK
+</td>
+<td style="text-align:left;">
+Carl F. Bucherer
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A desk clock from Montblanc
+</td>
+<td style="text-align:left;">
+Alessandro Corazza
+</td>
+<td style="text-align:left;">
+2018-12-10
+</td>
+<td style="text-align:left;">
+Moncton
+</td>
+<td style="text-align:left;">
+Canada
+</td>
+<td style="text-align:left;">
+Montblanc
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A memory game from Hermès
+</td>
+<td style="text-align:left;">
+Gilbert Vaissiere
+</td>
+<td style="text-align:left;">
+2018-12-11
+</td>
+<td style="text-align:left;">
+Athis-Mons
+</td>
+<td style="text-align:left;">
+France
+</td>
+<td style="text-align:left;">
+Hermès
+</td>
+</tr>
+</tbody>
+</table>
+<div id="which-countries-had-the-most-contest-winners-and-what-brands-were-most-commonly-offered-as-prizes" class="section level2">
+<h2>Which countries had the most contest winners? And what brands were most commonly offered as prizes?</h2>
+<pre class="r"><code>data %&gt;%
+  add_count(Country, sort =T) %&gt;%
+  mutate(Country = fct_reorder(Country,n)) %&gt;%
+  ggplot(aes(Country, fill=Brand)) +
+  geom_histogram(stat=&quot;count&quot;, show.legend = F) +
+  coord_flip() +
+  labs(x=&quot;&quot;,y=&quot;Count&quot;)</code></pre>
+<p><img src="/blog/2019-01-31-world-tempus-advent-calendar-2018_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+<div id="what-is-the-relationship-between-countries-and-brands" class="section level2">
+<h2>What is the relationship between countries and brands?</h2>
+<pre class="r"><code>network_data &lt;- data %&gt;% select(Country, Brand) 
+
+simpleNetwork(network_data, fontSize = 14, fontFamily = my_font, opacity = 0.8, linkDistance = 100, charge = -10, zoom = F)</code></pre>
+<div id="htmlwidget-1" style="width:672px;height:480px;" class="forceNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"links":{"source":[2,10,2,13,10,10,10,23,5,10,23,22,23,10,10,23,25,10,10,10,14,23,10],"target":[4,3,15,24,15,17,21,6,16,12,18,19,17,6,8,15,20,0,1,9,7,3,11],"value":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],"colour":["#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666"]},"nodes":{"name":["Ader Watches","Baume & Mercier","Belgium","Bovet 1822","Bulgari","Canada","Carl F. Bucherer","Chaumet","Favre-Leuba","Ferdinand Berthoud","France","Girard-Perregaux","Hermès","Hungary","Italia","Louis Vuitton","Montblanc","Omega","Ralph Lauren","Rebellion","Reuge","Seiko","Switzerland","UK","Ulysse Nardin","USA"],"group":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],"nodesize":[8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8]},"options":{"NodeID":"name","Group":"group","colourScale":"d3.scaleOrdinal(['#3182bd'])","fontSize":14,"fontFamily":"Comfortaa","clickTextSize":35,"linkDistance":100,"linkWidth":"'1.5px'.toString()","charge":-10,"opacity":0.8,"zoom":false,"legend":false,"arrows":false,"nodesize":true,"radiusCalculation":"d.nodesize","bounded":false,"opacityNoHover":1,"clickAction":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="can-i-build-a-cleaner-visualization-of-this-relationship" class="section level2">
+<h2>Can I build a cleaner visualization of this relationship?</h2>
+<p>I think a Sankey diagram would work well here, but I’ve never successfully built one before.</p>
+<pre class="r"><code># building dataframes to help construct the Sankey diagram
+nodes &lt;- data %&gt;%
+  count(Country, sort=T) %&gt;%
+  mutate(node = seq(0,n_distinct(Country)-1)) 
+
+targets &lt;- data %&gt;%
+  count(Brand, sort=T) %&gt;%
+  mutate(node = seq(n_distinct(data$Country),n_distinct(data$Country)+n_distinct(Brand)-1)) 
+
+links &lt;- data %&gt;%
+  select(Country, Brand) %&gt;%
+  left_join(nodes, by = &quot;Country&quot;) %&gt;%
+  left_join(targets, by = &quot;Brand&quot;) %&gt;%
+  select(source = node.x, target = node.y, value = n.y ) %&gt;%
+  arrange(source)
+
+names &lt;- data.frame(node = seq(0,n_distinct(data$Country)+n_distinct(data$Brand)-1)) %&gt;%
+  left_join(nodes, by = &quot;node&quot;) %&gt;%
+  select(node, Country) %&gt;%
+  left_join(targets, by = &quot;node&quot;) %&gt;%
+  mutate(name = if_else(is.na(Country),Brand,Country)) %&gt;%
+  select(node, name) </code></pre>
+<pre class="r"><code>sankeyNetwork(Links = links, Nodes = names, Source = &quot;source&quot;,
+              Target = &quot;target&quot;, Value = &quot;value&quot;, NodeID = &quot;name&quot;,
+              colourScale = JS(&quot;d3.scaleOrdinal(d3.schemeCategory20);&quot;),
+              fontSize = 12, fontFamily = my_font, nodeWidth = 50, nodePadding  = 2)</code></pre>
+<div id="htmlwidget-2" style="width:672px;height:480px;" class="sankeyNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-2">{"x":{"links":{"source":[0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,2,2,3,4,5,6,7],"target":[9,8,11,24,19,10,16,12,13,17,18,10,21,11,8,9,14,8,20,25,15,22,23],"value":[2,3,2,1,1,2,1,1,1,1,1,2,1,2,3,2,1,3,1,1,1,1,1]},"nodes":{"name":["France","UK","Belgium","Canada","Hungary","Italia","Switzerland","USA","Louis Vuitton","Bovet 1822","Carl F. Bucherer","Omega","Ader Watches","Baume & Mercier","Bulgari","Chaumet","Favre-Leuba","Ferdinand Berthoud","Girard-Perregaux","Hermès","Montblanc","Ralph Lauren","Rebellion","Reuge","Seiko","Ulysse Nardin"],"group":["France","UK","Belgium","Canada","Hungary","Italia","Switzerland","USA","Louis Vuitton","Bovet 1822","Carl F. Bucherer","Omega","Ader Watches","Baume & Mercier","Bulgari","Chaumet","Favre-Leuba","Ferdinand Berthoud","Girard-Perregaux","Hermès","Montblanc","Ralph Lauren","Rebellion","Reuge","Seiko","Ulysse Nardin"]},"options":{"NodeID":"name","NodeGroup":"name","LinkGroup":null,"colourScale":"d3.scaleOrdinal(d3.schemeCategory20);","fontSize":12,"fontFamily":"Comfortaa","nodeWidth":50,"nodePadding":2,"units":"","margin":{"top":null,"right":null,"bottom":null,"left":null},"iterations":32,"sinksRight":true}},"evals":[],"jsHooks":[]}</script>
+<p>Success! I’m glad I pu the extra effort into learning how to create this chart. I definitely learned a lot!</p>
+<p>Most of the winners were from France, the UK, and Belgium. We also see that there were three prizes from Louis Vuitton and two from each of Omega, Carl F Bucherer, and Bovet. And we see this in a very clear and pleasing format.</p>
+</div>
+</div>

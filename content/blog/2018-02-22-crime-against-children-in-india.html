@@ -1,6 +1,6 @@
 ---
 title: Crime Against Children in India
-author: dave
+author: Dave Bloom
 date: "2018-02-22"
 categories:
   - EDA
@@ -58,7 +58,7 @@ tables_df$tableName</code></pre>
 }</code></pre>
 <pre><code>## # A tibble: 494 x 14
 ##    state_ut crime_head `2001` `2002` `2003` `2004` `2005` `2006` `2007`
-##    &lt;chr&gt;    &lt;chr&gt;       &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;
+##    &lt;chr&gt;    &lt;chr&gt;       &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
 ##  1 ANDHRA … INFANTICI…      1      1      3      0      0      0      1
 ##  2 ARUNACH… INFANTICI…      0      0      0      0      0      0      0
 ##  3 JHARKHA… INFANTICI…      0      0      0      0      0      0      0
@@ -69,8 +69,8 @@ tables_df$tableName</code></pre>
 ##  8 TOTAL (… RAPE OF C…   2546   2642   3213   4001   4359   4996   5312
 ##  9 A &amp; N I… RAPE OF C…      0      0      2      0      6      6      3
 ## 10 CHANDIG… RAPE OF C…     14      5     16      0     23      7     11
-## # ... with 484 more rows, and 5 more variables: `2008` &lt;int&gt;,
-## #   `2009` &lt;int&gt;, `2010` &lt;int&gt;, `2011` &lt;int&gt;, `2012` &lt;int&gt;</code></pre>
+## # … with 484 more rows, and 5 more variables: `2008` &lt;dbl&gt;, `2009` &lt;dbl&gt;,
+## #   `2010` &lt;dbl&gt;, `2011` &lt;dbl&gt;, `2012` &lt;dbl&gt;</code></pre>
 </div>
 <div id="data-cleaning" class="section level3">
 <h3>Data Cleaning</h3>
@@ -98,7 +98,7 @@ any(is.na(sample_df))</code></pre>
 ##  8 D &amp; N HAVELI     
 ##  9 DAMAN &amp; DIU      
 ## 10 DELHI            
-## # ... with 28 more rows</code></pre>
+## # … with 28 more rows</code></pre>
 <p>Check for duplicate crime types:</p>
 <pre class="r"><code>sample_df %&gt;%
   arrange(crime_head) %&gt;%
@@ -146,7 +146,7 @@ df$state_ut &lt;- str_to_title(df$state_ut)</code></pre>
   arrange(desc(df)) </code></pre>
 <pre><code>## # A tibble: 13 x 4
 ##    state_ut   crime_head                            year    df
-##    &lt;chr&gt;      &lt;chr&gt;                                &lt;int&gt; &lt;int&gt;
+##    &lt;chr&gt;      &lt;chr&gt;                                &lt;int&gt; &lt;dbl&gt;
 ##  1 Tamil Nadu Total Crimes Against Children         2012  1105
 ##  2 Tamil Nadu Kidnapping And Abduction Of Children  2012   560
 ##  3 Tamil Nadu Rape Of Children                      2012   333

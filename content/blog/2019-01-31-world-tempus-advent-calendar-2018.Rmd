@@ -1,0 +1,197 @@
+---
+title: World Tempus Advent Calendar 2018
+author: Dave Bloom
+date: '2019-01-31'
+slug: world-tempus-advent-calendar-2018
+categories:
+  - R
+  - web scraping
+  - EDA
+  - network analysis
+tags:
+  - EDA
+description: ''
+featured: 'cover-avent_crop.png'
+featuredalt: ''
+featuredpath: 'img/main'
+linktitle: ''
+type: post
+---
+
+# Introduction
+
+I love watches! For many, it is a dying (or dead) art. We have phones, computers, and smart watches. But, to me, mechanical watches are the perfect example of form and function. I find it amazing that a selection of gears and long spring can measure something like time with more than reasonable accuracy. 
+
+As a result, I enjoy reading and watching horological content and entering the occasional contest. So when World Tempus had their annual contest, I entered whenever I saw something of interest. I didn't win. And that's ok.
+
+Sometime after Christmas, they announced the winners on their web site and I was immediately struck by how many winners were from France. I wondered what else I could glean from the small amount of data on that page so I set off to learn how to use rvest to scrape the data and regular expressions to clean and parse the data. I also had the idea to visualize how some features are related and finally learned how to construct a simple Sankey diagram. 
+
+# Setup
+First step is to load in some libraries and set up some aesthetics.
+
+```{r setup, message=FALSE, warning=FALSE, paged.print=FALSE}
+library(tidyverse)
+library(lubridate)
+library(rvest)
+library(networkD3)
+
+my_font <- "Comfortaa"
+my_bkgd <- "#f5f5f2"
+my_theme <- theme(text = element_text(family = my_font, color = "#22211d"),
+                  rect = element_rect(fill = my_bkgd), 
+                  plot.background = element_rect(fill = my_bkgd, color = NA), 
+                  panel.background = element_rect(fill = my_bkgd, color = NA), 
+                  panel.border = element_blank(),
+                  legend.background = element_rect(fill = my_bkgd, color = NA),
+                  legend.key = element_rect(fill = my_bkgd),
+                  plot.caption = element_text(size = 6))
+
+theme_set(theme_light() + my_theme)
+
+```
+
+
+# Scraping the web
+Below I use rvest's read_html function to load the url. The content is parsed using html_nodes that I identified using the SelectorGadget browser plugin. 
+
+```{r}
+
+url <- "http://en.worldtempus.com/article/events/arts-and-culture/advent-calendar-here-are-the-winners-26936.html?utm_source=Worldtempus+Concours+EN&utm_campaign=d835784c43-EMAIL_CAMPAIGN_2018_avent_gagnant_generale_EN&utm_medium=email&utm_term=0_1b496ba624-d835784c43-119672677"
+
+df <- read_html(url) %>%
+  html_nodes(".theContent , .theContent p , .theContent li") %>%
+  html_text() 
+
+```
+
+
+# Data Cleaning and Munging
+Cleaning the data and pulling out features (like 'Country' and 'Brand') required brushing up on regular expressions. It took some trial and error, but it was very good practice.
+
+```{r}
+df <- df[3:48] 
+
+col1 <- character(length(df)/2)
+col2 <- character(length(df)/2)
+x <- 1
+for (i in 1:length(df)) {
+  if (i %% 2 == 0) {
+    col1[x] <- df[i-1]
+    col2[x] <- df[i]
+    x <- x + 1
+  }
+}
+
+data <- data.frame(col1,col2)
+
+# Create basic structure including the prize, winner's name, and date
+data <- data %>%
+  mutate(col3 = str_extract(col1, "\\d{2}.\\d{2}.\\d{4}"),
+         col1 = str_remove(col1, "\\d{2}.\\d{2}.\\d{4}"),
+         col1 = str_trim(str_remove(col1, "–"), side = "both"),
+         col3 = dmy(col3)) 
+
+# rename the columns to something useful
+colnames(data) <- c("Prize","Winner","Date")
+
+# helper function that splits out brand name from prize description
+splitby <- function(x) {
+  case_when(str_detect(x, " from ") ~ str_sub(x ,str_locate(x ," from ")[2]+1), 
+            str_detect(x, " by ") ~ str_sub(x ,str_locate(x ," by ")[2]+1))
+}
+
+# create features from from data 
+data <- data %>%
+  mutate(City = str_extract(Winner, "from [a-zA-Z\\-\\é ]+ \\("),
+         City = str_remove(City, "from "),
+         City = str_remove(City, " \\("),
+         Country = str_extract(Winner, "\\([a-zA-Z\\-\\é ]+\\)"),
+         Country = str_remove(Country, "\\("),
+         Country = str_remove(Country, "\\)"),
+         Winner = str_remove(Winner, " from [a-zA-Z\\-\\é ]+ \\([a-zA-Z\\-]+\\)"),
+         Brand = sapply(Prize, splitby))
+
+# manual cleanup that general functions didn't catch
+data$Brand[3] = "Louis Vuitton"
+data$Brand[11] = "Ralph Lauren"
+
+```
+
+
+A quick view of the data to make sure it looks ok.
+
+```{r paged.print=TRUE}
+
+knitr::kable(head(data,10), format = "html")
+```
+
+## Which countries had the most contest winners? And what brands were most commonly offered as prizes?
+
+```{r warning=FALSE}
+ 
+data %>%
+  add_count(Country, sort =T) %>%
+  mutate(Country = fct_reorder(Country,n)) %>%
+  ggplot(aes(Country, fill=Brand)) +
+  geom_histogram(stat="count", show.legend = F) +
+  coord_flip() +
+  labs(x="",y="Count")
+
+```
+
+
+## What is the relationship between countries and brands?
+
+```{r}
+
+network_data <- data %>% select(Country, Brand) 
+
+simpleNetwork(network_data, fontSize = 14, fontFamily = my_font, opacity = 0.8, linkDistance = 100, charge = -10, zoom = F)
+
+```
+
+
+## Can I build a cleaner visualization of this relationship? 
+I think a Sankey diagram would work well here, but I've never successfully built one before. 
+
+```{r}
+
+# building dataframes to help construct the Sankey diagram
+nodes <- data %>%
+  count(Country, sort=T) %>%
+  mutate(node = seq(0,n_distinct(Country)-1)) 
+
+targets <- data %>%
+  count(Brand, sort=T) %>%
+  mutate(node = seq(n_distinct(data$Country),n_distinct(data$Country)+n_distinct(Brand)-1)) 
+
+links <- data %>%
+  select(Country, Brand) %>%
+  left_join(nodes, by = "Country") %>%
+  left_join(targets, by = "Brand") %>%
+  select(source = node.x, target = node.y, value = n.y ) %>%
+  arrange(source)
+
+names <- data.frame(node = seq(0,n_distinct(data$Country)+n_distinct(data$Brand)-1)) %>%
+  left_join(nodes, by = "node") %>%
+  select(node, Country) %>%
+  left_join(targets, by = "node") %>%
+  mutate(name = if_else(is.na(Country),Brand,Country)) %>%
+  select(node, name) 
+  
+  
+```
+
+
+
+```{r}
+
+sankeyNetwork(Links = links, Nodes = names, Source = "source",
+              Target = "target", Value = "value", NodeID = "name",
+              colourScale = JS("d3.scaleOrdinal(d3.schemeCategory20);"),
+              fontSize = 12, fontFamily = my_font, nodeWidth = 50, nodePadding	= 2)
+```
+
+Success! I'm glad I pu the extra effort into learning how to create this chart. I definitely learned a lot!
+
+Most of the winners were from France, the UK, and Belgium. We also see that there were three prizes from Louis Vuitton and two from each of Omega, Carl F Bucherer, and Bovet. And we see this in a very clear and pleasing format. 
