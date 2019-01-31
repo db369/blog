@@ -172,7 +172,8 @@ links <- data %>%
   select(Country, Brand) %>%
   left_join(nodes, by = "Country") %>%
   left_join(targets, by = "Brand") %>%
-  select(source = node.x, target = node.y, value = n.y ) %>%
+  select(source = node.x, target = node.y ) %>%
+  mutate(value = 1) %>%
   arrange(source)
 
 names <- data.frame(node = seq(0,n_distinct(data$Country)+n_distinct(data$Brand)-1)) %>%
