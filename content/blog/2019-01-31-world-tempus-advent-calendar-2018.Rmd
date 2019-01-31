@@ -71,6 +71,7 @@ Cleaning the data and pulling out features (like 'Country' and 'Brand') required
 ```{r}
 df <- df[3:48] 
 
+# split single column of data into two columns
 col1 <- character(length(df)/2)
 col2 <- character(length(df)/2)
 x <- 1
@@ -84,7 +85,7 @@ for (i in 1:length(df)) {
 
 data <- data.frame(col1,col2)
 
-# Create basic structure including the prize, winner's name, and date
+# create basic structure including the prize, winner's name, and date
 data <- data %>%
   mutate(col3 = str_extract(col1, "\\d{2}.\\d{2}.\\d{4}"),
          col1 = str_remove(col1, "\\d{2}.\\d{2}.\\d{4}"),
@@ -132,7 +133,7 @@ knitr::kable(head(data,10), format = "html")
 ```{r warning=FALSE}
  
 data %>%
-  add_count(Country, sort =T) %>%
+  add_count(Country, sort = T) %>%
   mutate(Country = fct_reorder(Country,n)) %>%
   ggplot(aes(Country, fill=Brand)) +
   geom_histogram(stat="count", show.legend = F) +
@@ -161,12 +162,12 @@ I think a Sankey diagram would work well here, but I've never successfully built
 
 # building dataframes to help construct the Sankey diagram
 nodes <- data %>%
-  count(Country, sort=T) %>%
-  mutate(node = seq(0,n_distinct(Country)-1)) 
+  count(Country, sort = T) %>%
+  mutate(node = seq(0, n_distinct(Country) - 1)) # this basically numbers each row 0 to 7
 
 targets <- data %>%
   count(Brand, sort=T) %>%
-  mutate(node = seq(n_distinct(data$Country),n_distinct(data$Country)+n_distinct(Brand)-1)) 
+  mutate(node = seq(n_distinct(data$Country), n_distinct(data$Country) + n_distinct(Brand) - 1)) # numbers rows 8 to 25
 
 links <- data %>%
   select(Country, Brand) %>%
@@ -176,7 +177,7 @@ links <- data %>%
   mutate(value = 1) %>%
   arrange(source)
 
-names <- data.frame(node = seq(0,n_distinct(data$Country)+n_distinct(data$Brand)-1)) %>%
+names <- data.frame(node = seq(0, n_distinct(data$Country) + n_distinct(data$Brand) - 1)) %>%
   left_join(nodes, by = "node") %>%
   select(node, Country) %>%
   left_join(targets, by = "node") %>%

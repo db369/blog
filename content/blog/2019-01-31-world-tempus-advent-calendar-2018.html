@@ -65,6 +65,7 @@ df &lt;- read_html(url) %&gt;%
 <p>Cleaning the data and pulling out features (like ‘Country’ and ‘Brand’) required brushing up on regular expressions. It took some trial and error, but it was very good practice.</p>
 <pre class="r"><code>df &lt;- df[3:48] 
 
+# split single column of data into two columns
 col1 &lt;- character(length(df)/2)
 col2 &lt;- character(length(df)/2)
 x &lt;- 1
@@ -78,7 +79,7 @@ for (i in 1:length(df)) {
 
 data &lt;- data.frame(col1,col2)
 
-# Create basic structure including the prize, winner&#39;s name, and date
+# create basic structure including the prize, winner&#39;s name, and date
 data &lt;- data %&gt;%
   mutate(col3 = str_extract(col1, &quot;\\d{2}.\\d{2}.\\d{4}&quot;),
          col1 = str_remove(col1, &quot;\\d{2}.\\d{2}.\\d{4}&quot;),
@@ -340,7 +341,7 @@ Hermès
 <div id="which-countries-had-the-most-contest-winners-and-what-brands-were-most-commonly-offered-as-prizes" class="section level3">
 <h3>Which countries had the most contest winners? And what brands were most commonly offered as prizes?</h3>
 <pre class="r"><code>data %&gt;%
-  add_count(Country, sort =T) %&gt;%
+  add_count(Country, sort = T) %&gt;%
   mutate(Country = fct_reorder(Country,n)) %&gt;%
   ggplot(aes(Country, fill=Brand)) +
   geom_histogram(stat=&quot;count&quot;, show.legend = F) +
@@ -364,12 +365,12 @@ simpleNetwork(network_data, fontSize = 14, fontFamily = my_font, opacity = 0.8, 
 <p>I think a Sankey diagram would work well here, but I’ve never successfully built one before.</p>
 <pre class="r"><code># building dataframes to help construct the Sankey diagram
 nodes &lt;- data %&gt;%
-  count(Country, sort=T) %&gt;%
-  mutate(node = seq(0,n_distinct(Country)-1)) 
+  count(Country, sort = T) %&gt;%
+  mutate(node = seq(0, n_distinct(Country) - 1)) # this basically numbers each row 0 to 7
 
 targets &lt;- data %&gt;%
   count(Brand, sort=T) %&gt;%
-  mutate(node = seq(n_distinct(data$Country),n_distinct(data$Country)+n_distinct(Brand)-1)) 
+  mutate(node = seq(n_distinct(data$Country), n_distinct(data$Country) + n_distinct(Brand) - 1)) # numbers rows 8 to 25
 
 links &lt;- data %&gt;%
   select(Country, Brand) %&gt;%
@@ -379,7 +380,7 @@ links &lt;- data %&gt;%
   mutate(value = 1) %&gt;%
   arrange(source)
 
-names &lt;- data.frame(node = seq(0,n_distinct(data$Country)+n_distinct(data$Brand)-1)) %&gt;%
+names &lt;- data.frame(node = seq(0, n_distinct(data$Country) + n_distinct(data$Brand) - 1)) %&gt;%
   left_join(nodes, by = &quot;node&quot;) %&gt;%
   select(node, Country) %&gt;%
   left_join(targets, by = &quot;node&quot;) %&gt;%
