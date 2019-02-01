@@ -140,10 +140,13 @@ data %>%
   add_count(Country, sort = T) %>%
   mutate(Country = fct_reorder(Country,n)) %>%
   ggplot(aes(Country, fill=Brand)) +
-  geom_histogram(stat="count", show.legend = F) +
+  geom_histogram(stat="count") +
   coord_flip() +
-  labs(x="",y="Count") +
-  theme(axis.text = element_text(size = 14))
+  labs(x="",y="") +
+  theme(axis.text = element_text(size = 14),
+        legend.position = c(0.75,0.3),
+        legend.text = element_text(size=6)) +
+  guides(fill = guide_legend(ncol = 2, keywidth = 1, keyheight = 1))
 
 ```
 </br>
