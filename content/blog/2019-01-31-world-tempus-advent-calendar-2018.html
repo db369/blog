@@ -29,9 +29,11 @@ type: post
 <h1>Introduction</h1>
 <p>I love watches! For many, it is a dying (or dead) art. We have phones, computers, and smart watches. But, to me, mechanical watches are the perfect example of form and function. I find it amazing that a selection of gears and a long spring can measure something like time with very reasonable accuracy.</p>
 <p>As a result, I enjoy reading and watching horological content and entering the occasional contest. So when World Tempus had their annual contest, I entered whenever I saw something of interest. Sometime after Christmas, they announced the winners on their <a href="http://en.worldtempus.com/article/events/arts-and-culture/advent-calendar-here-are-the-winners-26936.html?utm_source=Worldtempus+Concours+EN&amp;utm_campaign=d835784c43-EMAIL_CAMPAIGN_2018_avent_gagnant_generale_EN&amp;utm_medium=email&amp;utm_term=0_1b496ba624-d835784c43-119672677">web site</a> and I was immediately struck by how many winners were from France. I wondered what else I could glean from the small amount of data on that page so I set off to learn how to use rvest to scrape the data and regular expressions to clean and parse the data. I also had the idea to visualize how some features are related and finally learned how to construct a simple Sankey diagram.
-</br></br>
-# Setup
-First step is to load in some libraries and set up some aesthetics.</p>
+</br></br></p>
+</div>
+<div id="setup" class="section level1">
+<h1>Setup</h1>
+<p>First step is to load in some libraries and set up some aesthetics.</p>
 <pre class="r"><code>library(tidyverse)
 library(lubridate)
 library(rvest)
@@ -49,9 +51,10 @@ my_theme &lt;- theme(text = element_text(family = my_font, color = &quot;#22211d
                   plot.caption = element_text(size = 6))
 
 theme_set(theme_light() + my_theme)</code></pre>
-<p></br></br>
-## Scraping the web
-Below I use rvest’s read_html function to load the url. The content is parsed using html_nodes that I identified using the SelectorGadget browser plugin.</p>
+<p></br></p>
+<div id="scraping-the-web" class="section level2">
+<h2>Scraping the web</h2>
+<p>Below I use rvest’s read_html function to load the url. The content is parsed using html_nodes that I identified using the SelectorGadget browser plugin.</p>
 <pre class="r"><code>url &lt;- &quot;http://en.worldtempus.com/article/events/arts-and-culture/advent-calendar-here-are-the-winners-26936.html?utm_source=Worldtempus+Concours+EN&amp;utm_campaign=d835784c43-EMAIL_CAMPAIGN_2018_avent_gagnant_generale_EN&amp;utm_medium=email&amp;utm_term=0_1b496ba624-d835784c43-119672677&quot;
 
 df &lt;- read_html(url) %&gt;%
@@ -126,6 +129,7 @@ Julien Klingenmeyer from Montbeliard (France)
 </table>
 <p>Note that df is a single column with date and prize in one row and the winner and location in an alternating row. I’ll deal with that in the next step.
 </br></br></p>
+</div>
 <div id="data-cleaning-and-munging" class="section level2">
 <h2>Data Cleaning and Munging</h2>
 <p>Cleaning the data and pulling out features (like ‘Country’ and ‘Brand’) required brushing up on regular expressions. It took some trial and error, but it was very good practice.</p>
