@@ -149,6 +149,7 @@ data %>%
   guides(fill = guide_legend(ncol = 2, keywidth = 1, keyheight = 1))
 
 ```
+
 From the histogram, we see that nearly half of the winners are from France and about 20% are from the UK. However, with 18 brands, it's very difficult to answer my second question above. I'm still curious about how the brands are distributed among countries so I'll experiment with network analysis in the next section.
 </br></br>
 
