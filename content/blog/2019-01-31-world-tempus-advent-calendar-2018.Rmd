@@ -208,4 +208,4 @@ sankeyNetwork(Links = links, Nodes = names, Source = "source",
 
 I'm glad I put the extra effort into learning how to create this chart. I definitely learned a lot!
 
-I think the simple Sankey diagram above does a very nice job of clearly visualizing the distribution of winners by country and brand. We clearly see that most of the winners were from France, the UK, and Belgium. We also see that products from Louis Vuitton, Omega, Carl F Bucherer, and Bovet were among the more popular brands offered as prizes. Also, winners of the Bovet 1822 and Omega prizes were distributed equally among France and the UK.
+I think the simple Sankey diagram above does a very nice job of clearly visualizing the distribution of winners by country and brand. We clearly see that most of the winners were from France, the UK, and Belgium. We also see that products from Louis Vuitton, Omega, Carl F Bucherer, and Bovet were among the more popular brands offered as prizes. Additionally, brands that were offered more than once were distributed equally among France and the UK, with the exception of Louis Vuitton, which was distributed among France, the UK, and Belgium.
