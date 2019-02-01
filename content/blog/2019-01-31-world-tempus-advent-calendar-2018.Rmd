@@ -23,7 +23,7 @@ type: post
 I love watches! For many, it is a dying (or dead) art. We have phones, computers, and smart watches. But, to me, mechanical watches are the perfect example of form and function. I find it amazing that a selection of gears and a long spring can measure something like time with very reasonable accuracy. 
 
 As a result, I enjoy reading and watching horological content and entering the occasional contest. So when World Tempus had their annual contest, I entered whenever I saw something of interest. Sometime after Christmas, they announced the winners on their [web site](http://en.worldtempus.com/article/events/arts-and-culture/advent-calendar-here-are-the-winners-26936.html?utm_source=Worldtempus+Concours+EN&utm_campaign=d835784c43-EMAIL_CAMPAIGN_2018_avent_gagnant_generale_EN&utm_medium=email&utm_term=0_1b496ba624-d835784c43-119672677) and I was immediately struck by how many winners were from France. I wondered what else I could glean from the small amount of data on that page so I set off to learn how to use rvest to scrape the data and regular expressions to clean and parse the data. I also had the idea to visualize how some features are related and finally learned how to construct a simple Sankey diagram. 
-
+</br></br>
 # Setup
 First step is to load in some libraries and set up some aesthetics.
 
@@ -48,7 +48,7 @@ theme_set(theme_light() + my_theme)
 
 ```
 
-
+</br></br>
 ## Scraping the web
 Below I use rvest's read_html function to load the url. The content is parsed using html_nodes that I identified using the SelectorGadget browser plugin. 
 
@@ -68,7 +68,7 @@ knitr::kable(head(df,10), format = "html")
 
 ```
 Note that df is a single column with date and prize in one row and the winner and location in an alternating row. I'll deal with that in the next step.
-</br>
+</br></br>
 
 ## Data Cleaning and Munging
 Cleaning the data and pulling out features (like 'Country' and 'Brand') required brushing up on regular expressions. It took some trial and error, but it was very good practice.
@@ -130,7 +130,7 @@ A quick view of the data to make sure it looks ok.
 knitr::kable(head(data,10), format = "html")
 ```
 
-</br>
+</br></br>
 
 ### Which countries had the most contest winners? And what brands were most commonly offered as prizes?
 
@@ -149,7 +149,8 @@ data %>%
   guides(fill = guide_legend(ncol = 2, keywidth = 1, keyheight = 1))
 
 ```
-</br>
+From the histogram, we see that nearly half of the winners are from France and about 20% are from the UK. However, with 18 brands, it's very difficult to answer my second question above. I'm still curious about how the brands are distributed among countries so I'll experiment with network analysis in the next section.
+</br></br>
 
 ### What is the relationship between countries and brands?
 
@@ -160,7 +161,8 @@ network_data <- data %>% select(Country, Brand)
 simpleNetwork(network_data, fontSize = 14, fontFamily = my_font, opacity = 0.8, linkDistance = 100, charge = -10, zoom = F)
 
 ```
-</br>
+This diagram certainly helps identify conenctions between counrties and brands, but it's not ideal. 
+</br></br>
 
 ### Can I build a cleaner visualization of this relationship? 
 I think a Sankey diagram would work well here, but I've never successfully built one before. 
@@ -204,6 +206,6 @@ sankeyNetwork(Links = links, Nodes = names, Source = "source",
               fontSize = 12, fontFamily = my_font, nodeWidth = 50, nodePadding	= 2)
 ```
 
-Success! I'm glad I put the extra effort into learning how to create this chart. I definitely learned a lot!
+I'm glad I put the extra effort into learning how to create this chart. I definitely learned a lot!
 
-Most of the winners were from France, the UK, and Belgium. We also see that there were three prizes from Louis Vuitton and two from each of Omega, Carl F Bucherer, and Bovet. And we see this in a very clear and pleasing format. 
+I think the simple Sankey diagram above does a very nice job of clearly visualizing the distribution of winners by country and brand. We clearly see that most of the winners were from France, the UK, and Belgium. We also see that products from Louis Vuitton, Omega, Carl F Bucherer, and Bovet were among the more popular brands offered as prizes. Also, winners of the Bovet 1822 and Omega prizes were distributed equally among France and the UK.
