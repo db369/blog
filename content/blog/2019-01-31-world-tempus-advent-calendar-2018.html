@@ -28,8 +28,7 @@ type: post
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
 <p>I love watches! For many, it is a dying (or dead) art. We have phones, computers, and smart watches. But, to me, mechanical watches are the perfect example of form and function. I find it amazing that a selection of gears and a long spring can measure something like time with very reasonable accuracy.</p>
-<p>As a result, I enjoy reading and watching horological content and entering the occasional contest. So when World Tempus had their annual contest, I entered whenever I saw something of interest. I didn’t win. And that’s ok.</p>
-<p>Sometime after Christmas, they announced the winners on their web site and I was immediately struck by how many winners were from France. I wondered what else I could glean from the small amount of data on that page so I set off to learn how to use rvest to scrape the data and regular expressions to clean and parse the data. I also had the idea to visualize how some features are related and finally learned how to construct a simple Sankey diagram.</p>
+<p>As a result, I enjoy reading and watching horological content and entering the occasional contest. So when World Tempus had their annual contest, I entered whenever I saw something of interest. Sometime after Christmas, they announced the winners on their <a href="http://en.worldtempus.com/article/events/arts-and-culture/advent-calendar-here-are-the-winners-26936.html?utm_source=Worldtempus+Concours+EN&amp;utm_campaign=d835784c43-EMAIL_CAMPAIGN_2018_avent_gagnant_generale_EN&amp;utm_medium=email&amp;utm_term=0_1b496ba624-d835784c43-119672677">web site</a> and I was immediately struck by how many winners were from France. I wondered what else I could glean from the small amount of data on that page so I set off to learn how to use rvest to scrape the data and regular expressions to clean and parse the data. I also had the idea to visualize how some features are related and finally learned how to construct a simple Sankey diagram.</p>
 </div>
 <div id="setup" class="section level1">
 <h1>Setup</h1>
@@ -58,14 +57,81 @@ theme_set(theme_light() + my_theme)</code></pre>
 
 df &lt;- read_html(url) %&gt;%
   html_nodes(&quot;.theContent , .theContent p , .theContent li&quot;) %&gt;%
-  html_text() </code></pre>
+  html_text() 
+
+# drop first two rows
+df &lt;- df[3:48] 
+
+# view the top 10 rows
+knitr::kable(head(df,10), format = &quot;html&quot;)</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+01.12.2018 – A Bulgari “Thé Bleu” gift set from Bulgari
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Jacques Fontaine from Boussu (Belgium)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+02.12.2018 – A leather vanity kit and card holder offered by Bovet 1822
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Christine Billon from Nancy (France)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+03.12.2018 – A set with a matryoshka and a City Guide Moscow from Louis Vuitton offered by Hublot
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Dominique Albrecq from Jemeppe-sur-Sambre (Belgium)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+04.12.2018 – A leather travel wallet from Ulysse Nardin
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Sandor Szucs from Budapest (Hungary)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+05.12.2018 – A travel notepad from Louis Vuitton
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Julien Klingenmeyer from Montbeliard (France)
+</td>
+</tr>
+</tbody>
+</table>
+<p>Note that df is a single column with date and prize in one row and the winner and location in an alternating row. I’ll deal with that in the next step.
+</br></p>
 </div>
 <div id="data-cleaning-and-munging" class="section level2">
 <h2>Data Cleaning and Munging</h2>
 <p>Cleaning the data and pulling out features (like ‘Country’ and ‘Brand’) required brushing up on regular expressions. It took some trial and error, but it was very good practice.</p>
-<pre class="r"><code>df &lt;- df[3:48] 
-
-# split single column of data into two columns
+<pre class="r"><code># split single column of data into two columns
 col1 &lt;- character(length(df)/2)
 col2 &lt;- character(length(df)/2)
 x &lt;- 1
