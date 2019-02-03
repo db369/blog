@@ -153,7 +153,10 @@ From the histogram, we see that nearly half of the winners are from France and a
 
 network_data <- data %>% select(Country, Brand) 
 
-simpleNetwork(network_data, fontSize = 14, fontFamily = my_font, opacity = 0.8, linkDistance = 100, charge = -10, zoom = F)
+simpleNetwork(network_data, 
+              fontSize = 14, fontFamily = my_font, 
+              opacity = 0.8, linkDistance = 100, 
+              charge = -10, zoom = F)
 
 ```
 This diagram certainly helps identify connections between countries and brands, but it's not ideal. 
@@ -187,14 +190,8 @@ names <- data.frame(node = seq(0, n_distinct(data$Country) + n_distinct(data$Bra
   left_join(targets, by = "node") %>%
   mutate(name = if_else(is.na(Country),Brand,Country)) %>%
   select(node, name) 
-  
-  
-```
 
-
-```{r}
-
-# create sankey chart using Network3D
+# create sankey chart using NetworkD3
 sankeyNetwork(Links = links, Nodes = names, Source = "source",
               Target = "target", Value = "value", NodeID = "name",
               colourScale = JS("d3.scaleOrdinal(d3.schemeCategory20);"),
