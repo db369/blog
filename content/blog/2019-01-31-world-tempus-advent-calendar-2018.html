@@ -165,13 +165,9 @@ splitby &lt;- function(x) {
 
 # create features from from data 
 data &lt;- data %&gt;%
-  mutate(City = str_extract(Winner, &quot;from [a-zA-Z\\-\\é ]+ \\(&quot;),
-         City = str_remove(City, &quot;from &quot;),
-         City = str_remove(City, &quot; \\(&quot;),
-         Country = str_extract(Winner, &quot;\\([a-zA-Z\\-\\é ]+\\)&quot;),
-         Country = str_remove(Country, &quot;\\(&quot;),
-         Country = str_remove(Country, &quot;\\)&quot;),
-         Winner = str_remove(Winner, &quot; from [a-zA-Z\\-\\é ]+ \\([a-zA-Z\\-]+\\)&quot;),
+  mutate(City = str_match(Winner, &quot;from ([a-zA-Z\\-\\é]+)&quot;)[,2],
+         Country = str_match(Winner, &quot;\\(([a-zA-Z\\-\\é ]+)\\)&quot;)[,2],
+         Winner = str_match(Winner, &quot;(.*) from&quot;)[,2],
          Brand = sapply(Prize, splitby))
 
 # manual cleanup that general functions didn&#39;t catch

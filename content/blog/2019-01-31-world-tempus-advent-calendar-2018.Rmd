@@ -108,13 +108,9 @@ splitby <- function(x) {
 
 # create features from from data 
 data <- data %>%
-  mutate(City = str_extract(Winner, "from [a-zA-Z\\-\\é ]+ \\("),
-         City = str_remove(City, "from "),
-         City = str_remove(City, " \\("),
-         Country = str_extract(Winner, "\\([a-zA-Z\\-\\é ]+\\)"),
-         Country = str_remove(Country, "\\("),
-         Country = str_remove(Country, "\\)"),
-         Winner = str_remove(Winner, " from [a-zA-Z\\-\\é ]+ \\([a-zA-Z\\-]+\\)"),
+  mutate(City = str_match(Winner, "from ([a-zA-Z\\-\\é]+)")[,2],
+         Country = str_match(Winner, "\\(([a-zA-Z\\-\\é ]+)\\)")[,2],
+         Winner = str_match(Winner, "(.*) from")[,2],
          Brand = sapply(Prize, splitby))
 
 # manual cleanup that general functions didn't catch
