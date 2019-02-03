@@ -159,7 +159,7 @@ network_data <- data %>% select(Country, Brand)
 simpleNetwork(network_data, fontSize = 14, fontFamily = my_font, opacity = 0.8, linkDistance = 100, charge = -10, zoom = F)
 
 ```
-This diagram certainly helps identify conenctions between counrties and brands, but it's not ideal. 
+This diagram certainly helps identify connections between counrties and brands, but it's not ideal. 
 </br></br>
 
 ### Can I build a cleaner visualization of this relationship? 
