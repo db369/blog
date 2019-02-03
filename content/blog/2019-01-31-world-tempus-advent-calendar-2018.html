@@ -148,14 +148,11 @@ for (i in 1:length(df)) {
 data &lt;- data.frame(col1,col2)
 
 # create basic structure including the prize, winner&#39;s name, and date
-data &lt;- data %&gt;%
-  mutate(col3 = str_extract(col1, &quot;\\d{2}.\\d{2}.\\d{4}&quot;),
-         col1 = str_remove(col1, &quot;\\d{2}.\\d{2}.\\d{4}&quot;),
-         col1 = str_trim(str_remove(col1, &quot;–&quot;), side = &quot;both&quot;),
-         col3 = dmy(col3)) 
-
-# rename the columns to something useful
-colnames(data) &lt;- c(&quot;Prize&quot;,&quot;Winner&quot;,&quot;Date&quot;)
+data &lt;- data %&gt;% 
+  separate(col1, c(&quot;Date&quot;, &quot;Prize&quot;), sep = &quot;–&quot;, extra = &quot;merge&quot;) %&gt;%
+  mutate(Prize = str_trim(Prize),
+         Date = dmy(Date)) %&gt;%
+  rename(Winner = col2)
 
 # helper function that splits out brand name from prize description
 splitby &lt;- function(x) {
@@ -179,13 +176,13 @@ data$Brand[11] = &quot;Ralph Lauren&quot;</code></pre>
 <thead>
 <tr>
 <th style="text-align:left;">
+Date
+</th>
+<th style="text-align:left;">
 Prize
 </th>
 <th style="text-align:left;">
 Winner
-</th>
-<th style="text-align:left;">
-Date
 </th>
 <th style="text-align:left;">
 City
@@ -201,13 +198,13 @@ Brand
 <tbody>
 <tr>
 <td style="text-align:left;">
+2018-12-01
+</td>
+<td style="text-align:left;">
 A Bulgari “Thé Bleu” gift set from Bulgari
 </td>
 <td style="text-align:left;">
 Jacques Fontaine
-</td>
-<td style="text-align:left;">
-2018-12-01
 </td>
 <td style="text-align:left;">
 Boussu
@@ -221,13 +218,13 @@ Bulgari
 </tr>
 <tr>
 <td style="text-align:left;">
+2018-12-02
+</td>
+<td style="text-align:left;">
 A leather vanity kit and card holder offered by Bovet 1822
 </td>
 <td style="text-align:left;">
 Christine Billon
-</td>
-<td style="text-align:left;">
-2018-12-02
 </td>
 <td style="text-align:left;">
 Nancy
@@ -241,13 +238,13 @@ Bovet 1822
 </tr>
 <tr>
 <td style="text-align:left;">
+2018-12-03
+</td>
+<td style="text-align:left;">
 A set with a matryoshka and a City Guide Moscow from Louis Vuitton offered by Hublot
 </td>
 <td style="text-align:left;">
 Dominique Albrecq
-</td>
-<td style="text-align:left;">
-2018-12-03
 </td>
 <td style="text-align:left;">
 Jemeppe-sur-Sambre
@@ -261,13 +258,13 @@ Louis Vuitton
 </tr>
 <tr>
 <td style="text-align:left;">
+2018-12-04
+</td>
+<td style="text-align:left;">
 A leather travel wallet from Ulysse Nardin
 </td>
 <td style="text-align:left;">
 Sandor Szucs
-</td>
-<td style="text-align:left;">
-2018-12-04
 </td>
 <td style="text-align:left;">
 Budapest
@@ -281,13 +278,13 @@ Ulysse Nardin
 </tr>
 <tr>
 <td style="text-align:left;">
+2018-12-05
+</td>
+<td style="text-align:left;">
 A travel notepad from Louis Vuitton
 </td>
 <td style="text-align:left;">
 Julien Klingenmeyer
-</td>
-<td style="text-align:left;">
-2018-12-05
 </td>
 <td style="text-align:left;">
 Montbeliard
@@ -301,13 +298,13 @@ Louis Vuitton
 </tr>
 <tr>
 <td style="text-align:left;">
+2018-12-06
+</td>
+<td style="text-align:left;">
 The book “From Seamaster to Seamaster : the first 70 years” from Omega
 </td>
 <td style="text-align:left;">
 Christelle Janny
-</td>
-<td style="text-align:left;">
-2018-12-06
 </td>
 <td style="text-align:left;">
 Benfeld
@@ -321,13 +318,13 @@ Omega
 </tr>
 <tr>
 <td style="text-align:left;">
+2018-12-08
+</td>
+<td style="text-align:left;">
 A Ladies’ purse from Seiko
 </td>
 <td style="text-align:left;">
 Sandrine Coeurdevey
-</td>
-<td style="text-align:left;">
-2018-12-08
 </td>
 <td style="text-align:left;">
 Saint-Front-de-Pradoux
@@ -341,13 +338,13 @@ Seiko
 </tr>
 <tr>
 <td style="text-align:left;">
+2018-12-09
+</td>
+<td style="text-align:left;">
 A leather folder with a notepad from Carl F. Bucherer
 </td>
 <td style="text-align:left;">
 Stephen Morgan
-</td>
-<td style="text-align:left;">
-2018-12-09
 </td>
 <td style="text-align:left;">
 Saint-Athan
@@ -361,13 +358,13 @@ Carl F. Bucherer
 </tr>
 <tr>
 <td style="text-align:left;">
+2018-12-10
+</td>
+<td style="text-align:left;">
 A desk clock from Montblanc
 </td>
 <td style="text-align:left;">
 Alessandro Corazza
-</td>
-<td style="text-align:left;">
-2018-12-10
 </td>
 <td style="text-align:left;">
 Moncton
@@ -381,13 +378,13 @@ Montblanc
 </tr>
 <tr>
 <td style="text-align:left;">
+2018-12-11
+</td>
+<td style="text-align:left;">
 A memory game from Hermès
 </td>
 <td style="text-align:left;">
 Gilbert Vaissiere
-</td>
-<td style="text-align:left;">
-2018-12-11
 </td>
 <td style="text-align:left;">
 Athis-Mons

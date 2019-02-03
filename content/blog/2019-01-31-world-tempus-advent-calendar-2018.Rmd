@@ -91,14 +91,11 @@ for (i in 1:length(df)) {
 data <- data.frame(col1,col2)
 
 # create basic structure including the prize, winner's name, and date
-data <- data %>%
-  mutate(col3 = str_extract(col1, "\\d{2}.\\d{2}.\\d{4}"),
-         col1 = str_remove(col1, "\\d{2}.\\d{2}.\\d{4}"),
-         col1 = str_trim(str_remove(col1, "–"), side = "both"),
-         col3 = dmy(col3)) 
-
-# rename the columns to something useful
-colnames(data) <- c("Prize","Winner","Date")
+data <- data %>% 
+  separate(col1, c("Date", "Prize"), sep = "–", extra = "merge") %>%
+  mutate(Prize = str_trim(Prize),
+         Date = dmy(Date)) %>%
+  rename(Winner = col2)
 
 # helper function that splits out brand name from prize description
 splitby <- function(x) {
