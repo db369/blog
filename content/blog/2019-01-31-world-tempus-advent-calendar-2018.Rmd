@@ -114,6 +114,9 @@ data <- data %>%
 data$Brand[3] = "Louis Vuitton"
 data$Brand[11] = "Ralph Lauren"
 
+# reorder variables and drop Winner since I won't be using it
+data <- data %>% select(Date, Prize, Brand, City, Country)
+
 ```
 
 

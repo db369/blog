@@ -169,7 +169,10 @@ data &lt;- data %&gt;%
 
 # manual cleanup that general functions didn&#39;t catch
 data$Brand[3] = &quot;Louis Vuitton&quot;
-data$Brand[11] = &quot;Ralph Lauren&quot;</code></pre>
+data$Brand[11] = &quot;Ralph Lauren&quot;
+
+# reorder variables and drop Winner since I won&#39;t be using it
+data &lt;- data %&gt;% select(Date, Prize, Brand, City, Country)</code></pre>
 <p>A quick view of the data to make sure it looks ok.</p>
 <pre class="r"><code>knitr::kable(head(data,10), format = &quot;html&quot;)</code></pre>
 <table>
@@ -182,16 +185,13 @@ Date
 Prize
 </th>
 <th style="text-align:left;">
-Winner
+Brand
 </th>
 <th style="text-align:left;">
 City
 </th>
 <th style="text-align:left;">
 Country
-</th>
-<th style="text-align:left;">
-Brand
 </th>
 </tr>
 </thead>
@@ -204,16 +204,13 @@ Brand
 A Bulgari “Thé Bleu” gift set from Bulgari
 </td>
 <td style="text-align:left;">
-Jacques Fontaine
+Bulgari
 </td>
 <td style="text-align:left;">
 Boussu
 </td>
 <td style="text-align:left;">
 Belgium
-</td>
-<td style="text-align:left;">
-Bulgari
 </td>
 </tr>
 <tr>
@@ -224,16 +221,13 @@ Bulgari
 A leather vanity kit and card holder offered by Bovet 1822
 </td>
 <td style="text-align:left;">
-Christine Billon
+Bovet 1822
 </td>
 <td style="text-align:left;">
 Nancy
 </td>
 <td style="text-align:left;">
 France
-</td>
-<td style="text-align:left;">
-Bovet 1822
 </td>
 </tr>
 <tr>
@@ -244,16 +238,13 @@ Bovet 1822
 A set with a matryoshka and a City Guide Moscow from Louis Vuitton offered by Hublot
 </td>
 <td style="text-align:left;">
-Dominique Albrecq
+Louis Vuitton
 </td>
 <td style="text-align:left;">
 Jemeppe-sur-Sambre
 </td>
 <td style="text-align:left;">
 Belgium
-</td>
-<td style="text-align:left;">
-Louis Vuitton
 </td>
 </tr>
 <tr>
@@ -264,16 +255,13 @@ Louis Vuitton
 A leather travel wallet from Ulysse Nardin
 </td>
 <td style="text-align:left;">
-Sandor Szucs
+Ulysse Nardin
 </td>
 <td style="text-align:left;">
 Budapest
 </td>
 <td style="text-align:left;">
 Hungary
-</td>
-<td style="text-align:left;">
-Ulysse Nardin
 </td>
 </tr>
 <tr>
@@ -284,16 +272,13 @@ Ulysse Nardin
 A travel notepad from Louis Vuitton
 </td>
 <td style="text-align:left;">
-Julien Klingenmeyer
+Louis Vuitton
 </td>
 <td style="text-align:left;">
 Montbeliard
 </td>
 <td style="text-align:left;">
 France
-</td>
-<td style="text-align:left;">
-Louis Vuitton
 </td>
 </tr>
 <tr>
@@ -304,16 +289,13 @@ Louis Vuitton
 The book “From Seamaster to Seamaster : the first 70 years” from Omega
 </td>
 <td style="text-align:left;">
-Christelle Janny
+Omega
 </td>
 <td style="text-align:left;">
 Benfeld
 </td>
 <td style="text-align:left;">
 France
-</td>
-<td style="text-align:left;">
-Omega
 </td>
 </tr>
 <tr>
@@ -324,16 +306,13 @@ Omega
 A Ladies’ purse from Seiko
 </td>
 <td style="text-align:left;">
-Sandrine Coeurdevey
+Seiko
 </td>
 <td style="text-align:left;">
 Saint-Front-de-Pradoux
 </td>
 <td style="text-align:left;">
 France
-</td>
-<td style="text-align:left;">
-Seiko
 </td>
 </tr>
 <tr>
@@ -344,16 +323,13 @@ Seiko
 A leather folder with a notepad from Carl F. Bucherer
 </td>
 <td style="text-align:left;">
-Stephen Morgan
+Carl F. Bucherer
 </td>
 <td style="text-align:left;">
 Saint-Athan
 </td>
 <td style="text-align:left;">
 UK
-</td>
-<td style="text-align:left;">
-Carl F. Bucherer
 </td>
 </tr>
 <tr>
@@ -364,16 +340,13 @@ Carl F. Bucherer
 A desk clock from Montblanc
 </td>
 <td style="text-align:left;">
-Alessandro Corazza
+Montblanc
 </td>
 <td style="text-align:left;">
 Moncton
 </td>
 <td style="text-align:left;">
 Canada
-</td>
-<td style="text-align:left;">
-Montblanc
 </td>
 </tr>
 <tr>
@@ -384,16 +357,13 @@ Montblanc
 A memory game from Hermès
 </td>
 <td style="text-align:left;">
-Gilbert Vaissiere
+Hermès
 </td>
 <td style="text-align:left;">
 Athis-Mons
 </td>
 <td style="text-align:left;">
 France
-</td>
-<td style="text-align:left;">
-Hermès
 </td>
 </tr>
 </tbody>
