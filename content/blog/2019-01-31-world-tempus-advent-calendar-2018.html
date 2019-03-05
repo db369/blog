@@ -37,20 +37,7 @@ type: post
 <pre class="r"><code>library(tidyverse)
 library(lubridate)
 library(rvest)
-library(networkD3)
-
-my_font &lt;- &quot;Comfortaa&quot;
-my_bkgd &lt;- &quot;#f5f5f2&quot;
-my_theme &lt;- theme(text = element_text(family = my_font, color = &quot;#22211d&quot;),
-                  rect = element_rect(fill = my_bkgd), 
-                  plot.background = element_rect(fill = my_bkgd, color = NA), 
-                  panel.background = element_rect(fill = my_bkgd, color = NA), 
-                  panel.border = element_blank(),
-                  legend.background = element_rect(fill = my_bkgd, color = NA),
-                  legend.key = element_rect(fill = my_bkgd),
-                  plot.caption = element_text(size = 6))
-
-theme_set(theme_light() + my_theme)</code></pre>
+library(networkD3)</code></pre>
 <p></br></p>
 <div id="scraping-the-web" class="section level2">
 <h2>Scraping the web</h2>

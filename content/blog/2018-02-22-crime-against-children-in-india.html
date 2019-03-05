@@ -37,7 +37,8 @@ library(RColorBrewer)
 library(gridExtra)
 library(ggthemes)
 library(rcartocolor)
-library(lubridate)</code></pre>
+library(lubridate)
+library(ghibli)</code></pre>
 </div>
 <div id="accessing-the-data" class="section level3">
 <h3>Accessing the data</h3>
@@ -54,6 +55,7 @@ tables_df$tableName</code></pre>
 <pre class="r"><code>if (length(tables_df$tableName) &gt; 0) {
   sample_qry &lt;- data.world::qry_sql(sprintf(&quot;SELECT * FROM `%s`&quot;, tables_df$tableName[[1]]))
   sample_df &lt;- data.world::query(sample_qry, dataset = dataset_key)
+  #knitr::kable(head(sample_df), format = &quot;html&quot;)
   sample_df
 }</code></pre>
 <pre><code>## # A tibble: 494 x 14
@@ -84,7 +86,7 @@ any(is.na(sample_df))</code></pre>
 <pre class="r"><code>sample_df %&gt;%
   arrange(state_ut) %&gt;%
   select(state_ut) %&gt;%
-  unique()</code></pre>
+  unique() </code></pre>
 <pre><code>## # A tibble: 38 x 1
 ##    state_ut         
 ##    &lt;chr&gt;            
@@ -162,12 +164,6 @@ df$state_ut &lt;- str_to_title(df$state_ut)</code></pre>
 ## 13 Tamil Nadu Prohibition Of Child Marriage Act     2012     0</code></pre>
 <p>After identifying the most significant crimes in 2012, I chart how these crimes changed over time.</p>
 <pre class="r"><code>
-strip_theme &lt;- theme(strip.background = element_rect(fill = &quot;white&quot;, color = &quot;white&quot;),
-                     strip.text = element_text(color = &quot;#54203F&quot;, size = rel(1.1)),
-                     panel.border = element_rect(color = &quot;#EDE5CF&quot;),
-                     plot.background = element_rect(color = &quot;#EDE5CF&quot;)
-                    )
-
 crimes &lt;- c(&quot;Kidnapping And Abduction Of Children&quot;,
             &quot;Murder Of Children&quot;,
             &quot;Other Crimes Against Children&quot;,
@@ -176,19 +172,24 @@ crimes &lt;- c(&quot;Kidnapping And Abduction Of Children&quot;,
 
 df %&gt;%
   filter((state_ut == &quot;Tamil Nadu&quot;) &amp; (crime_head %in% crimes )) %&gt;%
-  ggplot(aes(year,df)) + geom_line(color = &quot;#54203F&quot;) + 
-    facet_wrap(~ crime_head, ncol = 2) +
-    labs(y = &quot;Count&quot;, x = &quot;&quot;) +
-    scale_x_continuous(labels = function(x) as.integer(x)) +
-    theme_light() + strip_theme +
-    theme(axis.text.x = element_text(hjust=1))</code></pre>
+  mutate(crime_head = str_replace(crime_head, &quot;And&quot;, &quot;&amp;&quot;),
+         crime_head = str_remove(crime_head, &quot; Of Children&quot;)) %&gt;%
+  ggplot(aes(year, df)) + 
+  geom_line(color = ghibli_palettes$MononokeMedium[2], size = 1.5) +
+  geom_point(shape = 21, size = 2.5, col = my_bkgd, fill = ghibli_palettes$MononokeMedium[2]) +
+  facet_wrap(~ crime_head, ncol = 2) +
+  labs(y = NULL, x = NULL,
+       title = &quot;Number of Crimes in Tamil Nadu&quot;,
+       subtitle = &quot;Based on 5 Most Significant Types of Crime in 2012&quot;) +
+  scale_x_continuous(labels = function(x) as.integer(x)) +
+  theme(axis.text.x = element_text(hjust=1))</code></pre>
 <p><img src="/blog/2018-02-22-crime-against-children-in-india_files/figure-html/tamil_nadu_crimes_charts-1.png" width="672" /></p>
 <p>Kidnapping and rape appear to have the most alarming trajectories. I’m curious what average annual growth looks like.</p>
 <pre class="r"><code>df %&gt;%
   filter(state_ut == &quot;Tamil Nadu&quot;, crime_head %in% crimes) %&gt;% 
   group_by(crime_head) %&gt;%
   summarize(CAGR =  scales::percent((df[year == 2012] / df[year == 2001]) ^ (1/11) - 1)) %&gt;%
-  arrange(desc(CAGR))</code></pre>
+  arrange(desc(CAGR)) </code></pre>
 <pre><code>## # A tibble: 5 x 2
 ##   crime_head                           CAGR 
 ##   &lt;chr&gt;                                &lt;chr&gt;
@@ -217,35 +218,32 @@ kidnapping_plot &lt;- df %&gt;%
     labs(title = &#39;Kidnapping And Abduction Of Children by State, 2001 - 2012&#39;, y = &#39;Number of Crimes&#39;, x=&#39;&#39;) +
     scale_x_continuous(labels = function(x) as.integer(x)) +
     facet_wrap(~state_ut) + 
-    theme_light() + theme(strip.background = element_rect(color = &quot;#93a1a1&quot;)) +
-    theme(text = element_text(family = &quot;Noto Sans&quot;),
-          legend.position=&#39;none&#39;, 
-          axis.text.x = element_text(angle = 90, vjust = 0.5),
-          axis.ticks.x = element_blank()) +
-    strip_theme +
-    scale_fill_manual(values = colorRampPalette(brewer.pal(8, &quot;Dark2&quot;))(top_k)) 
+    scale_fill_manual(values = colorRampPalette(brewer.pal(8, &quot;Dark2&quot;))(top_k)) +
+  theme(legend.position=&#39;none&#39;)
 
 kidnapping_plot</code></pre>
 <p><img src="/blog/2018-02-22-crime-against-children-in-india_files/figure-html/kidnapping_by_state_all-1.png" width="864" /></p>
 <p>Uttar Pradesh seems to stand out quite a bit, especially in 2012. Taking a closer look, we see it has had more than 4x the number of kidnappings than any other state in 2012!</p>
-<pre class="r"><code>df %&gt;%
+<pre class="r"><code>lollipop_color &lt;- ghibli_palettes$MononokeMedium[4]
+
+df %&gt;%
   group_by(crime_head) %&gt;%
   filter(df &gt; 100) %&gt;%
   ungroup() %&gt;%
   filter(crime_head == &quot;Kidnapping And Abduction Of Children&quot;, year == &#39;2012&#39;, df[year==&#39;2012&#39;] &gt; 10) %&gt;%
   mutate(state_ut = reorder(state_ut, df)) %&gt;%
-  ggplot(aes(x=state_ut,y=df)) + geom_bar(stat=&#39;identity&#39;, fill=&quot;#813753&quot;) + coord_flip() +
-    geom_text(aes(y = df, x = state_ut, label = df), nudge_y = 350) +
-    labs(title = &#39;Number of Kidnappings And Abductions Of Children&#39;,
-         subtitle = &#39;By State, 2012&#39;, 
-         y = &#39;&#39;, x=&#39;&#39;) +
-    theme(text = element_text(family = &quot;Noto Sans&quot;),
-          legend.position=&#39;none&#39;,
-          panel.background = element_blank(),
-          axis.ticks = element_blank(),
-          axis.text.x = element_blank(),
-          panel.border = element_blank(),
-          panel.grid = element_blank()) </code></pre>
+  ggplot(aes(x = state_ut, y = df)) + 
+  geom_segment(aes(y = 0, yend = df, x = state_ut, xend = state_ut), col = lollipop_color, size = 2) +
+  geom_point(stat=&#39;identity&#39;, col = lollipop_color, size = 4) + 
+  coord_flip() +
+  geom_text(aes(y = df, x = state_ut, label = df), nudge_y = 200, hjust = 0, family = my_font, color = &quot;#22211d&quot;) +
+  expand_limits(y = c(0, 9000)) +
+  labs(title = &#39;Number of Kidnappings &amp; Abductions in 2012&#39;,
+       subtitle = &#39;By State&#39;, 
+       y = &#39;&#39;, x=&#39;&#39;) +
+  theme(legend.position=&#39;none&#39;,
+        axis.text.x = element_blank(),
+        panel.grid = element_blank())</code></pre>
 <p><img src="/blog/2018-02-22-crime-against-children-in-india_files/figure-html/kidnapping_by_state_12-1.png" width="672" /></p>
 </div>
 <div id="levelplot" class="section level4">
@@ -260,17 +258,15 @@ level_data %&gt;%
   mutate(State = reorder(State, desc(State))) %&gt;%
   ggplot(aes(x=Crime,y=State, z=Count)) +
     geom_tile(aes(fill = Count)) + 
-    theme(text = element_text(family = &quot;Noto Sans&quot;),
-          axis.text.x = element_text(angle=90, hjust=1),
-          panel.background = element_blank(),
-          axis.ticks = element_blank(),
-          panel.border = element_blank(),
+    theme(axis.text.x = element_text(angle=90, hjust=1),
           panel.grid = element_blank(), 
           plot.title = element_text(hjust = 0, face = &quot;bold&quot;),
           legend.key.height = unit(18, &quot;mm&quot;), 
           legend.key.width = unit(4, &quot;mm&quot;),
           legend.box.just = &quot;top&quot;) +
-    scale_fill_gradient(name = &quot;No. of\nCrimes&quot;,low=&quot;white&quot;, high=&quot;#54203F&quot;) +
+    scale_fill_gradient(name = &quot;No. of\nCrimes&quot;,
+                        low = my_bkgd,
+                        high = ghibli_palettes$MononokeDark[2]) + 
     labs(x = &quot;&quot;, y = &quot;&quot;,
          title = &quot;Number of Crimes by State - 2012&quot;,
          subtitle = &quot;&quot;)</code></pre>
@@ -294,18 +290,17 @@ growth.tbl &lt;- df %&gt;%
 growth.tbl %&gt;%
   slice(1:15) %&gt;%
   mutate(state_ut = reorder(state_ut, growth)) %&gt;%
-  ggplot(aes(x = state_ut, y = growth)) + geom_bar(stat=&#39;identity&#39;, aes(fill = gr_ch_cols)) +
-  scale_fill_manual(values = c(&quot;#813753&quot;,&quot;#54203F&quot;)) + coord_flip() +
-    geom_text(aes(y = growth, x = seq(15,1), label = paste0(round(growth),&quot;%&quot;)), nudge_y = -1, color=&quot;white&quot; ) +
-    labs(title = &#39;Geometric Growth Of Total Crimes Against Children (2001 - 2012)&#39;, 
+  ggplot(aes(x = state_ut, y = growth)) + 
+  geom_bar(stat=&#39;identity&#39;, aes(fill = gr_ch_cols)) +
+  scale_fill_manual(values = c(ghibli_palettes$MononokeMedium[3],ghibli_palettes$MononokeMedium[1])) +
+  coord_flip() +
+    geom_text(aes(y = growth, x = seq(15,1), label = paste0(round(growth),&quot;%&quot;)), 
+              nudge_y = -1, color = my_bkgd, family = my_font) +
+    labs(title = &#39;Geometric Growth Of Total Crimes Against Children&#39;, 
+         subtitle = &#39;2001 to 2012&#39;,
          y = &#39;&#39;, x=&#39;&#39;) +
-    theme(text = element_text(family = &quot;Noto Sans&quot;),
-          legend.position=&#39;none&#39;, 
-          panel.background = element_blank(),
-          axis.line = element_blank(),
-          axis.ticks = element_blank(),
+    theme(legend.position=&#39;none&#39;, 
           axis.text.x = element_blank(),
-          panel.border = element_blank(),
           panel.grid = element_blank()) </code></pre>
 <p><img src="/blog/2018-02-22-crime-against-children-in-india_files/figure-html/geometric-1.png" width="672" /></p>
 </div>
@@ -421,7 +416,6 @@ final.plt.01_12 %&gt;%
   facet_wrap(.~year(year)) +
   map_theme +
   theme(plot.title = element_text(hjust = 0.5),
-        strip.background = element_blank(),
         strip.text = element_text(face=&quot;bold&quot;, size = 12),
         legend.key.height = unit(12, &quot;mm&quot;), 
         legend.key.width = unit(4, &quot;mm&quot;),
@@ -433,9 +427,11 @@ final.plt.01_12 %&gt;%
 <p>A quick look at the median number of crimes over that period tells a similar story, but crime is concentrated a little differently.</p>
 <pre class="r"><code>myt &lt;- ttheme_default(
   base_size = 8,
+  base_family = my_font, 
+  base_colour =  &quot;#22211d&quot;,
   core = list(fg_params=list(hjust = 0, x=0.1),
               bg_params=list(fill=c(&quot;white&quot;, &quot;#EFEFEF&quot;))),
-  colhead = list(fg_params=list(col=&quot;black&quot;, fontface=&quot;bold.italic&quot;, hjust = 0, x=0.1),
+  colhead = list(fg_params=list(col= &quot;#22211d&quot;, fontface=&quot;bold.italic&quot;, hjust = 0, x=0.1),
                  bg_params=list(fill=&quot;#DEDEDE&quot;))
  )
 
@@ -444,16 +440,17 @@ median.table &lt;- med_by_state %&gt;% arrange(desc(median)) %&gt;% select(state
 colnames(median.table) &lt;- c(&quot;State&quot;, &quot;Median&quot;)
 
 # Create dataframe of state names and state centers (lat, long)
-cnames &lt;- aggregate(cbind(long, lat) ~ state, data=final.plt.med, FUN=function(x)mean(range(x)))
+cnames &lt;- aggregate(cbind(long, lat) ~ state, data=final.plt.med, FUN=function(x) mean(range(x)))
 
 # Process names by replacing last space with newline char
-cnames$state &lt;- stri_replace_last_charclass(cnames$state, &quot;\\p{WHITE_SPACE}&quot;, &quot;\n&quot;)
+# cnames$state &lt;- stri_replace_last_charclass(cnames$state, &quot;\\p{WHITE_SPACE}&quot;, &quot;\n&quot;)
+cnames$state &lt;- str_replace(cnames$state, &quot;\\s$&quot;,&quot;\\n&quot;)
 
 median_plot &lt;- ggplot() +
   geom_polygon(data = final.plt.med, 
                aes(x = long, y = lat, group = group, fill = median), 
                color = &quot;grey80&quot;, size = 0.25) + 
-  geom_text(data=cnames, aes(long, lat, label = state), size=2) +
+  geom_text(data=cnames, aes(long, lat, label = state), size=2, color = &quot;#22211d&quot;, family = my_font) +
   coord_map() +
   scale_fill_gradient(name=&quot;Median&quot;, limits=c(0,5200), low=&quot;#ede5cf&quot;, high=&quot;#54203F&quot;) +
   labs(title=&quot;Median Number of Crimes Against Children\n2001 - 2012&quot;, x = &quot;&quot;, y = &quot;&quot;) +

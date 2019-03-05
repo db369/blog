@@ -42,8 +42,28 @@ library(gridExtra)
 library(ggthemes)
 library(rcartocolor)
 library(lubridate)
+library(ghibli)
+
+
 ```
 
+```{r custom_theme, echo=FALSE}
+my_font <- "Comfortaa"
+my_bkgd <- "#f5f5f2"
+my_theme <- theme(text = element_text(family = my_font, color = "#22211d"),
+                  rect = element_rect(fill = my_bkgd),
+                  plot.background = element_rect(fill = my_bkgd, color = NA),
+                  panel.background = element_rect(fill = my_bkgd, color = NA),
+                  panel.border = element_blank(),
+                  legend.background = element_rect(fill = my_bkgd, color = NA),
+                  legend.key = element_rect(fill = my_bkgd),
+                  plot.caption = element_text(size = 6),
+                  axis.ticks = element_blank(),
+                  strip.background = element_blank(),
+                  strip.text = element_text(color = "#22211d", hjust = 0.1, size = rel(1.1)))
+
+theme_set(theme_light() + my_theme)
+```
 
 
 ### Accessing the data
@@ -63,6 +83,7 @@ Next, we query the table found.
 if (length(tables_df$tableName) > 0) {
   sample_qry <- data.world::qry_sql(sprintf("SELECT * FROM `%s`", tables_df$tableName[[1]]))
   sample_df <- data.world::query(sample_qry, dataset = dataset_key)
+  #knitr::kable(head(sample_df), format = "html")
   sample_df
 }
 
@@ -86,7 +107,7 @@ Check for duplicate states:
 sample_df %>%
   arrange(state_ut) %>%
   select(state_ut) %>%
-  unique()
+  unique() 
 ```
 
 Check for duplicate crime types:
@@ -132,12 +153,6 @@ df %>%
 After identifying the most significant crimes in 2012, I chart how these crimes changed over time.
 ```{r tamil_nadu_crimes_charts, collapse=TRUE}
 
-strip_theme <- theme(strip.background = element_rect(fill = "white", color = "white"),
-                     strip.text = element_text(color = "#54203F", size = rel(1.1)),
-                     panel.border = element_rect(color = "#EDE5CF"),
-                     plot.background = element_rect(color = "#EDE5CF")
-                    )
-
 crimes <- c("Kidnapping And Abduction Of Children",
             "Murder Of Children",
             "Other Crimes Against Children",
@@ -146,12 +161,17 @@ crimes <- c("Kidnapping And Abduction Of Children",
 
 df %>%
   filter((state_ut == "Tamil Nadu") & (crime_head %in% crimes )) %>%
-  ggplot(aes(year,df)) + geom_line(color = "#54203F") + 
-    facet_wrap(~ crime_head, ncol = 2) +
-    labs(y = "Count", x = "") +
-    scale_x_continuous(labels = function(x) as.integer(x)) +
-    theme_light() + strip_theme +
-    theme(axis.text.x = element_text(hjust=1))
+  mutate(crime_head = str_replace(crime_head, "And", "&"),
+         crime_head = str_remove(crime_head, " Of Children")) %>%
+  ggplot(aes(year, df)) + 
+  geom_line(color = ghibli_palettes$MononokeMedium[2], size = 1.5) +
+  geom_point(shape = 21, size = 2.5, col = my_bkgd, fill = ghibli_palettes$MononokeMedium[2]) +
+  facet_wrap(~ crime_head, ncol = 2) +
+  labs(y = NULL, x = NULL,
+       title = "Number of Crimes in Tamil Nadu",
+       subtitle = "Based on 5 Most Significant Types of Crime in 2012") +
+  scale_x_continuous(labels = function(x) as.integer(x)) +
+  theme(axis.text.x = element_text(hjust=1))
 
 ```
 
@@ -161,7 +181,7 @@ df %>%
   filter(state_ut == "Tamil Nadu", crime_head %in% crimes) %>% 
   group_by(crime_head) %>%
   summarize(CAGR =  scales::percent((df[year == 2012] / df[year == 2001]) ^ (1/11) - 1)) %>%
-  arrange(desc(CAGR))
+  arrange(desc(CAGR)) 
 ```
 
 Note that 'Procuration Of Minor Girls' is __NaN%__ since it was 0 in 2001. Kidnappings have grown by almost 50% a year! 
@@ -184,13 +204,8 @@ kidnapping_plot <- df %>%
     labs(title = 'Kidnapping And Abduction Of Children by State, 2001 - 2012', y = 'Number of Crimes', x='') +
     scale_x_continuous(labels = function(x) as.integer(x)) +
     facet_wrap(~state_ut) + 
-    theme_light() + theme(strip.background = element_rect(color = "#93a1a1")) +
-    theme(text = element_text(family = "Noto Sans"),
-          legend.position='none', 
-          axis.text.x = element_text(angle = 90, vjust = 0.5),
-          axis.ticks.x = element_blank()) +
-    strip_theme +
-    scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(top_k)) 
+    scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(top_k)) +
+  theme(legend.position='none')
 
 kidnapping_plot
 
@@ -218,24 +233,26 @@ kidnapping_plot
 Uttar Pradesh seems to stand out quite a bit, especially in 2012. Taking a closer look, we see it has had more than 4x the number of kidnappings than any other state in 2012!
 ```{r kidnapping_by_state_12, message=FALSE, warning=FALSE}
 
+lollipop_color <- ghibli_palettes$MononokeMedium[4]
+
 df %>%
   group_by(crime_head) %>%
   filter(df > 100) %>%
   ungroup() %>%
   filter(crime_head == "Kidnapping And Abduction Of Children", year == '2012', df[year=='2012'] > 10) %>%
   mutate(state_ut = reorder(state_ut, df)) %>%
-  ggplot(aes(x=state_ut,y=df)) + geom_bar(stat='identity', fill="#813753") + coord_flip() +
-    geom_text(aes(y = df, x = state_ut, label = df), nudge_y = 350) +
-    labs(title = 'Number of Kidnappings And Abductions Of Children',
-         subtitle = 'By State, 2012', 
-         y = '', x='') +
-    theme(text = element_text(family = "Noto Sans"),
-          legend.position='none',
-          panel.background = element_blank(),
-          axis.ticks = element_blank(),
-          axis.text.x = element_blank(),
-          panel.border = element_blank(),
-          panel.grid = element_blank()) 
+  ggplot(aes(x = state_ut, y = df)) + 
+  geom_segment(aes(y = 0, yend = df, x = state_ut, xend = state_ut), col = lollipop_color, size = 2) +
+  geom_point(stat='identity', col = lollipop_color, size = 4) + 
+  coord_flip() +
+  geom_text(aes(y = df, x = state_ut, label = df), nudge_y = 200, hjust = 0, family = my_font, color = "#22211d") +
+  expand_limits(y = c(0, 9000)) +
+  labs(title = 'Number of Kidnappings & Abductions in 2012',
+       subtitle = 'By State', 
+       y = '', x='') +
+  theme(legend.position='none',
+        axis.text.x = element_blank(),
+        panel.grid = element_blank())
 
 ```
 
@@ -253,17 +270,15 @@ level_data %>%
   mutate(State = reorder(State, desc(State))) %>%
   ggplot(aes(x=Crime,y=State, z=Count)) +
     geom_tile(aes(fill = Count)) + 
-    theme(text = element_text(family = "Noto Sans"),
-          axis.text.x = element_text(angle=90, hjust=1),
-          panel.background = element_blank(),
-          axis.ticks = element_blank(),
-          panel.border = element_blank(),
+    theme(axis.text.x = element_text(angle=90, hjust=1),
           panel.grid = element_blank(), 
           plot.title = element_text(hjust = 0, face = "bold"),
           legend.key.height = unit(18, "mm"), 
           legend.key.width = unit(4, "mm"),
           legend.box.just = "top") +
-    scale_fill_gradient(name = "No. of\nCrimes",low="white", high="#54203F") +
+    scale_fill_gradient(name = "No. of\nCrimes",
+                        low = my_bkgd,
+                        high = ghibli_palettes$MononokeDark[2]) + 
     labs(x = "", y = "",
          title = "Number of Crimes by State - 2012",
          subtitle = "")
@@ -331,11 +346,8 @@ total_by_st_plot <- df %>%
     labs(title = 'Total Crimes Against Children by State, 2001 - 2012', 
          y = 'Number of Crimes', x='') +
     scale_x_continuous(labels = function(x) as.integer(x)) +
-    theme_light() + 
     theme(legend.position='none', 
-          axis.text.x = element_text(angle = 90, vjust = 0.5),
-          axis.ticks.x = element_blank()) +
-    strip_theme +
+          axis.text.x = element_text(angle = 90, vjust = 0.5)) +
     scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(top))
 
 total_by_st_plot
@@ -376,18 +388,17 @@ growth.tbl <- df %>%
 growth.tbl %>%
   slice(1:15) %>%
   mutate(state_ut = reorder(state_ut, growth)) %>%
-  ggplot(aes(x = state_ut, y = growth)) + geom_bar(stat='identity', aes(fill = gr_ch_cols)) +
-  scale_fill_manual(values = c("#813753","#54203F")) + coord_flip() +
-    geom_text(aes(y = growth, x = seq(15,1), label = paste0(round(growth),"%")), nudge_y = -1, color="white" ) +
-    labs(title = 'Geometric Growth Of Total Crimes Against Children (2001 - 2012)', 
+  ggplot(aes(x = state_ut, y = growth)) + 
+  geom_bar(stat='identity', aes(fill = gr_ch_cols)) +
+  scale_fill_manual(values = c(ghibli_palettes$MononokeMedium[3],ghibli_palettes$MononokeMedium[1])) +
+  coord_flip() +
+    geom_text(aes(y = growth, x = seq(15,1), label = paste0(round(growth),"%")), 
+              nudge_y = -1, color = my_bkgd, family = my_font) +
+    labs(title = 'Geometric Growth Of Total Crimes Against Children', 
+         subtitle = '2001 to 2012',
          y = '', x='') +
-    theme(text = element_text(family = "Noto Sans"),
-          legend.position='none', 
-          panel.background = element_blank(),
-          axis.line = element_blank(),
-          axis.ticks = element_blank(),
+    theme(legend.position='none', 
           axis.text.x = element_blank(),
-          panel.border = element_blank(),
           panel.grid = element_blank()) 
 
 ```
@@ -499,8 +510,7 @@ First, a comparison between the total number of crimes in 2001 and 2012. Note th
 
 ```{r map_2001_2012, echo=FALSE, fig.width=9, message=FALSE, warning=FALSE}
 
-map_theme <- theme(text = element_text(family = "Noto Sans"),
-                   panel.background = element_blank(),
+map_theme <- theme(panel.background = element_blank(),
                    plot.title = element_text(size=rel(1.5), hjust = 0),
                    axis.text = element_blank(),
                    axis.line = element_blank(),
@@ -508,39 +518,39 @@ map_theme <- theme(text = element_text(family = "Noto Sans"),
                    panel.border = element_blank(),
                    panel.grid = element_blank())
 
-plot_2001 <- ggplot( width = 300, height = 500 ) +
-  geom_polygon(data = final.plt.01, 
-               aes(x = long, y = lat, group = group, fill = count, text = paste0(state,": ",count)), 
-               color = "white", size = 0.25) + 
-  coord_map() +
-  scale_fill_gradient(name="No. of\nCrimes", limits=c(0,12000), low="#ede5cf", high="#54203F")+
-  labs(title="", x = "", y="") +
-  map_theme
-
-plot_2012 <- ggplot(width = 300, height = 500 ) +
-  geom_polygon(data = final.plt, 
-               aes(x = long, y = lat, group = group, fill = count, 
-                   text = paste0(state,": ",count,"\nCAGR: ",scales::percent(growth/100))), 
-               color = "white", size = 0.25) + 
-  coord_map() +
-  scale_fill_gradient(name="No. of\nCrimes", limits=c(0,12000), low="#ede5cf", high="#54203F")+
-  labs(title="", x = "", y="") +
-  map_theme
-
-
-p <- subplot(ggplotly(plot_2001, tooltip = c("text")), ggplotly(plot_2012, tooltip = c("text"))) %>%
-  add_annotations(
-    yref="paper", 
-    xref="paper", 
-    y=1.15, 
-    x=0, 
-    text="Number of Crimes in India<br>2001 vs 2012",
-    align = "left",
-    valign = "bottom",
-    showarrow=F, 
-    font=list(size=20)
-  ) %>% 
-  layout(margin = list(t=80))
+# plot_2001 <- ggplot( width = 300, height = 500 ) +
+#   geom_polygon(data = final.plt.01, 
+#                aes(x = long, y = lat, group = group, fill = count, text = paste0(state,": ",count)), 
+#                color = "white", size = 0.25) + 
+#   coord_map() +
+#   scale_fill_gradient(name="No. of\nCrimes", limits=c(0,12000), low="#ede5cf", high="#54203F")+
+#   labs(title="", x = "", y="") +
+#   map_theme
+# 
+# plot_2012 <- ggplot(width = 300, height = 500 ) +
+#   geom_polygon(data = final.plt, 
+#                aes(x = long, y = lat, group = group, fill = count, 
+#                    text = paste0(state,": ",count,"\nCAGR: ",scales::percent(growth/100))), 
+#                color = "white", size = 0.25) + 
+#   coord_map() +
+#   scale_fill_gradient(name="No. of\nCrimes", limits=c(0,12000), low="#ede5cf", high="#54203F")+
+#   labs(title="", x = "", y="") +
+#   map_theme
+# 
+# 
+# p <- subplot(ggplotly(plot_2001, tooltip = c("text")), ggplotly(plot_2012, tooltip = c("text"))) %>%
+#   add_annotations(
+#     yref="paper", 
+#     xref="paper", 
+#     y=1.15, 
+#     x=0, 
+#     text="Number of Crimes in India<br>2001 vs 2012",
+#     align = "left",
+#     valign = "bottom",
+#     showarrow=F, 
+#     font=list(size=20)
+#   ) %>% 
+#   layout(margin = list(t=80))
 
 #p
 #htmlwidgets::saveWidget(as_widget(p, selfcontained = FAlSE), "graph.html")
@@ -575,7 +585,6 @@ final.plt.01_12 %>%
   facet_wrap(.~year(year)) +
   map_theme +
   theme(plot.title = element_text(hjust = 0.5),
-        strip.background = element_blank(),
         strip.text = element_text(face="bold", size = 12),
         legend.key.height = unit(12, "mm"), 
         legend.key.width = unit(4, "mm"),
@@ -594,9 +603,11 @@ A quick look at the median number of crimes over that period tells a similar sto
 
 myt <- ttheme_default(
   base_size = 8,
+  base_family = my_font, 
+  base_colour =  "#22211d",
   core = list(fg_params=list(hjust = 0, x=0.1),
               bg_params=list(fill=c("white", "#EFEFEF"))),
-  colhead = list(fg_params=list(col="black", fontface="bold.italic", hjust = 0, x=0.1),
+  colhead = list(fg_params=list(col= "#22211d", fontface="bold.italic", hjust = 0, x=0.1),
                  bg_params=list(fill="#DEDEDE"))
  )
 
@@ -605,16 +616,17 @@ median.table <- med_by_state %>% arrange(desc(median)) %>% select(state,median) 
 colnames(median.table) <- c("State", "Median")
 
 # Create dataframe of state names and state centers (lat, long)
-cnames <- aggregate(cbind(long, lat) ~ state, data=final.plt.med, FUN=function(x)mean(range(x)))
+cnames <- aggregate(cbind(long, lat) ~ state, data=final.plt.med, FUN=function(x) mean(range(x)))
 
 # Process names by replacing last space with newline char
-cnames$state <- stri_replace_last_charclass(cnames$state, "\\p{WHITE_SPACE}", "\n")
+# cnames$state <- stri_replace_last_charclass(cnames$state, "\\p{WHITE_SPACE}", "\n")
+cnames$state <- str_replace(cnames$state, "\\s$","\\n")
 
 median_plot <- ggplot() +
   geom_polygon(data = final.plt.med, 
                aes(x = long, y = lat, group = group, fill = median), 
                color = "grey80", size = 0.25) + 
-  geom_text(data=cnames, aes(long, lat, label = state), size=2) +
+  geom_text(data=cnames, aes(long, lat, label = state), size=2, color = "#22211d", family = my_font) +
   coord_map() +
   scale_fill_gradient(name="Median", limits=c(0,5200), low="#ede5cf", high="#54203F") +
   labs(title="Median Number of Crimes Against Children\n2001 - 2012", x = "", y = "") +
