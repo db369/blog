@@ -180,7 +180,7 @@ df %&gt;%
   facet_wrap(~ crime_head, ncol = 2) +
   labs(y = NULL, x = NULL,
        title = &quot;Growth in Number of Crimes in Tamil Nadu&quot;,
-       subtitle = &quot;Based on 4 Most Significant Types of Crime in 2012&quot;) +
+       subtitle = &quot;Most Significant Types of Crime as of 2012&quot;) +
   scale_x_continuous(labels = function(x) as.integer(x)) +
   theme(axis.text.x = element_text(hjust=1))</code></pre>
 <p><img src="/blog/2018-02-22-crime-against-children-in-india_files/figure-html/tamil_nadu_crimes_charts-1.png" width="672" /></p>
@@ -304,7 +304,7 @@ growth.tbl %&gt;%
   scale_fill_manual(values = c(ghibli_palettes$MononokeMedium[3],ghibli_palettes$MononokeMedium[1])) +
   coord_flip() +
     geom_text(aes(y = growth, x = seq(15,1), label = paste0(round(growth),&quot;%&quot;)), 
-              nudge_y = -1, color = my_bkgd, family = my_font) +
+              nudge_y = -0.5, hjust = 1, color = my_bkgd, family = my_font) +
     labs(title = &#39;Geometric Growth Of Total Crimes Against Children&#39;, 
          subtitle = &#39;2001 to 2012&#39;,
          y = &#39;&#39;, x=&#39;&#39;) +
@@ -333,7 +333,7 @@ total_by_state &lt;- df %&gt;%
 med_by_state &lt;- df %&gt;%
   filter(crime_head == &quot;Total Crimes Against Children&quot;, df[year==&#39;2001&#39;] &gt;= 0) %&gt;%
   group_by(state_ut) %&gt;%
-  summarise(median = median(df)) %&gt;%
+  summarise(median = median(df, na.rm = T)) %&gt;%
   arrange(desc(median))
 
 # load shape file
@@ -416,19 +416,33 @@ merge_tbl_01_12 &lt;- merge(states.shp.f, total_by_state_all, by=&quot;id&quot;)
 final.plt.01_12 &lt;- merge_tbl_01_12[order(merge_tbl_01_12$order),]
 final.plt.01_12$year &lt;- parse_date_time(final.plt.01_12$year,&quot;%Y&quot;)
 
+# Set up color palette and binned counts
+pal = c(&quot;#E2D7C5&quot;,&quot;#C6B1A9&quot;,&quot;#9E7D83&quot;,&quot;#7A4F61&quot;,&quot;#54203F&quot;)
+
+label_start &lt;- c(seq(0,10000,2000))
+label_end &lt;- c(seq(2000,12000,2000))
+
+final.plt.01_12$bin &lt;- cut(final.plt.01_12$count, breaks=c(seq(0, 12000, 2000), Inf), 
+                      labels=c(paste0(label_start,&quot; - &quot;,label_end), &quot;12000+&quot;), 
+                      include.lowest = TRUE)
+
 final.plt.01_12 %&gt;%
   filter(year(year) %in% c(2001,2012)) %&gt;%
   ggplot() +
-  geom_polygon(aes(x = long, y = lat, fill = count, group = group), color = &quot;white&quot;, size = 0.25) + 
+  geom_polygon(aes(x = long, y = lat, fill = bin, group = group), color = my_bkgd, size = 0.25) + 
   coord_map() +
-  scale_fill_gradient(name=&quot;No. of\nCrimes&quot;, limits=c(0,12000), low=&quot;#ede5cf&quot;, high=&quot;#54203F&quot;) +
+  scale_fill_manual(values = pal, name=&quot;No. of Crimes&quot;,
+                    guide = guide_legend(keyheight = unit(2, units = &quot;mm&quot;), 
+                                         keywidth = unit(18, units = &quot;mm&quot;), 
+                                         title.position = &quot;top&quot;, label.position = &quot;bottom&quot;,
+                                         title.hjust = 0, label.hjust = 0.1, nrow = 1)) +
   facet_wrap(.~year(year)) +
   map_theme +
-  theme(plot.title = element_text(hjust = 0.5),
-        strip.text = element_text(face=&quot;bold&quot;, size = 12),
-        legend.key.height = unit(12, &quot;mm&quot;), 
-        legend.key.width = unit(4, &quot;mm&quot;),
-        legend.box.just = &quot;top&quot;) +
+  theme(strip.background = element_blank(),
+        strip.text = element_text(face=&quot;bold&quot;, size = 12, hjust = 0.5),
+        legend.box.just = &quot;top&quot;,
+        legend.background = element_blank(),
+        legend.position = c(0.7,0)) +
   labs(x=&quot;&quot;,y=&quot;&quot;,
        title = &quot;Number of Crimes in India&quot;)</code></pre>
 <p><img src="/blog/2018-02-22-crime-against-children-in-india_files/figure-html/map_2001_2012_alt-1.png" width="672" /></p>
@@ -439,11 +453,19 @@ final.plt.01_12 %&gt;%
   base_family = my_font, 
   base_colour =  &quot;#22211d&quot;,
   core = list(fg_params=list(hjust = 0, x=0.1),
-              bg_params=list(fill=c(&quot;white&quot;, &quot;#EFEFEF&quot;))),
+              bg_params=list(fill=&quot;#E2D7C5&quot;)),
   colhead = list(fg_params=list(col= &quot;#22211d&quot;, fontface=&quot;bold.italic&quot;, hjust = 0, x=0.1),
-                 bg_params=list(fill=&quot;#DEDEDE&quot;))
+                 bg_params=list(fill=&quot;#9E7D83&quot;))
  )
 
+label_start &lt;- c(seq(0,3000,1500))
+label_end &lt;- c(seq(1500,4500,1500))
+
+final.plt.med$bin &lt;- cut(final.plt.med$median, breaks=c(seq(0,4500,1500), Inf), 
+                      labels=c(paste0(label_start,&quot; - &quot;,label_end), &quot;4500+&quot;), 
+                      include.lowest = TRUE)
+
+final.plt.med &lt;- final.plt.med %&gt;% filter(!is.na(bin))
 
 median.table &lt;- med_by_state %&gt;% arrange(desc(median)) %&gt;% select(state,median) %&gt;% slice(1:5)
 colnames(median.table) &lt;- c(&quot;State&quot;, &quot;Median&quot;)
@@ -457,16 +479,23 @@ cnames$state &lt;- str_replace(cnames$state, &quot;\\s$&quot;,&quot;\\n&quot;)
 
 median_plot &lt;- ggplot() +
   geom_polygon(data = final.plt.med, 
-               aes(x = long, y = lat, group = group, fill = median), 
-               color = &quot;grey80&quot;, size = 0.25) + 
+               aes(x = long, y = lat, group = group, fill = bin), 
+               color = my_bkgd, size = 0.25) + 
   geom_text(data=cnames, aes(long, lat, label = state), size=2, color = &quot;#22211d&quot;, family = my_font) +
   coord_map() +
-  scale_fill_gradient(name=&quot;Median&quot;, limits=c(0,5200), low=&quot;#ede5cf&quot;, high=&quot;#54203F&quot;) +
-  labs(title=&quot;Median Number of Crimes Against Children\n2001 - 2012&quot;, x = &quot;&quot;, y = &quot;&quot;) +
-  map_theme + theme(plot.title = element_text(hjust=0),
-                    legend.key.height = unit(18, &quot;mm&quot;), 
-                    legend.key.width = unit(4, &quot;mm&quot;),
-                    legend.box.just = &quot;top&quot;)
+  scale_fill_manual(values = pal[1:4], name=&quot;Median&quot;,
+                    guide = guide_legend(keyheight = unit(2, units = &quot;mm&quot;), 
+                                         keywidth = unit(18, units = &quot;mm&quot;), 
+                                         title.position = &quot;top&quot;, label.position = &quot;bottom&quot;,
+                                         title.hjust = 0, label.hjust = 0.1, nrow = 1)) +
+    labs(title=&quot;Median Number of Crimes Against Children&quot;, 
+       subtitle = &quot;By State, 2001 to 2012&quot;,
+       x = &quot;&quot;, y = &quot;&quot;) +
+  map_theme + 
+  theme(plot.title = element_text(hjust=0),
+        legend.box.just = &quot;top&quot;,
+        legend.background = element_blank(),
+        legend.position = c(0.7,0))
 
 g &lt;- tableGrob(median.table,rows=NULL, theme = myt) 
 
