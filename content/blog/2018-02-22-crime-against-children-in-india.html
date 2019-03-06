@@ -236,7 +236,8 @@ df %&gt;%
   geom_segment(aes(y = 0, yend = df, x = state_ut, xend = state_ut), col = lollipop_color, size = 2) +
   geom_point(stat=&#39;identity&#39;, col = lollipop_color, size = 4) + 
   coord_flip() +
-  geom_text(aes(y = df, x = state_ut, label = df), nudge_y = 200, hjust = 0, family = my_font, color = &quot;#22211d&quot;) +
+  geom_text(aes(y = df, x = state_ut, label = df), 
+            nudge_y = 200, hjust = 0, family = my_font, color = &quot;#22211d&quot;, size = rel(0.9)) +
   expand_limits(y = c(0, 9000)) +
   labs(title = &#39;Number of Kidnappings &amp; Abductions in 2012&#39;,
        subtitle = &#39;By State&#39;, 
@@ -250,27 +251,36 @@ df %&gt;%
 <h4>Levelplot</h4>
 <p>The next question I have is <em>what crimes are most significant in each state?</em> A heatmap (or levelplot) might be the best way to visualize this. This also allows us to visualize the most prevalent crimes throughout India.</p>
 <pre class="r"><code>level_data &lt;- df %&gt;%
-  filter(year == &#39;2012&#39;, crime_head != &quot;Total Crimes Against Children&quot;) 
+  filter(year == &#39;2012&#39;, crime_head != &quot;Total Crimes Against Children&quot;) %&gt;%
+  mutate(crime_head = str_remove(crime_head, &quot; Of Children&quot;))
 
 colnames(level_data) &lt;- c(&quot;State&quot;,&quot;Crime&quot;,&quot;Year&quot;,&quot;Count&quot;)
 
+label_start &lt;- c(0,10^1,10^2,10^3)
+label_end &lt;- c(10^1, 10^2, 10^3, 10^4)
+
+level_data$bin &lt;- cut(level_data$Count, breaks=c(0,10^1,10^2,10^3,10^4), 
+                      labels=c(paste0(label_start,&quot; - &quot;,label_end)), 
+                      include.lowest = TRUE)
+
 level_data %&gt;% 
   mutate(State = reorder(State, desc(State))) %&gt;%
-  ggplot(aes(x=Crime,y=State, z=Count)) +
-    geom_tile(aes(fill = Count)) + 
+  ggplot(aes(x=Crime,y=State, z=bin)) +
+    geom_tile(aes(fill = bin)) + 
     theme(axis.text.x = element_text(angle=90, hjust=1),
           panel.grid = element_blank(), 
           plot.title = element_text(hjust = 0, face = &quot;bold&quot;),
-          legend.key.height = unit(18, &quot;mm&quot;), 
-          legend.key.width = unit(4, &quot;mm&quot;),
-          legend.box.just = &quot;top&quot;) +
-    scale_fill_gradient(name = &quot;No. of\nCrimes&quot;,
-                        low = my_bkgd,
-                        high = ghibli_palettes$MononokeDark[2]) + 
+          plot.margin = margin(10,70,10,20),
+          legend.position = &quot;top&quot;) +
+  scale_fill_manual(values = ghibli_palettes$MononokeMedium, name = &quot;No. of Crimes (log scale)&quot;,
+                    guide = guide_legend(keyheight = unit(2, units = &quot;mm&quot;), 
+                                         keywidth = unit(18, units = &quot;mm&quot;), 
+                                         title.position = &quot;top&quot;, label.position = &quot;bottom&quot;,
+                                         title.hjust = 0, label.hjust = 0.1, nrow = 1)) +
     labs(x = &quot;&quot;, y = &quot;&quot;,
          title = &quot;Number of Crimes by State - 2012&quot;,
          subtitle = &quot;&quot;)</code></pre>
-<p><img src="/blog/2018-02-22-crime-against-children-in-india_files/figure-html/heatmap-1.png" width="480" /></p>
+<p><img src="/blog/2018-02-22-crime-against-children-in-india_files/figure-html/heatmap-1.png" width="576" /></p>
 <p>As you can see, kidnappings and rape seem most significant across India. ‘Other’ crime is also significant – more research is necessary to learn what that comprises. It also appears that about half of the crimes are very low or 0 by count, which makes me suspect that data was unavaliable or that such crimes don’t often get reported or prosecuted.</p>
 </div>
 <div id="total-crime-by-state" class="section level4">

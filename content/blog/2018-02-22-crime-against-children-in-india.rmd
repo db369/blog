@@ -245,7 +245,8 @@ df %>%
   geom_segment(aes(y = 0, yend = df, x = state_ut, xend = state_ut), col = lollipop_color, size = 2) +
   geom_point(stat='identity', col = lollipop_color, size = 4) + 
   coord_flip() +
-  geom_text(aes(y = df, x = state_ut, label = df), nudge_y = 200, hjust = 0, family = my_font, color = "#22211d") +
+  geom_text(aes(y = df, x = state_ut, label = df), 
+            nudge_y = 200, hjust = 0, family = my_font, color = "#22211d", size = rel(0.9)) +
   expand_limits(y = c(0, 9000)) +
   labs(title = 'Number of Kidnappings & Abductions in 2012',
        subtitle = 'By State', 
@@ -258,27 +259,36 @@ df %>%
 
 #### Levelplot
 The next question I have is _what crimes are most significant in each state?_ A heatmap (or levelplot) might be the best way to visualize this. This also allows us to visualize the most prevalent crimes throughout India.
-```{r heatmap, fig.height=8, fig.width=5}
+```{r heatmap, fig.height=8, fig.width=6}
 
 
 level_data <- df %>%
-  filter(year == '2012', crime_head != "Total Crimes Against Children") 
+  filter(year == '2012', crime_head != "Total Crimes Against Children") %>%
+  mutate(crime_head = str_remove(crime_head, " Of Children"))
 
 colnames(level_data) <- c("State","Crime","Year","Count")
 
+label_start <- c(0,10^1,10^2,10^3)
+label_end <- c(10^1, 10^2, 10^3, 10^4)
+
+level_data$bin <- cut(level_data$Count, breaks=c(0,10^1,10^2,10^3,10^4), 
+                      labels=c(paste0(label_start," - ",label_end)), 
+                      include.lowest = TRUE)
+
 level_data %>% 
   mutate(State = reorder(State, desc(State))) %>%
-  ggplot(aes(x=Crime,y=State, z=Count)) +
-    geom_tile(aes(fill = Count)) + 
+  ggplot(aes(x=Crime,y=State, z=bin)) +
+    geom_tile(aes(fill = bin)) + 
     theme(axis.text.x = element_text(angle=90, hjust=1),
           panel.grid = element_blank(), 
           plot.title = element_text(hjust = 0, face = "bold"),
-          legend.key.height = unit(18, "mm"), 
-          legend.key.width = unit(4, "mm"),
-          legend.box.just = "top") +
-    scale_fill_gradient(name = "No. of\nCrimes",
-                        low = my_bkgd,
-                        high = ghibli_palettes$MononokeDark[2]) + 
+          plot.margin = margin(10,70,10,20),
+          legend.position = "top") +
+  scale_fill_manual(values = ghibli_palettes$MononokeMedium, name = "No. of Crimes (log scale)",
+                    guide = guide_legend(keyheight = unit(2, units = "mm"), 
+                                         keywidth = unit(18, units = "mm"), 
+                                         title.position = "top", label.position = "bottom",
+                                         title.hjust = 0, label.hjust = 0.1, nrow = 1)) +
     labs(x = "", y = "",
          title = "Number of Crimes by State - 2012",
          subtitle = "")
