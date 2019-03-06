@@ -246,7 +246,7 @@ df %>%
   geom_point(stat='identity', col = lollipop_color, size = 4) + 
   coord_flip() +
   geom_text(aes(y = df, x = state_ut, label = df), 
-            nudge_y = 200, hjust = 0, family = my_font, color = "#22211d", size = rel(0.9)) +
+            nudge_y = 200, hjust = 0, family = my_font, color = "#22211d") +
   expand_limits(y = c(0, 9000)) +
   labs(title = 'Number of Kidnappings & Abductions in 2012',
        subtitle = 'By State', 
@@ -279,7 +279,7 @@ level_data %>%
   mutate(State = reorder(State, desc(State))) %>%
   ggplot(aes(x=Crime,y=State, z=bin)) +
     geom_tile(aes(fill = bin)) + 
-    theme(axis.text.x = element_text(angle=90, hjust=1),
+    theme(axis.text.x = element_text(angle=90, hjust=1, vjust = 0.5),
           panel.grid = element_blank(), 
           plot.title = element_text(hjust = 0, face = "bold"),
           plot.margin = margin(10,70,10,20),
