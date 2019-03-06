@@ -156,7 +156,7 @@ After identifying the most significant crimes in 2012, I chart how these crimes 
 crimes <- c("Kidnapping And Abduction Of Children",
             "Murder Of Children",
             "Other Crimes Against Children",
-            "Procuration Of Minor Girls",
+#            "Procuration Of Minor Girls",
             "Rape Of Children")
 
 df %>%
@@ -168,8 +168,8 @@ df %>%
   geom_point(shape = 21, size = 2.5, col = my_bkgd, fill = ghibli_palettes$MononokeMedium[2]) +
   facet_wrap(~ crime_head, ncol = 2) +
   labs(y = NULL, x = NULL,
-       title = "Number of Crimes in Tamil Nadu",
-       subtitle = "Based on 5 Most Significant Types of Crime in 2012") +
+       title = "Growth in Number of Crimes in Tamil Nadu",
+       subtitle = "Based on 4 Most Significant Types of Crime in 2012") +
   scale_x_continuous(labels = function(x) as.integer(x)) +
   theme(axis.text.x = element_text(hjust=1))
 
@@ -201,7 +201,7 @@ kidnapping_plot <- df %>%
   filter(crime_head == "Kidnapping And Abduction Of Children", state_ut %in% high_ka_states$state_ut) %>%
   ggplot(aes(x=year,y=df, fill=state_ut, text = paste0("Year: ", year,"\nTotal: ", df))) +
   geom_bar(stat='identity') + 
-    labs(title = 'Kidnapping And Abduction Of Children by State, 2001 - 2012', y = 'Number of Crimes', x='') +
+    labs(title = 'Kidnapping And Abduction by State, 2001 - 2012', y = 'Number of Crimes', x='') +
     scale_x_continuous(labels = function(x) as.integer(x)) +
     facet_wrap(~state_ut) + 
     scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(top_k)) +

@@ -167,7 +167,7 @@ df$state_ut &lt;- str_to_title(df$state_ut)</code></pre>
 crimes &lt;- c(&quot;Kidnapping And Abduction Of Children&quot;,
             &quot;Murder Of Children&quot;,
             &quot;Other Crimes Against Children&quot;,
-            &quot;Procuration Of Minor Girls&quot;,
+#            &quot;Procuration Of Minor Girls&quot;,
             &quot;Rape Of Children&quot;)
 
 df %&gt;%
@@ -179,8 +179,8 @@ df %&gt;%
   geom_point(shape = 21, size = 2.5, col = my_bkgd, fill = ghibli_palettes$MononokeMedium[2]) +
   facet_wrap(~ crime_head, ncol = 2) +
   labs(y = NULL, x = NULL,
-       title = &quot;Number of Crimes in Tamil Nadu&quot;,
-       subtitle = &quot;Based on 5 Most Significant Types of Crime in 2012&quot;) +
+       title = &quot;Growth in Number of Crimes in Tamil Nadu&quot;,
+       subtitle = &quot;Based on 4 Most Significant Types of Crime in 2012&quot;) +
   scale_x_continuous(labels = function(x) as.integer(x)) +
   theme(axis.text.x = element_text(hjust=1))</code></pre>
 <p><img src="/blog/2018-02-22-crime-against-children-in-india_files/figure-html/tamil_nadu_crimes_charts-1.png" width="672" /></p>
@@ -190,14 +190,13 @@ df %&gt;%
   group_by(crime_head) %&gt;%
   summarize(CAGR =  scales::percent((df[year == 2012] / df[year == 2001]) ^ (1/11) - 1)) %&gt;%
   arrange(desc(CAGR)) </code></pre>
-<pre><code>## # A tibble: 5 x 2
+<pre><code>## # A tibble: 4 x 2
 ##   crime_head                           CAGR 
 ##   &lt;chr&gt;                                &lt;chr&gt;
-## 1 Procuration Of Minor Girls           Inf  
-## 2 Kidnapping And Abduction Of Children 47.1%
-## 3 Rape Of Children                     28.0%
-## 4 Murder Of Children                   17.5%
-## 5 Other Crimes Against Children        12.1%</code></pre>
+## 1 Kidnapping And Abduction Of Children 47.1%
+## 2 Rape Of Children                     28.0%
+## 3 Murder Of Children                   17.5%
+## 4 Other Crimes Against Children        12.1%</code></pre>
 <p>Note that ‘Procuration Of Minor Girls’ is <strong>NaN%</strong> since it was 0 in 2001. Kidnappings have grown by almost 50% a year!</p>
 </div>
 <div id="kidnappings-and-abductions-by-state" class="section level4">
@@ -215,7 +214,7 @@ kidnapping_plot &lt;- df %&gt;%
   filter(crime_head == &quot;Kidnapping And Abduction Of Children&quot;, state_ut %in% high_ka_states$state_ut) %&gt;%
   ggplot(aes(x=year,y=df, fill=state_ut, text = paste0(&quot;Year: &quot;, year,&quot;\nTotal: &quot;, df))) +
   geom_bar(stat=&#39;identity&#39;) + 
-    labs(title = &#39;Kidnapping And Abduction Of Children by State, 2001 - 2012&#39;, y = &#39;Number of Crimes&#39;, x=&#39;&#39;) +
+    labs(title = &#39;Kidnapping And Abduction by State, 2001 - 2012&#39;, y = &#39;Number of Crimes&#39;, x=&#39;&#39;) +
     scale_x_continuous(labels = function(x) as.integer(x)) +
     facet_wrap(~state_ut) + 
     scale_fill_manual(values = colorRampPalette(brewer.pal(8, &quot;Dark2&quot;))(top_k)) +
