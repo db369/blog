@@ -188,7 +188,7 @@ Note that 'Procuration Of Minor Girls' is __NaN%__ since it was 0 in 2001. Kidna
 
 #### Kidnappings and Abductions by State
 To add a little more context, I'll take a look at kidnapping and abductions by state. Below, I select 12 states that have had the most kidnappings over the 12-year period.
-```{r kidnapping_by_state_all, fig.height=6, fig.width=9, message=FALSE, warning=FALSE}
+```{r kidnapping_by_state_all, fig.height=6, fig.width=9.5, message=FALSE, warning=FALSE}
 top_k <- 12
 
 high_ka_states <- df %>%
@@ -201,10 +201,10 @@ kidnapping_plot <- df %>%
   filter(crime_head == "Kidnapping And Abduction Of Children", state_ut %in% high_ka_states$state_ut) %>%
   ggplot(aes(x=year,y=df, fill=state_ut, text = paste0("Year: ", year,"\nTotal: ", df))) +
   geom_bar(stat='identity') + 
-    labs(title = 'Kidnapping And Abduction by State, 2001 - 2012', y = 'Number of Crimes', x='') +
-    scale_x_continuous(labels = function(x) as.integer(x)) +
-    facet_wrap(~state_ut) + 
-    scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(top_k)) +
+  labs(title = 'Kidnapping And Abduction by State, 2001 - 2012', y = 'Number of Crimes', x='') +
+  scale_x_continuous(labels = function(x) as.integer(x), breaks = seq(2000,2012,3)) +
+  facet_wrap(~state_ut) + 
+  scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(top_k)) +
   theme(legend.position='none')
 
 kidnapping_plot
@@ -339,7 +339,7 @@ As you can see, kidnappings and rape seem most significant across India. 'Other'
 #### Total Crime By State
 Shifting to a more macro view, we'll take a look at total crimes by state over time. I select the top 12 states by cumulative total crime over the period. From the charts below, it appears that Madhya Pradesh and Maharashtra have had higher crime, but with low growth, over time. Crime in Uttar Pradesh, however, has been sporadic and grew significantly between 2010 and 2012. 
 
-```{r crimes_by_state, echo=FALSE, fig.height=6, fig.width=9, message=FALSE, warning=FALSE}
+```{r crimes_by_state, echo=FALSE, fig.height=6, fig.width=9.5, message=FALSE, warning=FALSE}
 top <- 12
 
 high_crime_states <- df %>%
@@ -352,13 +352,13 @@ total_by_st_plot <- df %>%
   filter(crime_head == "Total Crimes Against Children", state_ut %in% high_crime_states$state_ut) %>%
   ggplot(aes(x=year,y=df, fill=state_ut, text = paste0("Year: ", year,"\nTotal: ", df))) +
   geom_bar(stat='identity') + 
-    facet_wrap(~state_ut) + 
-    labs(title = 'Total Crimes Against Children by State, 2001 - 2012', 
-         y = 'Number of Crimes', x='') +
-    scale_x_continuous(labels = function(x) as.integer(x)) +
-    theme(legend.position='none', 
-          axis.text.x = element_text(angle = 90, vjust = 0.5)) +
-    scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(top))
+  facet_wrap(~state_ut) + 
+  labs(title = 'Total Crimes Against Children by State, 2001 - 2012', 
+       y = 'Number of Crimes', x='') +
+  scale_x_continuous(labels = function(x) as.integer(x)) +
+  theme(legend.position='none', 
+        axis.text.x = element_text(angle = 90, vjust = 0.5)) +
+  scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(top))
 
 total_by_st_plot
 
@@ -651,8 +651,7 @@ colnames(median.table) <- c("State", "Median")
 cnames <- aggregate(cbind(long, lat) ~ state, data=final.plt.med, FUN=function(x) mean(range(x)))
 
 # Process names by replacing last space with newline char
-# cnames$state <- stri_replace_last_charclass(cnames$state, "\\p{WHITE_SPACE}", "\n")
-cnames$state <- str_replace(cnames$state, "\\s$","\\n")
+cnames$state <- stri_replace_last_charclass(cnames$state, "\\p{WHITE_SPACE}", "\n")
 
 median_plot <- ggplot() +
   geom_polygon(data = final.plt.med, 
