@@ -17,3 +17,8 @@
       width: 900;
       height: 600;
     }
+    img {
+      padding:4px;
+      border:1px solid #f0f0f0;
+      background-color:#ffffff;
+    }
