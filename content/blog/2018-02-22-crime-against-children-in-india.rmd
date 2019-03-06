@@ -567,7 +567,7 @@ map_theme <- theme(panel.background = element_blank(),
 
 ```
 
-```{r map_2001_2012_alt, message=FALSE, warning=FALSE}
+```{r map_2001_2012_alt, fig.height=4, fig.width=7, message=FALSE, warning=FALSE}
 
 # Create dataframe aggregating all crime for all years
 total_all_yr <- df %>%
