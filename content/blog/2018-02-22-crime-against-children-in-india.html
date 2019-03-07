@@ -207,7 +207,7 @@ df %&gt;%
 high_ka_states &lt;- df %&gt;%
   group_by(state_ut) %&gt;%
   filter(crime_head == &quot;Kidnapping And Abduction Of Children&quot;) %&gt;%
-  summarise(stotal = sum(df)) %&gt;%
+  summarise(stotal = sum(df, na.rm = T)) %&gt;%
   top_n(top_k)
 
 kidnapping_plot &lt;- df %&gt;%
@@ -219,11 +219,10 @@ kidnapping_plot &lt;- df %&gt;%
   facet_wrap(~state_ut) + 
   scale_fill_manual(values = ghibli_palette(top_k, name = &quot;MononokeMedium&quot;, type = &quot;continuous&quot;)) +
   theme(legend.position=&#39;none&#39;,
-        panel.spacing = unit(1.5, &quot;lines&quot;),
-        strip.text = element_text(size = rel(1)))
+        panel.spacing = unit(1.5, &quot;lines&quot;))
 
 kidnapping_plot</code></pre>
-<p><img src="/blog/2018-02-22-crime-against-children-in-india_files/figure-html/kidnapping_by_state_all-1.png" width="672" /></p>
+<p><img src="/blog/2018-02-22-crime-against-children-in-india_files/figure-html/kidnapping_by_state_all-1.png" width="912" /></p>
 <p>Uttar Pradesh seems to stand out quite a bit, especially in 2012. Taking a closer look, we see it has had more than 4x the number of kidnappings than any other state in 2012!</p>
 <pre class="r"><code>lollipop_color &lt;- ghibli_palettes$MononokeMedium[4]
 
@@ -291,7 +290,7 @@ level_data %&gt;%
 <div id="total-crime-by-state" class="section level4">
 <h4>Total Crime By State</h4>
 <p>Shifting to a more macro view, we’ll take a look at total crimes by state over time. I select the top 12 states by cumulative total crime over the period. From the charts below, it appears that Madhya Pradesh and Maharashtra have had higher crime, but with low growth, over time. Crime in Uttar Pradesh, however, has been sporadic and grew significantly between 2010 and 2012.</p>
-<p><img src="/blog/2018-02-22-crime-against-children-in-india_files/figure-html/crimes_by_state-1.png" width="672" /></p>
+<p><img src="/blog/2018-02-22-crime-against-children-in-india_files/figure-html/crimes_by_state-1.png" width="912" /></p>
 <p>Again, I’m interested in average annual growth, but here I take a look at total crimes by state. Tamil Nadu comes out on top. That is likely because we’re dealing with smaller numbers, but the trajectory is still quite steep. Uttar Pradesh had an average annual growth in crime of about 6% from 2001 to 2012, but crime fell from 2001 to 2002. Average growth from 2002 to 2012 was about 14.4%, which is more than twice as fast as indicated, but still places in the lower half of the chart below.</p>
 <pre class="r"><code># Create vector to highlight first bar in chart
 gr_ch_cols &lt;- c(&quot;two&quot;, rep(&quot;one&quot;, 14))
