@@ -156,7 +156,6 @@ After identifying the most significant crimes in 2012, I chart how these crimes 
 crimes <- c("Kidnapping And Abduction Of Children",
             "Murder Of Children",
             "Other Crimes Against Children",
-#            "Procuration Of Minor Girls",
             "Rape Of Children")
 
 df %>%
@@ -171,7 +170,8 @@ df %>%
        title = "Growth in Number of Crimes in Tamil Nadu",
        subtitle = "Most Significant Types of Crime as of 2012") +
   scale_x_continuous(labels = function(x) as.integer(x)) +
-  theme(axis.text.x = element_text(hjust=1))
+  theme(axis.text.x = element_text(hjust=1),
+        panel.spacing = unit(1.5, "lines"))
 
 ```
 
@@ -188,7 +188,7 @@ Note that 'Procuration Of Minor Girls' is __NaN%__ since it was 0 in 2001. Kidna
 
 #### Kidnappings and Abductions by State
 To add a little more context, I'll take a look at kidnapping and abductions by state. Below, I select 12 states that have had the most kidnappings over the 12-year period.
-```{r kidnapping_by_state_all, fig.height=6, fig.width=9.5, message=FALSE, warning=FALSE}
+```{r kidnapping_by_state_all, fig.height=6, message=FALSE, warning=FALSE}
 top_k <- 12
 
 high_ka_states <- df %>%
@@ -204,8 +204,10 @@ kidnapping_plot <- df %>%
   labs(title = 'Kidnapping And Abduction by State, 2001 - 2012', y = 'Number of Crimes', x='') +
   scale_x_continuous(labels = function(x) as.integer(x), breaks = seq(2000,2012,3)) +
   facet_wrap(~state_ut) + 
-  scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(top_k)) +
-  theme(legend.position='none')
+  scale_fill_manual(values = ghibli_palette(top_k, name = "MononokeMedium", type = "continuous")) +
+  theme(legend.position='none',
+        panel.spacing = unit(1.5, "lines"),
+        strip.text = element_text(size = rel(1)))
 
 kidnapping_plot
 
@@ -342,13 +344,13 @@ As you can see, kidnappings and rape seem most significant across India. 'Other'
 #### Total Crime By State
 Shifting to a more macro view, we'll take a look at total crimes by state over time. I select the top 12 states by cumulative total crime over the period. From the charts below, it appears that Madhya Pradesh and Maharashtra have had higher crime, but with low growth, over time. Crime in Uttar Pradesh, however, has been sporadic and grew significantly between 2010 and 2012. 
 
-```{r crimes_by_state, echo=FALSE, fig.height=6, fig.width=9.5, message=FALSE, warning=FALSE}
+```{r crimes_by_state, echo=FALSE, fig.height=6, message=FALSE, warning=FALSE}
 top <- 12
 
 high_crime_states <- df %>%
   group_by(state_ut) %>%
   filter(crime_head == "Total Crimes Against Children") %>%
-  summarise(stotal = sum(df)) %>%
+  summarise(stotal = sum(df, na.rm = T)) %>%
   top_n(top)
 
 total_by_st_plot <- df %>%
@@ -358,10 +360,12 @@ total_by_st_plot <- df %>%
   facet_wrap(~state_ut) + 
   labs(title = 'Total Crimes Against Children by State, 2001 - 2012', 
        y = 'Number of Crimes', x='') +
-  scale_x_continuous(labels = function(x) as.integer(x)) +
+  scale_x_continuous(labels = function(x) as.integer(x), breaks = seq(2000,2012,3)) +
   theme(legend.position='none', 
-        axis.text.x = element_text(angle = 90, vjust = 0.5)) +
-  scale_fill_manual(values = colorRampPalette(brewer.pal(8, "Dark2"))(top))
+        panel.spacing = unit(1.5, "lines"),
+        strip.text = element_text(size = rel(1))) +
+  scale_fill_manual(values = ghibli_palette(top, name = "MononokeMedium", type = "continuous")) +
+  coord_cartesian(clip = 'off')
 
 total_by_st_plot
 
