@@ -261,6 +261,9 @@ df %>%
 The next question I have is _what crimes are most significant in each state?_ A heatmap (or levelplot) might be the best way to visualize this. This also allows us to visualize the most prevalent crimes throughout India.
 ```{r heatmap, fig.height=8, fig.width=6}
 
+# Set up color palette and binned counts
+pal = c("#E2D7C5","#C6B1A9","#9E7D83","#7A4F61","#54203F")
+pal2 = c("#e5e5e2","#E2D7C5","#9E7D83","#54203F")
 
 level_data <- df %>%
   filter(year == '2012', crime_head != "Total Crimes Against Children") %>%
@@ -284,7 +287,7 @@ level_data %>%
           plot.title = element_text(hjust = 0, face = "bold"),
           plot.margin = margin(10,70,10,20),
           legend.position = "top") +
-  scale_fill_manual(values = ghibli_palettes$MononokeMedium, name = "No. of Crimes (log scale)",
+  scale_fill_manual(values = pal2, name = "No. of Crimes (log scale)",
                     guide = guide_legend(keyheight = unit(2, units = "mm"), 
                                          keywidth = unit(18, units = "mm"), 
                                          title.position = "top", label.position = "bottom",
@@ -585,9 +588,6 @@ total_by_state_all <- merge(total_by_state_all, growth.tbl, by="state", all.x=T)
 merge_tbl_01_12 <- merge(states.shp.f, total_by_state_all, by="id")
 final.plt.01_12 <- merge_tbl_01_12[order(merge_tbl_01_12$order),]
 final.plt.01_12$year <- parse_date_time(final.plt.01_12$year,"%Y")
-
-# Set up color palette and binned counts
-pal = c("#E2D7C5","#C6B1A9","#9E7D83","#7A4F61","#54203F")
 
 label_start <- c(seq(0,10000,2000))
 label_end <- c(seq(2000,12000,2000))

@@ -249,7 +249,11 @@ df %&gt;%
 <div id="levelplot" class="section level4">
 <h4>Levelplot</h4>
 <p>The next question I have is <em>what crimes are most significant in each state?</em> A heatmap (or levelplot) might be the best way to visualize this. This also allows us to visualize the most prevalent crimes throughout India.</p>
-<pre class="r"><code>level_data &lt;- df %&gt;%
+<pre class="r"><code># Set up color palette and binned counts
+pal = c(&quot;#E2D7C5&quot;,&quot;#C6B1A9&quot;,&quot;#9E7D83&quot;,&quot;#7A4F61&quot;,&quot;#54203F&quot;)
+pal2 = c(&quot;#e5e5e2&quot;,&quot;#E2D7C5&quot;,&quot;#9E7D83&quot;,&quot;#54203F&quot;)
+
+level_data &lt;- df %&gt;%
   filter(year == &#39;2012&#39;, crime_head != &quot;Total Crimes Against Children&quot;) %&gt;%
   mutate(crime_head = str_remove(crime_head, &quot; Of Children&quot;))
 
@@ -271,7 +275,7 @@ level_data %&gt;%
           plot.title = element_text(hjust = 0, face = &quot;bold&quot;),
           plot.margin = margin(10,70,10,20),
           legend.position = &quot;top&quot;) +
-  scale_fill_manual(values = ghibli_palettes$MononokeMedium, name = &quot;No. of Crimes (log scale)&quot;,
+  scale_fill_manual(values = pal2, name = &quot;No. of Crimes (log scale)&quot;,
                     guide = guide_legend(keyheight = unit(2, units = &quot;mm&quot;), 
                                          keywidth = unit(18, units = &quot;mm&quot;), 
                                          title.position = &quot;top&quot;, label.position = &quot;bottom&quot;,
@@ -415,9 +419,6 @@ total_by_state_all &lt;- merge(total_by_state_all, growth.tbl, by=&quot;state&qu
 merge_tbl_01_12 &lt;- merge(states.shp.f, total_by_state_all, by=&quot;id&quot;)
 final.plt.01_12 &lt;- merge_tbl_01_12[order(merge_tbl_01_12$order),]
 final.plt.01_12$year &lt;- parse_date_time(final.plt.01_12$year,&quot;%Y&quot;)
-
-# Set up color palette and binned counts
-pal = c(&quot;#E2D7C5&quot;,&quot;#C6B1A9&quot;,&quot;#9E7D83&quot;,&quot;#7A4F61&quot;,&quot;#54203F&quot;)
 
 label_start &lt;- c(seq(0,10000,2000))
 label_end &lt;- c(seq(2000,12000,2000))
