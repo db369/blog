@@ -25,7 +25,7 @@ I love watches! For many, it is a dying (or dead) art. We can tell time using ph
 As a result, I enjoy reading and watching horological content and, well, entering the occasional contest. So when WorldTempus had their annual advent calendar contest, I entered whenever I saw something of interest. Sometime after Christmas, they announced the winners on their [web site](http://en.worldtempus.com/article/events/arts-and-culture/advent-calendar-here-are-the-winners-26936.html?utm_source=Worldtempus+Concours+EN&utm_campaign=d835784c43-EMAIL_CAMPAIGN_2018_avent_gagnant_generale_EN&utm_medium=email&utm_term=0_1b496ba624-d835784c43-119672677) and I was immediately struck by how many winners were from France. I wondered what else I could glean from the small amount of data on that page so I set off to learn how to use rvest to scrape the data and regular expressions to clean and parse it. I also had the idea to visualize how some features are related and finally learned how to construct a simple Sankey diagram. 
 </br></br>
 
-# Setup
+## Setup
 First step is to load in some libraries and set up some aesthetics.
 
 ```{r setup, message=FALSE, warning=FALSE, paged.print=FALSE}
@@ -33,7 +33,6 @@ library(tidyverse)
 library(lubridate)
 library(rvest)
 library(networkD3)
-
 ```
 
 ```{r custom_theme, echo=FALSE}
@@ -53,7 +52,7 @@ my_theme <- theme(text = element_text(family = my_font, color = "#22211d"),
 
 theme_set(theme_light() + my_theme)
 ```
-</br>
+
 
 ## Scraping the web
 Below I use rvest's read_html function to load the url. The content is parsed using html_nodes that I identified using the SelectorGadget browser plugin. 
@@ -145,6 +144,7 @@ data %>%
   geom_histogram(stat="count") +
   coord_flip() +
   labs(x="",y="") +
+  scale_fill_manual(values = ghibli::ghibli_palette(18, name = "MononokeMedium", type = "continuous")) +
   theme(axis.text = element_text(size = 14),
         legend.position = c(0.75,0.3),
         legend.text = element_text(size=6)) +

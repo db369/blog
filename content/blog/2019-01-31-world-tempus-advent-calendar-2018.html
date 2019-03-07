@@ -30,15 +30,14 @@ type: post
 <p>I love watches! For many, it is a dying (or dead) art. We can tell time using phones, computers, and smart watches, and they each perform many more functions making the traditional watch all but obsolete. But, to me, mechanical watches are the perfect example of form and function. I find it amazing how a selection of tiny gears and a long spring can measure something like time with very reasonable accuracy.</p>
 <p>As a result, I enjoy reading and watching horological content and, well, entering the occasional contest. So when WorldTempus had their annual advent calendar contest, I entered whenever I saw something of interest. Sometime after Christmas, they announced the winners on their <a href="http://en.worldtempus.com/article/events/arts-and-culture/advent-calendar-here-are-the-winners-26936.html?utm_source=Worldtempus+Concours+EN&amp;utm_campaign=d835784c43-EMAIL_CAMPAIGN_2018_avent_gagnant_generale_EN&amp;utm_medium=email&amp;utm_term=0_1b496ba624-d835784c43-119672677">web site</a> and I was immediately struck by how many winners were from France. I wondered what else I could glean from the small amount of data on that page so I set off to learn how to use rvest to scrape the data and regular expressions to clean and parse it. I also had the idea to visualize how some features are related and finally learned how to construct a simple Sankey diagram.
 </br></br></p>
-</div>
-<div id="setup" class="section level1">
-<h1>Setup</h1>
+<div id="setup" class="section level2">
+<h2>Setup</h2>
 <p>First step is to load in some libraries and set up some aesthetics.</p>
 <pre class="r"><code>library(tidyverse)
 library(lubridate)
 library(rvest)
 library(networkD3)</code></pre>
-<p></br></p>
+</div>
 <div id="scraping-the-web" class="section level2">
 <h2>Scraping the web</h2>
 <p>Below I use rvest’s read_html function to load the url. The content is parsed using html_nodes that I identified using the SelectorGadget browser plugin.</p>
@@ -365,6 +364,7 @@ France
   geom_histogram(stat=&quot;count&quot;) +
   coord_flip() +
   labs(x=&quot;&quot;,y=&quot;&quot;) +
+  scale_fill_manual(values = ghibli::ghibli_palette(18, name = &quot;MononokeMedium&quot;, type = &quot;continuous&quot;)) +
   theme(axis.text = element_text(size = 14),
         legend.position = c(0.75,0.3),
         legend.text = element_text(size=6)) +
