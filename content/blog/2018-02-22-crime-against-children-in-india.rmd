@@ -184,7 +184,7 @@ df %>%
   arrange(desc(CAGR)) 
 ```
 
-Note that 'Procuration Of Minor Girls' is __NaN%__ since it was 0 in 2001. Kidnappings have grown by almost 50% a year! 
+Kidnappings have grown by almost 50% a year! 
 
 #### Kidnappings and Abductions by State
 To add a little more context, I'll take a look at kidnapping and abductions by state. Below, I select 12 states that have had the most kidnappings over the 12-year period.
@@ -263,7 +263,8 @@ The next question I have is _what crimes are most significant in each state?_ A 
 ```{r heatmap, fig.height=8, fig.width=6}
 
 # Set up color palette and binned counts
-pal = c("#E2D7C5","#C6B1A9","#9E7D83","#7A4F61","#54203F")
+# pal = c("#E2D7C5","#C6B1A9","#9E7D83","#7A4F61","#54203F")
+pal = c("#e2d7c5","#c0a68d","#a0765b","#804633","#5e1414")
 pal2 = c("#e5e5e2","#E2D7C5","#9E7D83","#54203F")
 
 level_data <- df %>%
@@ -288,7 +289,7 @@ level_data %>%
           plot.title = element_text(hjust = 0, face = "bold"),
           plot.margin = margin(10,70,10,20),
           legend.position = "top") +
-  scale_fill_manual(values = pal2, name = "No. of Crimes (log scale)",
+  scale_fill_manual(values = pal, name = "No. of Crimes (log scale)",
                     guide = guide_legend(keyheight = unit(2, units = "mm"), 
                                          keywidth = unit(18, units = "mm"), 
                                          title.position = "top", label.position = "bottom",
@@ -631,10 +632,10 @@ myt <- ttheme_default(
   base_size = 8,
   base_family = my_font, 
   base_colour =  "#22211d",
-  core = list(fg_params=list(hjust = 0, x=0.1),
-              bg_params=list(fill="#E2D7C5")),
-  colhead = list(fg_params=list(col= "#22211d", fontface="bold.italic", hjust = 0, x=0.1),
-                 bg_params=list(fill="#9E7D83"))
+  core = list(fg_params=list(hjust = 0, x = 0.1),
+              bg_params=list(fill = pal[1])),
+  colhead = list(fg_params=list(col = my_bkgd, fontface = "bold.italic", hjust = 0, x = 0.1),
+                 bg_params=list(fill = pal[5]))
  )
 
 label_start <- c(seq(0,3000,1500))
@@ -675,7 +676,7 @@ median_plot <- ggplot() +
         legend.background = element_blank(),
         legend.position = c(0.7,0))
 
-g <- tableGrob(median.table,rows=NULL, theme = myt) 
+g <- tableGrob(median.table, rows=NULL, theme = myt) 
 
 median_plot + annotation_custom(g, xmin=88, xmax=98, ymin=8, ymax=18) + coord_cartesian()
 

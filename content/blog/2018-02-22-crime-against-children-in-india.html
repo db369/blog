@@ -197,7 +197,7 @@ df %&gt;%
 ## 2 Rape Of Children                     28.0%
 ## 3 Murder Of Children                   17.5%
 ## 4 Other Crimes Against Children        12.1%</code></pre>
-<p>Note that ‘Procuration Of Minor Girls’ is <strong>NaN%</strong> since it was 0 in 2001. Kidnappings have grown by almost 50% a year!</p>
+<p>Kidnappings have grown by almost 50% a year!</p>
 </div>
 <div id="kidnappings-and-abductions-by-state" class="section level4">
 <h4>Kidnappings and Abductions by State</h4>
@@ -251,7 +251,8 @@ df %&gt;%
 <h4>Levelplot</h4>
 <p>The next question I have is <em>what crimes are most significant in each state?</em> A heatmap (or levelplot) might be the best way to visualize this. This also allows us to visualize the most prevalent crimes throughout India.</p>
 <pre class="r"><code># Set up color palette and binned counts
-pal = c(&quot;#E2D7C5&quot;,&quot;#C6B1A9&quot;,&quot;#9E7D83&quot;,&quot;#7A4F61&quot;,&quot;#54203F&quot;)
+# pal = c(&quot;#E2D7C5&quot;,&quot;#C6B1A9&quot;,&quot;#9E7D83&quot;,&quot;#7A4F61&quot;,&quot;#54203F&quot;)
+pal = c(&quot;#e2d7c5&quot;,&quot;#c0a68d&quot;,&quot;#a0765b&quot;,&quot;#804633&quot;,&quot;#5e1414&quot;)
 pal2 = c(&quot;#e5e5e2&quot;,&quot;#E2D7C5&quot;,&quot;#9E7D83&quot;,&quot;#54203F&quot;)
 
 level_data &lt;- df %&gt;%
@@ -276,7 +277,7 @@ level_data %&gt;%
           plot.title = element_text(hjust = 0, face = &quot;bold&quot;),
           plot.margin = margin(10,70,10,20),
           legend.position = &quot;top&quot;) +
-  scale_fill_manual(values = pal2, name = &quot;No. of Crimes (log scale)&quot;,
+  scale_fill_manual(values = pal, name = &quot;No. of Crimes (log scale)&quot;,
                     guide = guide_legend(keyheight = unit(2, units = &quot;mm&quot;), 
                                          keywidth = unit(18, units = &quot;mm&quot;), 
                                          title.position = &quot;top&quot;, label.position = &quot;bottom&quot;,
@@ -454,10 +455,10 @@ final.plt.01_12 %&gt;%
   base_size = 8,
   base_family = my_font, 
   base_colour =  &quot;#22211d&quot;,
-  core = list(fg_params=list(hjust = 0, x=0.1),
-              bg_params=list(fill=&quot;#E2D7C5&quot;)),
-  colhead = list(fg_params=list(col= &quot;#22211d&quot;, fontface=&quot;bold.italic&quot;, hjust = 0, x=0.1),
-                 bg_params=list(fill=&quot;#9E7D83&quot;))
+  core = list(fg_params=list(hjust = 0, x = 0.1),
+              bg_params=list(fill = pal[1])),
+  colhead = list(fg_params=list(col = my_bkgd, fontface = &quot;bold.italic&quot;, hjust = 0, x = 0.1),
+                 bg_params=list(fill = pal[5]))
  )
 
 label_start &lt;- c(seq(0,3000,1500))
@@ -498,7 +499,7 @@ median_plot &lt;- ggplot() +
         legend.background = element_blank(),
         legend.position = c(0.7,0))
 
-g &lt;- tableGrob(median.table,rows=NULL, theme = myt) 
+g &lt;- tableGrob(median.table, rows=NULL, theme = myt) 
 
 median_plot + annotation_custom(g, xmin=88, xmax=98, ymin=8, ymax=18) + coord_cartesian()</code></pre>
 <p><img src="/blog/2018-02-22-crime-against-children-in-india_files/figure-html/map_median-1.png" width="576" /></p>
