@@ -155,8 +155,8 @@ After identifying the most significant crimes in 2012, I chart how these crimes 
 
 crimes <- c("Kidnapping And Abduction Of Children",
             "Murder Of Children",
-            "Other Crimes Against Children",
-            "Rape Of Children")
+            "Rape Of Children",
+            "Other Crimes Against Children")
 
 df %>%
   filter((state_ut == "Tamil Nadu") & (crime_head %in% crimes )) %>%
@@ -235,6 +235,7 @@ Uttar Pradesh seems to stand out quite a bit, especially in 2012. Taking a close
 ```{r kidnapping_by_state_12, message=FALSE, warning=FALSE}
 
 lollipop_color <- ghibli_palettes$MononokeMedium[4]
+hilight_color <- ghibli_palettes$MononokeMedium[6]
 
 df %>%
   group_by(crime_head) %>%
@@ -243,8 +244,9 @@ df %>%
   filter(crime_head == "Kidnapping And Abduction Of Children", year == '2012', df[year=='2012'] > 10) %>%
   mutate(state_ut = reorder(state_ut, df)) %>%
   ggplot(aes(x = state_ut, y = df)) + 
-  geom_segment(aes(y = 0, yend = df, x = state_ut, xend = state_ut), col = lollipop_color, size = 2) +
-  geom_point(stat='identity', col = lollipop_color, size = 4) + 
+  geom_segment(aes(y = 0, yend = df, x = state_ut, xend = state_ut, color = if_else(state_ut == "Tamil Nadu", hilight_color, lollipop_color)), size = 2) +
+  geom_point(stat='identity', aes(color = if_else(state_ut == "Tamil Nadu", hilight_color, lollipop_color)), size = 4) + 
+  scale_color_manual(values = c(lollipop_color,hilight_color)) +
   coord_flip() +
   geom_text(aes(y = df, x = state_ut, label = df), 
             nudge_y = 200, hjust = 0, family = my_font, color = "#22211d") +
