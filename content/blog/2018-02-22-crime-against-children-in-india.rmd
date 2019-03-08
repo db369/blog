@@ -167,7 +167,7 @@ df %>%
   geom_point(shape = 21, size = 2.5, col = my_bkgd, fill = ghibli_palettes$MononokeMedium[2]) +
   facet_wrap(~ crime_head, ncol = 2) +
   labs(y = NULL, x = NULL,
-       title = "Growth in Number of Crimes in Tamil Nadu",
+       title = "Growth in Number of Crimes Against Children in Tamil Nadu",
        subtitle = "Most Significant Types of Crime as of 2012") +
   scale_x_continuous(labels = function(x) as.integer(x)) +
   theme(axis.text.x = element_text(hjust=1),
