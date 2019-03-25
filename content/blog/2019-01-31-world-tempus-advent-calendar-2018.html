@@ -16,6 +16,7 @@ featuredalt: ''
 featuredpath: 'img/main'
 linktitle: ''
 type: post
+code_download: true
 ---
 
 <script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
@@ -36,7 +37,8 @@ type: post
 <pre class="r"><code>library(tidyverse)
 library(lubridate)
 library(rvest)
-library(networkD3)</code></pre>
+library(networkD3)
+library(ghibli)</code></pre>
 </div>
 <div id="scraping-the-web" class="section level2">
 <h2>Scraping the web</h2>
@@ -364,7 +366,7 @@ France
   geom_histogram(stat=&quot;count&quot;) +
   coord_flip() +
   labs(x=&quot;&quot;,y=&quot;&quot;) +
-  scale_fill_manual(values = ghibli::ghibli_palette(18, name = &quot;MononokeMedium&quot;, type = &quot;continuous&quot;)) +
+  scale_fill_manual(values = ghibli_palette(18, name = &quot;MononokeMedium&quot;, type = &quot;continuous&quot;)) +
   theme(axis.text = element_text(size = 14),
         legend.position = c(0.75,0.3),
         legend.text = element_text(size=6)) +

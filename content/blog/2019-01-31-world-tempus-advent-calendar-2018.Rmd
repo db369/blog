@@ -34,6 +34,7 @@ library(tidyverse)
 library(lubridate)
 library(rvest)
 library(networkD3)
+library(ghibli)
 ```
 
 ```{r custom_theme, echo=FALSE}
@@ -145,7 +146,7 @@ data %>%
   geom_histogram(stat="count") +
   coord_flip() +
   labs(x="",y="") +
-  scale_fill_manual(values = ghibli::ghibli_palette(18, name = "MononokeMedium", type = "continuous")) +
+  scale_fill_manual(values = ghibli_palette(18, name = "MononokeMedium", type = "continuous")) +
   theme(axis.text = element_text(size = 14),
         legend.position = c(0.75,0.3),
         legend.text = element_text(size=6)) +

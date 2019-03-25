@@ -182,7 +182,8 @@ df %&gt;%
        subtitle = &quot;Most Significant Types of Crime as of 2012&quot;) +
   scale_x_continuous(labels = function(x) as.integer(x)) +
   theme(axis.text.x = element_text(hjust=1),
-        panel.spacing = unit(1.5, &quot;lines&quot;))</code></pre>
+        panel.spacing = unit(1.5, &quot;lines&quot;),
+        panel.border = element_rect(color = &quot;grey80&quot;, fill = NA))</code></pre>
 <p><img src="/blog/2018-02-22-crime-against-children-in-india_files/figure-html/tamil_nadu_crimes_charts-1.png" width="672" /></p>
 <p>Kidnapping and rape appear to have the most alarming trajectories. I’m curious what average annual growth looks like.</p>
 <pre class="r"><code>df %&gt;%
