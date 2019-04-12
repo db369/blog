@@ -268,7 +268,7 @@ label_start &lt;- c(0,10^1,10^2,10^3)
 label_end &lt;- c(10^1, 10^2, 10^3, 10^4)
 
 level_data$bin &lt;- cut(level_data$Count, breaks=c(0,10^1,10^2,10^3,10^4), 
-                      labels=c(paste0(label_start,&quot; - &quot;,label_end)), 
+                      labels=c(paste0(scales::comma(label_start),&quot; - &quot;,scales::comma(label_end))), 
                       include.lowest = TRUE)
 
 level_data %&gt;% 
@@ -280,11 +280,17 @@ level_data %&gt;%
           plot.title = element_text(hjust = 0, face = &quot;bold&quot;),
           plot.margin = margin(10,70,10,20),
           legend.position = &quot;top&quot;) +
-  scale_fill_manual(values = pal, name = &quot;No. of Crimes (log scale)&quot;,
-                    guide = guide_legend(keyheight = unit(2, units = &quot;mm&quot;), 
-                                         keywidth = unit(18, units = &quot;mm&quot;), 
-                                         title.position = &quot;top&quot;, label.position = &quot;bottom&quot;,
-                                         title.hjust = 0, label.hjust = 0.1, nrow = 1)) +
+    scale_fill_carto_d(palette = &quot;Fall&quot;, name = &quot;No. of Crimes (log scale)&quot;,
+                       guide = guide_legend(keyheight = unit(2, units = &quot;mm&quot;), 
+                                            keywidth = unit(18, units = &quot;mm&quot;), 
+                                            title.position = &quot;top&quot;, label.position = &quot;bottom&quot;,
+                                            title.hjust = 0, label.hjust = 0.1, nrow = 1)) +
+
+  # scale_fill_manual(values = pal, name = &quot;No. of Crimes (log scale)&quot;,
+  #                   guide = guide_legend(keyheight = unit(2, units = &quot;mm&quot;), 
+  #                                        keywidth = unit(18, units = &quot;mm&quot;), 
+  #                                        title.position = &quot;top&quot;, label.position = &quot;bottom&quot;,
+  #                                        title.hjust = 0, label.hjust = 0.1, nrow = 1)) +
     labs(x = &quot;&quot;, y = &quot;&quot;,
          title = &quot;Number of Crimes by State - 2012&quot;,
          subtitle = &quot;&quot;)</code></pre>
@@ -429,7 +435,7 @@ label_start &lt;- c(seq(0,10000,2000))
 label_end &lt;- c(seq(2000,12000,2000))
 
 final.plt.01_12$bin &lt;- cut(final.plt.01_12$count, breaks=c(seq(0, 12000, 2000), Inf), 
-                      labels=c(paste0(label_start,&quot; - &quot;,label_end), &quot;12000+&quot;), 
+                      labels=c(paste0(scales::comma(label_start),&quot; - &quot;,scales::comma(label_end)), &quot;12000+&quot;), 
                       include.lowest = TRUE)
 
 final.plt.01_12 %&gt;%
@@ -437,7 +443,7 @@ final.plt.01_12 %&gt;%
   ggplot() +
   geom_polygon(aes(x = long, y = lat, fill = bin, group = group), color = my_bkgd, size = 0.25) + 
   coord_map() +
-  scale_fill_manual(values = pal, name=&quot;No. of Crimes&quot;,
+  scale_fill_carto_d(palette = &quot;Fall&quot;, name=&quot;No. of Crimes&quot;, 
                     guide = guide_legend(keyheight = unit(2, units = &quot;mm&quot;), 
                                          keywidth = unit(18, units = &quot;mm&quot;), 
                                          title.position = &quot;top&quot;, label.position = &quot;bottom&quot;,
@@ -459,16 +465,16 @@ final.plt.01_12 %&gt;%
   base_family = my_font, 
   base_colour =  &quot;#22211d&quot;,
   core = list(fg_params=list(hjust = 0, x = 0.1),
-              bg_params=list(fill = pal[1])),
+              bg_params=list(fill = &quot;#f6edbd&quot;)),
   colhead = list(fg_params=list(col = my_bkgd, fontface = &quot;bold.italic&quot;, hjust = 0, x = 0.1),
-                 bg_params=list(fill = pal[5]))
+                 bg_params=list(fill = &quot;#3d5941&quot;))
  )
 
 label_start &lt;- c(seq(0,3000,1500))
 label_end &lt;- c(seq(1500,4500,1500))
 
 final.plt.med$bin &lt;- cut(final.plt.med$median, breaks=c(seq(0,4500,1500), Inf), 
-                      labels=c(paste0(label_start,&quot; - &quot;,label_end), &quot;4500+&quot;), 
+                      labels=c(paste0(scales::comma(label_start),&quot; - &quot;,scales::comma(label_end)), &quot;4500+&quot;), 
                       include.lowest = TRUE)
 
 final.plt.med &lt;- final.plt.med %&gt;% filter(!is.na(bin))
@@ -488,11 +494,17 @@ median_plot &lt;- ggplot() +
                color = my_bkgd, size = 0.25) + 
   geom_text(data=cnames, aes(long, lat, label = state), size=2, color = &quot;#22211d&quot;, family = my_font) +
   coord_map() +
-  scale_fill_manual(values = pal[1:4], name=&quot;Median&quot;,
+  scale_fill_carto_d(palette = &quot;Fall&quot;, name=&quot;Median&quot;,
                     guide = guide_legend(keyheight = unit(2, units = &quot;mm&quot;), 
                                          keywidth = unit(18, units = &quot;mm&quot;), 
                                          title.position = &quot;top&quot;, label.position = &quot;bottom&quot;,
                                          title.hjust = 0, label.hjust = 0.1, nrow = 1)) +
+
+  # scale_fill_manual(values = pal[1:4], name=&quot;Median&quot;,
+  #                   guide = guide_legend(keyheight = unit(2, units = &quot;mm&quot;), 
+  #                                        keywidth = unit(18, units = &quot;mm&quot;), 
+  #                                        title.position = &quot;top&quot;, label.position = &quot;bottom&quot;,
+  #                                        title.hjust = 0, label.hjust = 0.1, nrow = 1)) +
     labs(title=&quot;Median Number of Crimes Against Children&quot;, 
        subtitle = &quot;By State, 2001 to 2012&quot;,
        x = &quot;&quot;, y = &quot;&quot;) +

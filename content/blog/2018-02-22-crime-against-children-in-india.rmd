@@ -279,7 +279,7 @@ label_start <- c(0,10^1,10^2,10^3)
 label_end <- c(10^1, 10^2, 10^3, 10^4)
 
 level_data$bin <- cut(level_data$Count, breaks=c(0,10^1,10^2,10^3,10^4), 
-                      labels=c(paste0(label_start," - ",label_end)), 
+                      labels=c(paste0(scales::comma(label_start)," - ",scales::comma(label_end))), 
                       include.lowest = TRUE)
 
 level_data %>% 
@@ -291,11 +291,17 @@ level_data %>%
           plot.title = element_text(hjust = 0, face = "bold"),
           plot.margin = margin(10,70,10,20),
           legend.position = "top") +
-  scale_fill_manual(values = pal, name = "No. of Crimes (log scale)",
-                    guide = guide_legend(keyheight = unit(2, units = "mm"), 
-                                         keywidth = unit(18, units = "mm"), 
-                                         title.position = "top", label.position = "bottom",
-                                         title.hjust = 0, label.hjust = 0.1, nrow = 1)) +
+    scale_fill_carto_d(palette = "Fall", name = "No. of Crimes (log scale)",
+                       guide = guide_legend(keyheight = unit(2, units = "mm"), 
+                                            keywidth = unit(18, units = "mm"), 
+                                            title.position = "top", label.position = "bottom",
+                                            title.hjust = 0, label.hjust = 0.1, nrow = 1)) +
+
+  # scale_fill_manual(values = pal, name = "No. of Crimes (log scale)",
+  #                   guide = guide_legend(keyheight = unit(2, units = "mm"), 
+  #                                        keywidth = unit(18, units = "mm"), 
+  #                                        title.position = "top", label.position = "bottom",
+  #                                        title.hjust = 0, label.hjust = 0.1, nrow = 1)) +
     labs(x = "", y = "",
          title = "Number of Crimes by State - 2012",
          subtitle = "")
@@ -598,7 +604,7 @@ label_start <- c(seq(0,10000,2000))
 label_end <- c(seq(2000,12000,2000))
 
 final.plt.01_12$bin <- cut(final.plt.01_12$count, breaks=c(seq(0, 12000, 2000), Inf), 
-                      labels=c(paste0(label_start," - ",label_end), "12000+"), 
+                      labels=c(paste0(scales::comma(label_start)," - ",scales::comma(label_end)), "12000+"), 
                       include.lowest = TRUE)
 
 final.plt.01_12 %>%
@@ -606,7 +612,7 @@ final.plt.01_12 %>%
   ggplot() +
   geom_polygon(aes(x = long, y = lat, fill = bin, group = group), color = my_bkgd, size = 0.25) + 
   coord_map() +
-  scale_fill_manual(values = pal, name="No. of Crimes",
+  scale_fill_carto_d(palette = "Fall", name="No. of Crimes", 
                     guide = guide_legend(keyheight = unit(2, units = "mm"), 
                                          keywidth = unit(18, units = "mm"), 
                                          title.position = "top", label.position = "bottom",
@@ -635,16 +641,16 @@ myt <- ttheme_default(
   base_family = my_font, 
   base_colour =  "#22211d",
   core = list(fg_params=list(hjust = 0, x = 0.1),
-              bg_params=list(fill = pal[1])),
+              bg_params=list(fill = "#f6edbd")),
   colhead = list(fg_params=list(col = my_bkgd, fontface = "bold.italic", hjust = 0, x = 0.1),
-                 bg_params=list(fill = pal[5]))
+                 bg_params=list(fill = "#3d5941"))
  )
 
 label_start <- c(seq(0,3000,1500))
 label_end <- c(seq(1500,4500,1500))
 
 final.plt.med$bin <- cut(final.plt.med$median, breaks=c(seq(0,4500,1500), Inf), 
-                      labels=c(paste0(label_start," - ",label_end), "4500+"), 
+                      labels=c(paste0(scales::comma(label_start)," - ",scales::comma(label_end)), "4500+"), 
                       include.lowest = TRUE)
 
 final.plt.med <- final.plt.med %>% filter(!is.na(bin))
@@ -664,11 +670,17 @@ median_plot <- ggplot() +
                color = my_bkgd, size = 0.25) + 
   geom_text(data=cnames, aes(long, lat, label = state), size=2, color = "#22211d", family = my_font) +
   coord_map() +
-  scale_fill_manual(values = pal[1:4], name="Median",
+  scale_fill_carto_d(palette = "Fall", name="Median",
                     guide = guide_legend(keyheight = unit(2, units = "mm"), 
                                          keywidth = unit(18, units = "mm"), 
                                          title.position = "top", label.position = "bottom",
                                          title.hjust = 0, label.hjust = 0.1, nrow = 1)) +
+
+  # scale_fill_manual(values = pal[1:4], name="Median",
+  #                   guide = guide_legend(keyheight = unit(2, units = "mm"), 
+  #                                        keywidth = unit(18, units = "mm"), 
+  #                                        title.position = "top", label.position = "bottom",
+  #                                        title.hjust = 0, label.hjust = 0.1, nrow = 1)) +
     labs(title="Median Number of Crimes Against Children", 
        subtitle = "By State, 2001 to 2012",
        x = "", y = "") +
