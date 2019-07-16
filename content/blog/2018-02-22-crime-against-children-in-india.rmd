@@ -672,7 +672,7 @@ median_plot <- ggplot() +
   coord_map() +
   scale_fill_carto_d(palette = "Fall", name="Median",
                     guide = guide_legend(keyheight = unit(2, units = "mm"), 
-                                         keywidth = unit(18, units = "mm"), 
+                                         keywidth = unit(20, units = "mm"), 
                                          title.position = "top", label.position = "bottom",
                                          title.hjust = 0, label.hjust = 0.1, nrow = 1)) +
 
@@ -681,6 +681,7 @@ median_plot <- ggplot() +
   #                                        keywidth = unit(18, units = "mm"), 
   #                                        title.position = "top", label.position = "bottom",
   #                                        title.hjust = 0, label.hjust = 0.1, nrow = 1)) +
+  
     labs(title="Median Number of Crimes Against Children", 
        subtitle = "By State, 2001 to 2012",
        x = "", y = "") +
