@@ -1,4 +1,4 @@
-baseurl = "https://blog.dave-bloom.com/"
+baseurl = "https://www.dave-bloom.com/"
 languageCode = "en-us"
 title = "Dave Bloom"
 theme = "hugo-future-imperfect"
