@@ -1,0 +1,80 @@
+---
+title: Merging Git Repositories with Bash
+author: Dave
+date: '2020-02-22'
+slug: git-bash
+categories:
+  - git
+  - bash
+  - tidytuesday
+tags: []
+description: ''
+featured: 'yancy-min-git.jpg'
+featuredalt: ''
+featuredpath: 'img/main'
+linktitle: ''
+type: post
+---
+
+
+
+<p>Photo by Yancy Min on Unsplash</p>
+<div id="merging-git-repositories-with-bash" class="section level1">
+<h1>Merging Git Repositories with Bash</h1>
+<p>I’ve been participating in TidyTuesday since 2018. TidyTuesday is a weekly data project in R from the R4DS community. A dataset is provided and allows you to practice data manipulation, visualization, and story telling. It’s traditional to share code so that others may learn from your contribution and it’s also traditional to share that code via Git.</p>
+<p>Since the beginning, I’ve been creating a new repository each week that I participated. This has added up to quite a few repos and has become cumbersome to look through. Inspired by some other TidyTuesday repos, I decided to attempt merging the Git repos into one master repo so I could easily display the final visualizations in one README.</p>
+<p>While researching this, I found numerous ways to merge repos on blogs and stack overflow. Many of which were fairly complex as maintaining history is important for most developers. It wasn’t for me so I settled on the subtree method as it was the simplest and helped me accomplish what I had in mind.</p>
+<p>I used the method outlined here: <a href="https://mirrors.edge.kernel.org/pub/software/scm/git/docs/howto/using-merge-subtree.html">How to use the subtree merge strategy</a>. This page outlines 5 git commands to merge a repo into a subdirectory of a master repo. This got repetitive fast so I wrote a simple bash script to accomplish this much faster.</p>
+<pre class="bash"><code>#!/bin/bash
+# git merge script
+# 1 - local name (alias)
+# 2 - git project name
+# 3 - year
+# 4 - month-day
+
+
+echo &quot;
+* * * git add remote * * *
+&quot;
+# NOTE: git@gitlab.com:tidy_tuesday/*.git is the path to my repositories. You should 
+# change this if you cconsider using it. Also note that the only variation is project name ($2)
+git remote add -f $1 git@gitlab.com:tidy_tuesday/$2.git
+
+echo &quot;
+* * * git merge * * *
+&quot;
+git merge -s ours --no-commit --allow-unrelated-histories $1/master
+
+echo &quot;
+* * * git read-tree * * *
+&quot;
+git read-tree --prefix=$3/$4 -u $1/master
+
+echo &quot;
+* * * git commit * * *
+&quot;
+git commit -m &quot;merge project into subfolder&quot;
+
+echo &quot;
+* * * git pull * * *
+&quot;
+git pull -s subtree $1 master
+
+echo &quot;
+* * * git push * * *
+&quot;
+git push
+
+echo &quot;
+* * * merge complete * * *
+&quot;</code></pre>
+<p>It’s very simple with no catches so mistakes get propogated throughout, but I was pretty careful (overall). Let’s take a quick look at the arguments.
+1. The first argument calls for the local alias for the remote git to add – this can be local as well.
+2. The second argument refers to the name of the git project.
+I planned to organize the new repo by year and date.
+3. So years make up the first subfolders and the third argument.
+4. Month and day (eg, “12-25”) make up the project subfolder and the fourth argument.</p>
+<p>For example:
+<code>git-merge.sh localName remoteProject 2020 02-22</code></p>
+<p>It was fairly straight forward in the end, but took a lot of trial and error to get there. And the final result is my new TidyTuesday repo. Check it out here: <a href="https://gitlab.com/db369/tidytuesday">TidyTuesday</a>.</p>
+</div>
