@@ -87,8 +87,7 @@ I planned to organize the new repo by year and date.
 
 For example:
 ` git-merge.sh localName remoteProject 2020 02-22 `
-
-
+</br>
 Assuming that you run this script from the base directory of the new repository, this will result in the remote repo merging into folder 2020/02-22/.
 
 It was fairly straight forward in the end, but took a lot of trial and error to get there. And the final result is my new TidyTuesday repo. Check it out here: <a href="https://gitlab.com/db369/tidytuesday" target="_blank">TidyTuesday</a>.
