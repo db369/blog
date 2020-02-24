@@ -29,7 +29,7 @@ I used the method outlined here: <a href="https://mirrors.edge.kernel.org/pub/so
 
 ```bash
 #!/bin/bash
-# git merge script
+# git-merge.sh -- git merge script
 # 1 - local name (alias)
 # 2 - git project name
 # 3 - year
@@ -86,8 +86,9 @@ I planned to organize the new repo by year and date.
 4. Month and day (eg, "12-25") make up the project subfolder and the fourth argument. 
 
 For example:
-` git-merge.sh localName remoteProject 2020 02-22 `
 </br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;` git-merge.sh localName remoteProject 2020 02-22 `
+</br></br>
 Assuming that you run this script from the base directory of the new repository, this will result in the remote repo merging into folder 2020/02-22/.
 
 It was fairly straight forward in the end, but took a lot of trial and error to get there. And the final result is my new TidyTuesday repo. Check it out here: <a href="https://gitlab.com/db369/tidytuesday" target="_blank">TidyTuesday</a>.

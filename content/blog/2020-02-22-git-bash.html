@@ -26,7 +26,7 @@ type: post
 <p>While researching this, I found numerous ways to merge repos on blogs and stack overflow. Many of which were fairly complex as maintaining history is important for most developers. It wasn’t for me so I settled on the subtree method as it was the simplest and helped me accomplish what I had in mind.</p>
 <p>I used the method outlined here: <a href="https://mirrors.edge.kernel.org/pub/software/scm/git/docs/howto/using-merge-subtree.html" target="_blank">How to use the subtree merge strategy</a>. This page outlines 5 git commands to merge a repo into a subdirectory of a master repo. This got repetitive fast so I wrote a simple bash script to accomplish this much faster. I can confirm this works well on Linux Mint 19.3.</p>
 <pre class="bash"><code>#!/bin/bash
-# git merge script
+# git-merge.sh -- git merge script
 # 1 - local name (alias)
 # 2 - git project name
 # 3 - year
@@ -80,8 +80,9 @@ echo &quot;
 <li>Month and day (eg, “12-25”) make up the project subfolder and the fourth argument.</li>
 </ol>
 <p>For example:
-<code>git-merge.sh localName remoteProject 2020 02-22</code>
 </br>
+      <code>git-merge.sh localName remoteProject 2020 02-22</code>
+</br></br>
 Assuming that you run this script from the base directory of the new repository, this will result in the remote repo merging into folder 2020/02-22/.</p>
 <p>It was fairly straight forward in the end, but took a lot of trial and error to get there. And the final result is my new TidyTuesday repo. Check it out here: <a href="https://gitlab.com/db369/tidytuesday" target="_blank">TidyTuesday</a>.</p>
 </div>
