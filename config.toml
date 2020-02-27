@@ -85,7 +85,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 [params.intro]
   header    = "Dave Bloom"
 
-  paragraph = "I enjoy programming and working with data so I've been spending a lot of time doing just that. <br><i class = \"fa fa-map-marker\" aria-hidden=\"true\"></i> Philadelphia, PA<br> <a href=\"https://opendataphilly.netlify.com\"> * opendataphilly package for R</a>"
+  paragraph = "I enjoy programming and working with data so I've been spending a lot of time doing just that. <br><i class = \"fa fa-map-marker\" aria-hidden=\"true\"></i> Philadelphia, PA<br><i class = \"fa fa-cube\" aria-hidden=\"true\"></i> <a href=\"https://opendataphilly.netlify.com\">opendataphilly package for R</a>"
 
   about     = "Watch me try, watch me fail, watch me succeed, but mostly fail..."
 
@@ -142,6 +142,12 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
   identifier = "fa fa-envelope-o"
   weight = 6
 
+#[[menu.main]]
+#  name = "Resume"
+#  url = "/resume/"
+#  identifier = "fa fa-user"
+#  weight = 7
+  
 # Sets Social Media icons to appear and link to your account. Value should be your
 # username unless otherwise noted. These are the icons affected by socialAppearAtTop
 # and socialAppearAtBottom.
