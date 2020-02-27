@@ -10,6 +10,13 @@ In my last role I discovered a passion for analysis and data science. Since leav
 
 ------
 
+## SKILLS
+**Data Science:** RStudio, Jupyter Notebooks, and working knowledge of Tableau and Octave.  
+**Programming:** R, Python, SQL, PHP, and Visual Basic (including VBA for Excel).  
+**Financial tools:** Bloomberg, FactSet, TR Spreadsheet Link, First Call, Thomson ONE, T1 Banker, SDC Platinum.
+
+------
+
 ## EXPERIENCE														
 [**Nasdaq, Inc.**](http://www.nasdaq.com) – New York, NY – Jun-13 to Nov-14  
 Specialist, Corporate Solutions  
@@ -70,17 +77,12 @@ MBA, 1999. Concentration in Finance.
 [**New York University**](http://www.nyu.edu), College of Arts and Science – New York, NY  
 BA in Economics, 1994. Minor in Japanese.  
 
+------
 
 ## PROFESSIONAL DEVELOPMENT
 *Deep Learning Specialization*, 2018  
 A 5-course specialization by deeplearning.ai and Andrew Ng on Coursera.  
 
-*Data Analysis and Interpretation*, 2016
+*Data Analysis and Interpretation*, 2016  
 A 5-course specialization by Wesleyan University on Coursera.  
-
-------
-
-## SKILLS
-*Data Science:* RStudio, Jupyter Notebooks, and working knowledge of Tableau and Octave.  
-*Programming:* R, Python, SQL, PHP, and Visual Basic (including VBA for Excel).  
-*Financial tools:* Bloomberg, FactSet, TR Spreadsheet Link, First Call, Thomson ONE, T1 Banker, SDC Platinum.  
+  
