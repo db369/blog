@@ -117,6 +117,6 @@ fix_names &lt;-  function(x){
 
 df$school_name &lt;- sapply(str_to_title(df$school_name), fix_names)</code></pre>
 <p>Now ‘df’ is ready to be saved for later use. Or so I thought. It turned out that ‘County’ data was inconsistently capitalized and occassionally missing. In fact, there were 35404 NA’s. Rather than fix it in the original dataframe, I used a function to find county by school number.</p>
-<p>The shiny app can be found <a href="https://davebloom11.shinyapps.io/pssa_shiny_app/">here</a>. All feedback is welcome!</p>
+<p>The shiny app can be found <a href="https://davebloom11.shinyapps.io/pssa_shiny_app/">here</a> and source code is on <a href="https://gitlab.com/db369/pssa_shiny_app">gitlab</a>. All feedback is welcome!</p>
 </div>
 </div>

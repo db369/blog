@@ -118,4 +118,4 @@ df$school_name <- sapply(str_to_title(df$school_name), fix_names)
 
 Now 'df' is ready to be saved for later use. Or so I thought. It turned out that 'County' data was inconsistently capitalized and occassionally missing. In fact, there were `r sum(is.na(df$county))` NA's. Rather than fix it in the original dataframe, I used a function to find county by school number.
 
-The shiny app can be found [here](https://davebloom11.shinyapps.io/pssa_shiny_app/). All feedback is welcome!
+The shiny app can be found [here](https://davebloom11.shinyapps.io/pssa_shiny_app/) and source code is on [gitlab](https://gitlab.com/db369/pssa_shiny_app). All feedback is welcome!
