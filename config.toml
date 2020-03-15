@@ -85,7 +85,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 [params.intro]
   header    = "Dave Bloom"
 
-  paragraph = "I enjoy programming and working with data so I've been spending a lot of time doing just that. <br><i class = \"fa fa-map-marker\" aria-hidden=\"true\"></i> Philadelphia, PA<br><i class = \"fa fa-cube\" aria-hidden=\"true\"></i> <a href=\"https://opendataphilly.netlify.com\">opendataphilly package for R</a>"
+  paragraph = "I enjoy programming and working with data so I've been spending a lot of time doing just that. <br><i class = \"fa fa-map-marker\" aria-hidden=\"true\"></i> Philadelphia, PA<br><i class = \"fa fa-cube\" aria-hidden=\"true\"></i> <a href=\"https://opendataphilly.netlify.com\">opendataphilly package for R</a><br><i class = \"fa fa-university\" aria-hidden=\"true\"></i> <a href=\"https://davebloom11.shinyapps.io/pssa_shiny_app/\">Shiny App for PSSA Data</a>"
 
   about     = "Watch me try, watch me fail, watch me succeed, but mostly fail..."
 

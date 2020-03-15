@@ -1,0 +1,121 @@
+---
+title: 'Preparing Data for my first Shiny app'
+author: Dave
+date: '2020-03-15'
+slug: my-first-shiny-app-using-shiny-to-analyze-pssa-test-result-data
+categories:
+  - R
+  - shiny
+tags:
+  - EDA
+  - R
+description: ''
+featured: 'standardized-test.jpg'
+featuredalt: ''
+featuredpath: 'img/main'
+linktitle: ''
+type: post
+---
+
+# My First Shiny App: Analyzing PSSA Test Results
+
+## Introduction
+
+Being a father of two elementary school students in Philadelphia -- and just returning from India last year -- I knew I had to learn about the PSSA's. I knew that a lot of importance is placed on these standardized exams, but I had no idea what they tested and how they were used. While spending some time on the Pennsylvania Department of Education web site, I discovered test result data in Excel spreadsheets available for the last 5 years. I couldn't resist downloading the data and taking a shot at digging through it.
+
+## Retrieving the data
+
+Since data resided in spreadsheets (and weren't too big), it made sense to download and review them in Excel (or LibreOffice Calc, in my case). Each sheet had some header rows to be skipped and not all files included a 'year' variable.
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(readxl)
+library(janitor)
+
+# PSSA Results
+# https://www.education.pa.gov/DataAndReporting/Assessments/Pages/PSSA-Results.aspx
+
+df_2019 <- read_xlsx("~/Downloads/2019 PSSA School Level Data.xlsx",skip = 4) %>% mutate(Year = 2019)
+df_2018 <- read_xlsx("~/Downloads/2018 PSSA School Level Data.xlsx",skip = 4) %>% mutate(Year = 2018)
+df_2017 <- read_xlsx("~/Downloads/2017 PSSA School Level Data.xlsx",skip = 4) %>% mutate(Year = 2017)
+df_2016 <- read_xlsx("~/Downloads/2016 PSSA School Level Data.xlsx",skip = 4)
+df_2015 <- read_xlsx("~/Downloads/2015 PSSA School Level Data.xlsx",skip = 6)
+
+```
+
+After assigning each spreadsheet to a different dataframe, I compared all the variable names using the loop below.
+
+```{r message=FALSE, warning=FALSE}
+# compare column names between files
+for (i in seq(2015,2019)){
+  temp <- get(paste0("df_",i))
+  print(i)
+  print(names(temp))
+}
+```
+
+After carefully comparing names in each file, it was time to clean the names so they could be merged more easily.
+
+```{r message=FALSE, warning=FALSE}
+df_2015 <- df_2015 %>%
+  mutate(Year = as.numeric(Year)) %>%
+  select(-`Growth**`) %>%
+  rename(`Percent Advanced` = `% Advanced`,
+         `Percent Proficient` = `% Proficient`,
+         `Percent Basic` = `% Basic`,
+         `Percent Below Basic` = `% Below Basic`,
+         `School Name` = `School`,
+         `District Name` = `District`) 
+
+df_2016 <- df_2016 %>%
+  mutate(Year = as.numeric(Year)) %>%
+  rename(`Percent Advanced` = `% Advanced`,
+         `Percent Proficient` = `% Proficient`,
+         `Percent Basic` = `% Basic`,
+         `Percent Below Basic` = `% Below Basic`,
+         `School Name` = `School`,
+         `District Name` = `District`)
+
+df_2017 <- df_2017 %>%
+  rename(`Percent Advanced` = `% Advanced`,
+         `Percent Proficient` = `% Proficient`,
+         `Percent Basic` = `% Basic`,
+         `Percent Below Basic` = `% Below Basic`)
+
+
+```
+
+Now that the column names line up nicely, I can merge the dataframes with `bind_rows()` and further clean the names using the janitor package.
+
+```{r}
+df <- bind_rows(list(df_2019,df_2018,df_2017,df_2016,df_2015))
+
+df <- clean_names(df)
+```
+
+At this point, I looked through the semi-final df and noticed observations for "Total". I won't need them so I made sure to exclude them.
+
+```{r}
+df <- df %>% filter(!str_detect(grade,"Total"))
+```
+
+One last thing that bothered me was how school names beginning with "Mc" didn't capitalize the following character when applying `str_to_title()`. I'm sure there's a more elegant way to deal with this, but I wrote the following function and it worked just fine.
+
+```{r}
+
+# simple function to fix title caps for surnames beginning with 'Mc'
+fix_names <-  function(x){
+  if(str_detect(x, "^Mc")){
+    x = str_remove(x,"^Mc") %>% str_to_title() %>% paste0("Mc", .)
+  }else{
+    x
+  }
+}
+
+df$school_name <- sapply(str_to_title(df$school_name), fix_names)
+
+```
+
+Now 'df' is ready to be saved for later use. Or so I thought. It turned out that 'County' data was inconsistently capitalized and occassionally missing. In fact, there were `r sum(is.na(df$county))` NA's. Rather than fix it in the original dataframe, I used a function to find county by school number.
+
+The shiny app can be found [here](https://davebloom11.shinyapps.io/pssa_shiny_app/). All feedback is welcome!

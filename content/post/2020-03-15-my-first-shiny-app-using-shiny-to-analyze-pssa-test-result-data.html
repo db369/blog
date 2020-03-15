@@ -1,0 +1,122 @@
+---
+title: 'Preparing Data for my first Shiny app'
+author: Dave
+date: '2020-03-15'
+slug: my-first-shiny-app-using-shiny-to-analyze-pssa-test-result-data
+categories:
+  - R
+  - shiny
+tags:
+  - EDA
+  - R
+description: ''
+featured: 'standardized-test.jpg'
+featuredalt: ''
+featuredpath: 'img/main'
+linktitle: ''
+type: post
+---
+
+
+
+<div id="my-first-shiny-app-analyzing-pssa-test-results" class="section level1">
+<h1>My First Shiny App: Analyzing PSSA Test Results</h1>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>Being a father of two elementary school students in Philadelphia – and just returning from India last year – I knew I had to learn about the PSSA’s. I knew that a lot of importance is placed on these standardized exams, but I had no idea what they tested and how they were used. While spending some time on the Pennsylvania Department of Education web site, I discovered test result data in Excel spreadsheets available for the last 5 years. I couldn’t resist downloading the data and taking a shot at digging through it.</p>
+</div>
+<div id="retrieving-the-data" class="section level2">
+<h2>Retrieving the data</h2>
+<p>Since data resided in spreadsheets (and weren’t too big), it made sense to download and review them in Excel (or LibreOffice Calc, in my case). Each sheet had some header rows to be skipped and not all files included a ‘year’ variable.</p>
+<pre class="r"><code>library(tidyverse)
+library(readxl)
+library(janitor)
+
+# PSSA Results
+# https://www.education.pa.gov/DataAndReporting/Assessments/Pages/PSSA-Results.aspx
+
+df_2019 &lt;- read_xlsx(&quot;~/Downloads/2019 PSSA School Level Data.xlsx&quot;,skip = 4) %&gt;% mutate(Year = 2019)
+df_2018 &lt;- read_xlsx(&quot;~/Downloads/2018 PSSA School Level Data.xlsx&quot;,skip = 4) %&gt;% mutate(Year = 2018)
+df_2017 &lt;- read_xlsx(&quot;~/Downloads/2017 PSSA School Level Data.xlsx&quot;,skip = 4) %&gt;% mutate(Year = 2017)
+df_2016 &lt;- read_xlsx(&quot;~/Downloads/2016 PSSA School Level Data.xlsx&quot;,skip = 4)
+df_2015 &lt;- read_xlsx(&quot;~/Downloads/2015 PSSA School Level Data.xlsx&quot;,skip = 6)</code></pre>
+<p>After assigning each spreadsheet to a different dataframe, I compared all the variable names using the loop below.</p>
+<pre class="r"><code># compare column names between files
+for (i in seq(2015,2019)){
+  temp &lt;- get(paste0(&quot;df_&quot;,i))
+  print(i)
+  print(names(temp))
+}</code></pre>
+<pre><code>## [1] 2015
+##  [1] &quot;Year&quot;          &quot;AUN&quot;           &quot;School Number&quot; &quot;District&quot;     
+##  [5] &quot;School&quot;        &quot;Subject&quot;       &quot;Group&quot;         &quot;Grade&quot;        
+##  [9] &quot;Number Scored&quot; &quot;% Advanced&quot;    &quot;% Proficient&quot;  &quot;% Basic&quot;      
+## [13] &quot;% Below Basic&quot; &quot;Growth**&quot;     
+## [1] 2016
+##  [1] &quot;Year&quot;          &quot;AUN&quot;           &quot;School Number&quot; &quot;County&quot;       
+##  [5] &quot;District&quot;      &quot;School&quot;        &quot;Subject&quot;       &quot;Group&quot;        
+##  [9] &quot;Grade&quot;         &quot;Number Scored&quot; &quot;% Advanced&quot;    &quot;% Proficient&quot; 
+## [13] &quot;% Basic&quot;       &quot;% Below Basic&quot;
+## [1] 2017
+##  [1] &quot;AUN&quot;           &quot;School Number&quot; &quot;County&quot;        &quot;District Name&quot;
+##  [5] &quot;School Name&quot;   &quot;Subject&quot;       &quot;Group&quot;         &quot;Grade&quot;        
+##  [9] &quot;Number Scored&quot; &quot;% Advanced&quot;    &quot;% Proficient&quot;  &quot;% Basic&quot;      
+## [13] &quot;% Below Basic&quot; &quot;Year&quot;         
+## [1] 2018
+##  [1] &quot;AUN&quot;                 &quot;School Number&quot;       &quot;County&quot;             
+##  [4] &quot;District Name&quot;       &quot;School Name&quot;         &quot;Subject&quot;            
+##  [7] &quot;Group&quot;               &quot;Grade&quot;               &quot;Number Scored&quot;      
+## [10] &quot;Percent Advanced&quot;    &quot;Percent Proficient&quot;  &quot;Percent Basic&quot;      
+## [13] &quot;Percent Below Basic&quot; &quot;Year&quot;               
+## [1] 2019
+##  [1] &quot;AUN&quot;                 &quot;School Number&quot;       &quot;County&quot;             
+##  [4] &quot;District Name&quot;       &quot;School Name&quot;         &quot;Subject&quot;            
+##  [7] &quot;Group&quot;               &quot;Grade&quot;               &quot;Number Scored&quot;      
+## [10] &quot;Percent Advanced&quot;    &quot;Percent Proficient&quot;  &quot;Percent Basic&quot;      
+## [13] &quot;Percent Below Basic&quot; &quot;Year&quot;</code></pre>
+<p>After carefully comparing names in each file, it was time to clean the names so they could be merged more easily.</p>
+<pre class="r"><code>df_2015 &lt;- df_2015 %&gt;%
+  mutate(Year = as.numeric(Year)) %&gt;%
+  select(-`Growth**`) %&gt;%
+  rename(`Percent Advanced` = `% Advanced`,
+         `Percent Proficient` = `% Proficient`,
+         `Percent Basic` = `% Basic`,
+         `Percent Below Basic` = `% Below Basic`,
+         `School Name` = `School`,
+         `District Name` = `District`) 
+
+df_2016 &lt;- df_2016 %&gt;%
+  mutate(Year = as.numeric(Year)) %&gt;%
+  rename(`Percent Advanced` = `% Advanced`,
+         `Percent Proficient` = `% Proficient`,
+         `Percent Basic` = `% Basic`,
+         `Percent Below Basic` = `% Below Basic`,
+         `School Name` = `School`,
+         `District Name` = `District`)
+
+df_2017 &lt;- df_2017 %&gt;%
+  rename(`Percent Advanced` = `% Advanced`,
+         `Percent Proficient` = `% Proficient`,
+         `Percent Basic` = `% Basic`,
+         `Percent Below Basic` = `% Below Basic`)</code></pre>
+<p>Now that the column names line up nicely, I can merge the dataframes with <code>bind_rows()</code> and further clean the names using the janitor package.</p>
+<pre class="r"><code>df &lt;- bind_rows(list(df_2019,df_2018,df_2017,df_2016,df_2015))
+
+df &lt;- clean_names(df)</code></pre>
+<p>At this point, I looked through the semi-final df and noticed observations for “Total”. I won’t need them so I made sure to exclude them.</p>
+<pre class="r"><code>df &lt;- df %&gt;% filter(!str_detect(grade,&quot;Total&quot;))</code></pre>
+<p>One last thing that bothered me was how school names beginning with “Mc” didn’t capitalize the following character when applying <code>str_to_title()</code>. I’m sure there’s a more elegant way to deal with this, but I wrote the following function and it worked just fine.</p>
+<pre class="r"><code># simple function to fix title caps for surnames beginning with &#39;Mc&#39;
+fix_names &lt;-  function(x){
+  if(str_detect(x, &quot;^Mc&quot;)){
+    x = str_remove(x,&quot;^Mc&quot;) %&gt;% str_to_title() %&gt;% paste0(&quot;Mc&quot;, .)
+  }else{
+    x
+  }
+}
+
+df$school_name &lt;- sapply(str_to_title(df$school_name), fix_names)</code></pre>
+<p>Now ‘df’ is ready to be saved for later use. Or so I thought. It turned out that ‘County’ data was inconsistently capitalized and occassionally missing. In fact, there were 35404 NA’s. Rather than fix it in the original dataframe, I used a function to find county by school number.</p>
+<p>The shiny app can be found <a href="https://davebloom11.shinyapps.io/pssa_shiny_app/">here</a>. All feedback is welcome!</p>
+</div>
+</div>
