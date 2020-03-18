@@ -74,7 +74,7 @@ for (i in seq(2015,2019)){
 ##  [7] &quot;Group&quot;               &quot;Grade&quot;               &quot;Number Scored&quot;      
 ## [10] &quot;Percent Advanced&quot;    &quot;Percent Proficient&quot;  &quot;Percent Basic&quot;      
 ## [13] &quot;Percent Below Basic&quot; &quot;Year&quot;</code></pre>
-<p>After carefully comparing names in each file, it was time to clean the names so they could be merged more easily.</p>
+<p>Here you can see that sometimes ‘Percent’ is spelled out and other times a ‘%’ symbol is used. The 2015 file has a ‘growth’ metric inlcuded. And there are some other inconsistencies. So after carefully comparing names in each file, it was time to clean the names so they could be merged more easily.</p>
 <pre class="r"><code>df_2015 &lt;- df_2015 %&gt;%
   mutate(Year = as.numeric(Year)) %&gt;%
   select(-`Growth**`) %&gt;%

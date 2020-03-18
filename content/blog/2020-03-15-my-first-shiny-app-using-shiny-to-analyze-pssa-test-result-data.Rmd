@@ -54,7 +54,7 @@ for (i in seq(2015,2019)){
 }
 ```
 
-After carefully comparing names in each file, it was time to clean the names so they could be merged more easily.
+Here you can see that sometimes 'Percent' is spelled out and other times a '%' symbol is used. The 2015 file has a 'growth' metric inlcuded. And there are some other inconsistencies. So after carefully comparing names in each file, it was time to clean the names so they could be merged more easily.
 
 ```{r message=FALSE, warning=FALSE}
 df_2015 <- df_2015 %>%
