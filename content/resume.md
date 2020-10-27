@@ -99,4 +99,4 @@ A 5-course specialization by Wesleyan University on Coursera.
 
 Additional certifications may found in my [LinkedIn profile](https://www.linkedin.com/in/davidabloom/).
 
-The latest version of my resume can be downloaded [here](https://1drv.ms/w/s!AhS450IrsthzgkUkzCYNi8odtr46?e=iw0Elc).
+The latest version of my resume can be downloaded [here](https://github.com/db369/blog/raw/master/static/Resume%20of%20David%20A%20Bloom.pdf).
