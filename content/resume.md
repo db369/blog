@@ -95,5 +95,8 @@ A 5-course specialization by deeplearning.ai and Andrew Ng on Coursera.
 *Data Analysis and Interpretation*, 2016  
 A 5-course specialization by Wesleyan University on Coursera.  
 
-> Additional certifications may found on [LinkedIn](https://www.linkedin.com/in/davidabloom/)
-  
+------
+
+Additional certifications may found in my [LinkedIn profile](https://www.linkedin.com/in/davidabloom/).
+
+The latest version of my resume can be downloaded [here](https://1drv.ms/w/s!AhS450IrsthzgkUkzCYNi8odtr46?e=iw0Elc).
