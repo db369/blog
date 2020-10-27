@@ -57,8 +57,8 @@ Associate, Project Finance Telecom, Global Investment Banking – Americas
 ◦ Prepared and presented new financing proposals to credit risk management for approval.  
 
 [**Xerox Corporation**](https://www.xerox.com)&ensp;---&ensp;Stamford, CT&emsp;//&emsp;Jun-99 to Jul-00  
-*Senior Business Development Analyst, Corporate Business Development (M&A)  	 
-Strategic acquisitions, divestitures, and equity investments*  
+Senior Business Development Analyst, Corporate Business Development (M&A)  	 
+*Strategic acquisitions, divestitures, and equity investments*  
 ◦ Modeled merger consequences, LBO analyses, and equity investments.  
 ◦ Developed *pro forma* financial models and performed valuations of potential transactions using DCF, comparable company, and comparable transaction analyses.  
 ◦ Coordinated project teams of operations managers, internal corporate staff and external financial advisors during due diligence, valuation, and negotiation phases of transactions.  
