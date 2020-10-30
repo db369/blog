@@ -12,9 +12,11 @@ In my last role I discovered a passion for analysis and data science. Since leav
 
 ## RECENT PROJECTS
 
-[**PSSA Shiny App**](https://davebloom11.shinyapps.io/pssa_shiny_app/) A shiny app used to explore PSSA test results data available on the PA Department of Eduation [web site](https://www.education.pa.gov/K-12/Assessment%20and%20Accountability/PSSA/Pages/default.aspx)
+[**PSSA Shiny App**](https://davebloom11.shinyapps.io/pssa_shiny_app/) A shiny app used to explore PSSA test results data available on the PA Department of Education [web site](https://www.education.pa.gov/K-12/Assessment%20and%20Accountability/PSSA/Pages/default.aspx)
 
 [**OpenDataPhilly R Package**](https://opendataphilly.netlify.com/) A package for R to facilitate loading and exploring data from [opendataphilly.org](https://opendataphilly.org)
+
+[**TidyTuesday**](https://gitlab.com/db369/tidytuesday) Visualizations from my participation in weekly data projects in R from the R4DS online learning community
 
 ------
 
