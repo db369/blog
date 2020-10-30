@@ -21,7 +21,7 @@ Photo by Yancy Min on Unsplash
 
 I've been participating in TidyTuesday since 2018. TidyTuesday is a weekly data project in R from the R4DS community. A dataset is provided and allows you to practice data manipulation, visualization, and story telling. It's traditional to share code so that others may learn from your contribution and it's also traditional to share that code via Git. 
 
-Since the beginning, I've been creating a new repository each week that I participated. This has added up to quite a few repos and has become cumbersome to look through. Inspired by some other TidyTuesday repos, I decided to attempt merging the Git repos into one master repo so I could easily display the final visualizations in one README.
+Since the beginning, I've been creating a new repository for each week that I participated. This has added up to quite a few repos and has become cumbersome to look through. Inspired by some other TidyTuesday repos, I decided to attempt merging the Git repos into one master repo so I could easily display the final visualizations in one README.
 
 While researching this, I found numerous ways to merge repos on blogs and stack overflow. Many of which were fairly complex as maintaining history is important for most developers. It wasn't for me so I settled on the subtree method as it was the simplest and helped me accomplish what I had in mind. 
 
