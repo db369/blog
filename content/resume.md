@@ -27,14 +27,17 @@ In my last role I discovered a passion for analysis and data science. Since leav
 
 ------
 
-## EXPERIENCE														
+## EXPERIENCE
+**db Advisory**&ensp;---&ensp;Chennai, India and Philadelphia, PA&emsp;//&emsp;Apr-17 to Present  
+◦ Engaged local businesses in deep learning and NLP projects.
+
 [**Nasdaq, Inc.**](http://www.nasdaq.com)&ensp;---&ensp;New York, NY&emsp;//&emsp;Jun-13 to Nov-14  
 Corporate Solutions  
 *Led valuation and quantitative analysis for investor relations projects*  
 ◦ Developed new products designed to help clients better understand their company's valuation and risk profile.  
 ◦ Directed valuation studies (using DCF, regression, and peer analysis) and presented to C-level and senior management teams.  
 &emsp;&emsp;• *Used R to accelerate regression analysis and Python/SQL to acquire data.*  
-◦ Prepared presentations and webinars that not only helped clients better understand current trends, but also helped drive revenue.
+◦ Prepared presentations that not only helped clients better understand current trends, but also helped drive revenue.  
 &emsp;&emsp;• *Collected, cleaned, munged, and visualized large sets of investor data.*  
 [**Thomson Reuters**](https://www.thomsonreuters.com)&ensp;---&ensp;New York, NY&emsp;//&emsp;Nov-04 to Jun-13  
 Director, Corporate Services (division acquired by Nasdaq in 2013 - [link](http://ir.nasdaq.com/news-releases/news-release-details/nasdaq-omx-completes-acquisition-thomson-reuters-investor))  
@@ -50,8 +53,7 @@ Senior Specialist, Corporate Development and Strategy, M&A
 ◦ Initiated acquisition of small company with significant assets (deal completed).  
 ◦ Built valuation models to evaluate prospective acquisitions while working closely with general managers to assess strategic fit, profitability, and ease of integration.  
 
-[**Deutsche Bank**](https://www.db.com/)&ensp;---&ensp;New York, NY&emsp;//&emsp;Jul-00 to Aug-01
-
+[**Deutsche Bank**](https://www.db.com/)&ensp;---&ensp;New York, NY&emsp;//&emsp;Jul-00 to Aug-01  
 Associate, Project Finance Telecom, Global Investment Banking – Americas  
 *Structured transactions for US & Latin American telecommunications companies*  
 ◦ Built extensive financing models detailing *pro forma* cash flows, “waterfall” structures, debt amortization, and the impact of new financing on outstanding covenants.  
