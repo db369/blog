@@ -18,6 +18,8 @@ In my last role I discovered a passion for analysis and data science. Since leav
 
 [**TidyTuesday**](https://gitlab.com/db369/tidytuesday) Visualizations from my participation in weekly data projects in R from the R4DS online learning community
 
+[**dbTools**](https://gitlab.com/db369/dbtools) An Excel 2007 / 2010 add-in that holds VBA macros and functions that I created to facilitate my work all in a tidy Excel ribbon
+
 ------
 
 ## SKILLS
