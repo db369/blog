@@ -244,8 +244,12 @@ df %>%
   filter(crime_head == "Kidnapping And Abduction Of Children", year == 2012, df > 10) %>%
   mutate(state_ut = reorder(state_ut, df)) %>%
   ggplot(aes(x = state_ut, y = df)) + 
-  geom_segment(aes(y = 0, yend = df, x = state_ut, xend = state_ut, color = if_else(state_ut == "Tamil Nadu", hilight_color, lollipop_color)), size = 2) +
-  geom_point(stat='identity', aes(color = if_else(state_ut == "Tamil Nadu", hilight_color, lollipop_color)), size = 4) + 
+  geom_segment(aes(y = 0, yend = df, 
+                   x = state_ut, xend = state_ut, 
+                   color = if_else(state_ut == "Tamil Nadu", hilight_color, lollipop_color)), 
+               size = 2) +
+  geom_point(stat='identity', aes(color = if_else(state_ut == "Tamil Nadu", hilight_color, lollipop_color)), 
+             size = 4) + 
   scale_color_manual(values = c(lollipop_color,hilight_color)) +
   coord_flip() +
   geom_text(aes(y = df, x = state_ut, label = df), 
@@ -362,8 +366,9 @@ high_crime_states <- df %>%
   top_n(top)
 
 total_by_st_plot <- df %>%
-  filter(crime_head == "Total Crimes Against Children", state_ut %in% high_crime_states$state_ut) %>%
-  ggplot(aes(x=year,y=df, fill=state_ut, text = paste0("Year: ", year,"\nTotal: ", df))) +
+  filter(crime_head == "Total Crimes Against Children", 
+         state_ut %in% high_crime_states$state_ut) %>%
+  ggplot(aes(x=year, y=df, fill=state_ut, text = paste0("Year: ", year,"\nTotal: ", df))) +
   geom_bar(stat='identity') + 
   facet_wrap(~state_ut) + 
   labs(title = 'Total Crimes Against Children by State, 2001 - 2012', 
@@ -413,7 +418,7 @@ growth.tbl %>%
   head(15) %>%
   ggplot(aes(x = fct_reorder(state_ut, growth), y = growth)) + 
   geom_bar(stat='identity', aes(fill = gr_ch_cols)) +
-  scale_fill_manual(values = c(ghibli_palettes$MononokeMedium[3],ghibli_palettes$MononokeMedium[1])) +
+  scale_fill_manual(values = c(ghibli_palettes$MononokeMedium[3], ghibli_palettes$MononokeMedium[1])) +
   coord_flip() +
     geom_text(aes(y = growth, x = seq(15,1), label = paste0(round(growth),"%")), 
               nudge_y = -0.5, hjust = 1, color = my_bkgd, family = my_font) +

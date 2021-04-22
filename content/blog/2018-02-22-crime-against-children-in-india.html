@@ -236,8 +236,12 @@ df %&gt;%
   filter(crime_head == &quot;Kidnapping And Abduction Of Children&quot;, year == 2012, df &gt; 10) %&gt;%
   mutate(state_ut = reorder(state_ut, df)) %&gt;%
   ggplot(aes(x = state_ut, y = df)) + 
-  geom_segment(aes(y = 0, yend = df, x = state_ut, xend = state_ut, color = if_else(state_ut == &quot;Tamil Nadu&quot;, hilight_color, lollipop_color)), size = 2) +
-  geom_point(stat=&#39;identity&#39;, aes(color = if_else(state_ut == &quot;Tamil Nadu&quot;, hilight_color, lollipop_color)), size = 4) + 
+  geom_segment(aes(y = 0, yend = df, 
+                   x = state_ut, xend = state_ut, 
+                   color = if_else(state_ut == &quot;Tamil Nadu&quot;, hilight_color, lollipop_color)), 
+               size = 2) +
+  geom_point(stat=&#39;identity&#39;, aes(color = if_else(state_ut == &quot;Tamil Nadu&quot;, hilight_color, lollipop_color)), 
+             size = 4) + 
   scale_color_manual(values = c(lollipop_color,hilight_color)) +
   coord_flip() +
   geom_text(aes(y = df, x = state_ut, label = df), 
@@ -316,7 +320,7 @@ growth.tbl &lt;- df %&gt;%
   head(15) %&gt;%
   ggplot(aes(x = fct_reorder(state_ut, growth), y = growth)) + 
   geom_bar(stat=&#39;identity&#39;, aes(fill = gr_ch_cols)) +
-  scale_fill_manual(values = c(ghibli_palettes$MononokeMedium[3],ghibli_palettes$MononokeMedium[1])) +
+  scale_fill_manual(values = c(ghibli_palettes$MononokeMedium[3], ghibli_palettes$MononokeMedium[1])) +
   coord_flip() +
     geom_text(aes(y = growth, x = seq(15,1), label = paste0(round(growth),&quot;%&quot;)), 
               nudge_y = -0.5, hjust = 1, color = my_bkgd, family = my_font) +
