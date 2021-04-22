@@ -99,7 +99,7 @@ First, I'll check for NA's.
 any(is.na(sample_df))
 ```
 
-Since there isn't any missing values, I'll move on to checking for duplicates and typos (or _duplicates caused by typos_) in the state and crime columns. Below, we identify 35 unique states (38 less 3 totals) and 12 unique crimes (also excluding total crime).
+Since there aren't any missing values, I'll move on to checking for duplicates and typos (or _duplicates caused by typos_) in the state and crime columns. Below, we identify 35 unique states (38 less 3 totals) and 12 unique crimes (also excluding total crime).
 
 Check for duplicate states:
 ```{r}
@@ -149,7 +149,7 @@ df %>%
   arrange(desc(df)) 
 ```
 
-After identifying the most significant crimes in 2012, I chart how these crimes changed over time.
+After identifying the most significant crimes in 2012, I chart how the frequency of these crimes changed over time.
 ```{r tamil_nadu_crimes_charts, collapse=TRUE}
 
 crimes <- c("Kidnapping And Abduction Of Children",
@@ -241,7 +241,7 @@ df %>%
   group_by(crime_head) %>%
   filter(df > 100) %>%
   ungroup() %>%
-  filter(crime_head == "Kidnapping And Abduction Of Children", year == '2012', df[year=='2012'] > 10) %>%
+  filter(crime_head == "Kidnapping And Abduction Of Children", year == 2012, df > 10) %>%
   mutate(state_ut = reorder(state_ut, df)) %>%
   ggplot(aes(x = state_ut, y = df)) + 
   geom_segment(aes(y = 0, yend = df, x = state_ut, xend = state_ut, color = if_else(state_ut == "Tamil Nadu", hilight_color, lollipop_color)), size = 2) +
@@ -313,7 +313,7 @@ level_data %>%
 ```{r heatmap_v2, eval=FALSE, fig.height=9, include=FALSE}
 
 data <- df %>%
-  filter(year == '2012', crime_head != "Total Crimes Against Children")  %>%
+  filter(year == 2012, crime_head != "Total Crimes Against Children")  %>%
   arrange(desc(state_ut))
 
 upper_limit <- max(data$df)
@@ -404,15 +404,14 @@ Again, I'm interested in average annual growth, but here I take a look at total 
 gr_ch_cols <- c("two", rep("one", 14))
 
 growth.tbl <- df %>%
-  filter(crime_head == "Total Crimes Against Children", year %in% c("2001", "2012"), df[year==2001] > 0) %>%
+  filter(crime_head == "Total Crimes Against Children", year %in% c(2001, 2012), df > 0) %>%
   group_by(state_ut) %>%
   summarize(growth = 100 * ((df[year == 2012] / df[year == 2001]) ^ (1/11) - 1) ) %>%
   arrange(desc(growth))
   
 growth.tbl %>%
-  slice(1:15) %>%
-  mutate(state_ut = reorder(state_ut, growth)) %>%
-  ggplot(aes(x = state_ut, y = growth)) + 
+  head(15) %>%
+  ggplot(aes(x = fct_reorder(state_ut, growth), y = growth)) + 
   geom_bar(stat='identity', aes(fill = gr_ch_cols)) +
   scale_fill_manual(values = c(ghibli_palettes$MononokeMedium[3],ghibli_palettes$MononokeMedium[1])) +
   coord_flip() +
@@ -438,19 +437,19 @@ Since I'm working with geographic data, I'd like to map it to visualize the rela
 
 # subset df for 2001 
 total_by_state_01 <- df %>%
-  filter(crime_head == "Total Crimes Against Children", year == '2001', df[year=='2001'] >= 0) %>%
+  filter(crime_head == "Total Crimes Against Children", year == 2001, df >= 0) %>%
   mutate(state_ut = reorder(state_ut, df)) %>%
   select(state_ut, df)
 
 # subset df for 2012 
 total_by_state <- df %>%
-  filter(crime_head == "Total Crimes Against Children", year == '2012', df[year=='2012']) %>%
+  filter(crime_head == "Total Crimes Against Children", year == 2012) %>%
   mutate(state_ut = reorder(state_ut, df)) %>%
   select(state_ut, df)
 
 # subset df to display median number crime of crimes for entire period
 med_by_state <- df %>%
-  filter(crime_head == "Total Crimes Against Children", df[year=='2001'] >= 0) %>%
+  filter(crime_head == "Total Crimes Against Children", year==2001, df >= 0) %>%
   group_by(state_ut) %>%
   summarise(median = median(df, na.rm = T)) %>%
   arrange(desc(median))
