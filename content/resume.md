@@ -30,8 +30,8 @@ In my last role I discovered a passion for analysis and data science. Since leav
 ------
 
 ## EXPERIENCE
-**db Advisory**&ensp;---&ensp;Chennai, India and Philadelphia, PA&emsp;//&emsp;Apr-17 to Present  
-◦ Engaged local businesses in deep learning and NLP projects.
+[**Project MUSE at Johns Hopkins University Press**](https://muse.jhu.edu)&ensp;---&ensp;Baltimore, MD&emsp;//&emsp;Aug-21 to Present 
+Manager, Strategic Initiatives and Business Intelligence
 
 [**Nasdaq, Inc.**](http://www.nasdaq.com)&ensp;---&ensp;New York, NY&emsp;//&emsp;Jun-13 to Nov-14  
 Corporate Solutions  
