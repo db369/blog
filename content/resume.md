@@ -41,13 +41,13 @@ Corporate Solutions
 &emsp;&emsp;• *Used R to accelerate regression analysis and Python/SQL to acquire data.*  
 ◦ Prepared presentations that not only helped clients better understand current trends, but also helped drive revenue.  
 &emsp;&emsp;• *Collected, cleaned, munged, and visualized large sets of investor data.*  
+
 [**Thomson Reuters**](https://www.thomsonreuters.com)&ensp;---&ensp;New York, NY&emsp;//&emsp;Nov-04 to Jun-13  
 Director, Corporate Services (division acquired by Nasdaq in 2013 - [link](http://ir.nasdaq.com/news-releases/news-release-details/nasdaq-omx-completes-acquisition-thomson-reuters-investor))  
 ◦ Overhauled client data records resulting in an accurate, real-time analysis and revenue forecast; built Excel dashboards to quickly review and identify trends.  
 ◦ Modeled impact of new pricing structure on client base for senior management with goal of minimizing risk of client loss as well as impact to operations.  
 ◦ Assessed business opportunities with business development and management teams.  
 ◦ Cut costs of data acquisition by minimizing reliance on external data sources.  
-
 
 [**PanAmSat Corporation**](http://www.intelsat.com/announcement/2006-intelsat-acquires-panamsat/)&ensp;---&ensp;Wilton, CT&emsp;//&emsp;Mar-03 to Oct-03  
 Senior Specialist, Corporate Development and Strategy, M&A  
