@@ -30,7 +30,7 @@ In my last role I discovered a passion for analysis and data science. Since leav
 ------
 
 ## EXPERIENCE
-[**Project MUSE at Johns Hopkins University Press**](https://muse.jhu.edu)&ensp;---&ensp;Baltimore, MD&emsp;//&emsp;Aug-21 to Present 
+[**Project MUSE at Johns Hopkins University Press**](https://muse.jhu.edu)&ensp;---&ensp;Baltimore, MD&emsp;//&emsp;Aug-21 to Present  
 Manager, Strategic Initiatives and Business Intelligence
 
 [**Nasdaq, Inc.**](http://www.nasdaq.com)&ensp;---&ensp;New York, NY&emsp;//&emsp;Jun-13 to Nov-14  
