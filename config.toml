@@ -5,7 +5,8 @@ theme = "hugo-future-imperfect"
 preserveTaxonomyNames = true
 paginate = 3
 disqusShortname = "blog-dave-bloom-com"
-googleAnalytics = "UA-114201560-1"
+#googleAnalytics = "UA-114201560-1"
+googleAnalytics = "G-897Y3TCMEG"
 pluralizeListTitles = false
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
