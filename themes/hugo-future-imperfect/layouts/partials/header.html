@@ -76,6 +76,7 @@
 {{ end }}
 
       {{ template "_internal/google_analytics.html" . }}
+      {{ if .Site.Params.gtm_id}}{{- partial "gtm.html" . }}{{ end }}
     </head>
     <body>
 

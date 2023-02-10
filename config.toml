@@ -7,6 +7,7 @@ paginate = 3
 disqusShortname = "blog-dave-bloom-com"
 #googleAnalytics = "UA-114201560-1"
 googleAnalytics = "G-897Y3TCMEG"
+gtm_id = "GTM-NK42M6W"
 pluralizeListTitles = false
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
