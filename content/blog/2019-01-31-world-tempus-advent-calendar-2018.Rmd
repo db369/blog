@@ -11,15 +11,15 @@ categories:
 tags:
   - EDA
 description: ''
-featured: 'cover-avent_crop.png'
-featuredalt: ''
-featuredpath: 'img/main'
+coverImage: img/main/cover-avent_crop.png
+coverCaption: ''
+coverSize: partial
 linktitle: ''
-type: post
+type: blog
 code_download: true
 ---
 
-# Introduction
+<h1>Introduction</h1>
 
 I love watches! For many, it is a dying (or dead) art. We can tell time using phones, computers, and smart watches, and they each perform many more functions making the traditional watch all but obsolete. But, to me, mechanical watches are the perfect example of form and function. I find it amazing how a selection of tiny gears and a long spring can measure something like time with very reasonable accuracy. 
 

@@ -7,13 +7,16 @@ categories:
 tags:
   - about
 slug: first-post
-featured: pic1.jpg
-featuredalt: me and kids
-featuredpath: img/main
-type: post
+thumbnailImage: /img/main/pic1.jpg
+thumbnailImagePosition: bottom
+coverImage: /img/main/pic1.jpg
+coverCaption: "me and kids"
+coverSize: partial
+type: blog
 ---
 
-## Introduction
+
+# Introduction
 
 If you can see this, then my first post on my own blog was successful! If I put the picture in the right folder and named everything correctly, you should see it above; that's me, on the left, with my two zany kids. Another success!
 

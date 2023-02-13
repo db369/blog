@@ -9,11 +9,11 @@ categories:
   - tidytuesday
 tags: []
 description: ''
-featured: 'yancy-min-git.jpg'
-featuredalt: ''
-featuredpath: 'img/main'
+coverImage: /img/main/yancy-min-git.jpg
+coverCaption: ''
+coverSize: partial
 linktitle: ''
-type: post
+type: blog
 ---
 Photo by Yancy Min on Unsplash
 

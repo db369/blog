@@ -10,13 +10,13 @@ tags:
   - India
   - R
   - crime
-featured: thomas-young-634092-unsplash_alt.jpg
-featuredalt: children of India
-featuredpath: img/main
+coverImage: /img/main/thomas-young-634092-unsplash_alt.jpg
+coverCaption: _Photo by [Thomas Young](https://unsplash.com/@tryoung) on [Unsplash](https://unsplash.com/)_
+coverSize: partial
 slug: crime-against-children-in-india
-type: post
+type: blog
 ---
-_Photo by [Thomas Young](https://unsplash.com/@tryoung) on [Unsplash](https://unsplash.com/)_
+
 
 # Introduction
 
