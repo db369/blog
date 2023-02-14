@@ -21,7 +21,7 @@ disqusShortname = "blog-dave-bloom-com"
 googleAnalytics = "G-897Y3TCMEG"
 gtm_id = "GTM-NK42M6W"
 paginate = 7
-canonifyurls = true
+canonifyurls = true 
 
 [permalinks]
   posts = "/:year/:month/:slug/"
