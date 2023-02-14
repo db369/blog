@@ -16,9 +16,10 @@ baseURL = "https://www.dave-bloom.com/"
 languageCode = "en-us"
 defaultContentLanguage = "en-us"
 title = "Dave Bloom"
-theme = "hugo-tranquilpeak-theme"
+theme = "hugo-tranquilpeak-theme-gtm"
 disqusShortname = "blog-dave-bloom-com"
 googleAnalytics = "G-897Y3TCMEG"
+gtm_id = "GTM-NK42M6W"
 paginate = 7
 canonifyurls = true
 
