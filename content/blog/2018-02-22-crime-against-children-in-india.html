@@ -10,17 +10,16 @@ tags:
   - India
   - R
   - crime
-featured: thomas-young-634092-unsplash_alt.jpg
-featuredalt: children of India
-featuredpath: img/main
+coverImage: /img/main/thomas-young-634092-unsplash_alt.jpg
+coverCaption: 'Photo by [Thomas Young](https://unsplash.com/@tryoung) on [Unsplash](https://unsplash.com/)'
+coverMeta: out
+coverSize: partial
 slug: crime-against-children-in-india
-type: post
+type: blog
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
-<p><em>Photo by <a href="https://unsplash.com/@tryoung">Thomas Young</a> on <a href="https://unsplash.com/">Unsplash</a></em></p>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
 <p>I found this dataset by chance on <a href="https://data.world">data.world</a> and it immediately sparked in interest as I have two small children and recently moved to India in 2017. The data is organized by state and specific crime from 2001 to 2012. It is a bit dated and not as granular as I would like (by city would have been nice), but the dataset is still worth exploring and practicing some basic skills.</p>
@@ -39,7 +38,12 @@ library(gridExtra)
 library(ggthemes)
 library(rcartocolor)
 library(lubridate)
-library(ghibli)</code></pre>
+library(ghibli)
+library(mapproj)
+
+if (!require(gpclib)) install.packages(&quot;gpclib&quot;, type=&quot;source&quot;)
+gpclibPermit()</code></pre>
+<pre><code>## [1] TRUE</code></pre>
 </div>
 <div id="accessing-the-data" class="section level3">
 <h3>Accessing the data</h3>
@@ -48,8 +52,16 @@ library(ghibli)</code></pre>
 dataset_key &lt;- &quot;https://data.world/bhavnachawla/crime-rate-against-children-india-2001-2012&quot;
 # List tables available for SQL queries
 tables_qry &lt;- data.world::qry_sql(&quot;SELECT * FROM Tables&quot;)
-tables_df &lt;- data.world::query(tables_qry, dataset = dataset_key)
-# See what is in it
+tables_df &lt;- data.world::query(tables_qry, dataset = dataset_key)</code></pre>
+<pre><code>## Rows: 1 Columns: 6
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (5): tableId, tableName, tableTitle, owner, dataset
+## lgl (1): tableDescription
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code># See what is in it
 tables_df$tableName</code></pre>
 <pre><code>## [1] &quot;crime_head_wise_persons_arrested_under_crime_against_children_during_2001_2012&quot;</code></pre>
 <p>Next, we query the table found.</p>
@@ -59,21 +71,29 @@ tables_df$tableName</code></pre>
   #knitr::kable(head(sample_df), format = &quot;html&quot;)
   sample_df
 }</code></pre>
-<pre><code>## # A tibble: 494 x 14
-##    state_ut   crime_head `2001` `2002` `2003` `2004` `2005` `2006` `2007` `2008`
-##    &lt;chr&gt;      &lt;chr&gt;       &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
-##  1 ANDHRA PR… INFANTICI…      1      1      3      0      0      0      1      0
-##  2 ARUNACHAL… INFANTICI…      0      0      0      0      0      0      0      0
-##  3 ASSAM      INFANTICI…      0      5      0      0      1      0      0      0
-##  4 HARYANA    INFANTICI…      0      3      0      1      0      0      1      5
-##  5 HIMACHAL … INFANTICI…      0      0      3      0      0      0      0      0
-##  6 JAMMU &amp; K… INFANTICI…      0      0      0      0      0      0      0      0
-##  7 JHARKHAND  INFANTICI…      0      0      0      0      0      0      0      0
-##  8 KARNATAKA  INFANTICI…      6      2      0      2      1      1      0      3
-##  9 KERALA     INFANTICI…      1      1      0      2      0      1      3      0
-## 10 MADHYA PR… INFANTICI…      7      9      4      6      9     17     10      1
-## # … with 484 more rows, and 4 more variables: 2009 &lt;dbl&gt;, 2010 &lt;dbl&gt;,
-## #   2011 &lt;dbl&gt;, 2012 &lt;dbl&gt;</code></pre>
+<pre><code>## Rows: 494 Columns: 14
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr  (2): state_ut, crime_head
+## dbl (12): 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, ...
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre><code>## # A tibble: 494 × 14
+##    state_ut      crime…¹ `2001` `2002` `2003` `2004` `2005` `2006` `2007` `2008`
+##    &lt;chr&gt;         &lt;chr&gt;    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+##  1 ANDHRA PRADE… INFANT…      1      1      3      0      0      0      1      0
+##  2 ARUNACHAL PR… INFANT…      0      0      0      0      0      0      0      0
+##  3 ASSAM         INFANT…      0      5      0      0      1      0      0      0
+##  4 BIHAR         INFANT…      0      0      0      0      2      0      2      2
+##  5 CHHATTISGARH  INFANT…      7     29      5     12      0     15     11      6
+##  6 GOA           INFANT…      0      0      0      0      0      1      0      0
+##  7 GUJARAT       INFANT…      2      0      0      1      6      0      7      0
+##  8 HARYANA       INFANT…      0      3      0      1      0      0      1      5
+##  9 HIMACHAL PRA… INFANT…      0      0      3      0      0      0      0      0
+## 10 JAMMU &amp; KASH… INFANT…      0      0      0      0      0      0      0      0
+## # … with 484 more rows, 4 more variables: `2009` &lt;dbl&gt;, `2010` &lt;dbl&gt;,
+## #   `2011` &lt;dbl&gt;, `2012` &lt;dbl&gt;, and abbreviated variable name ¹​crime_head</code></pre>
 </div>
 <div id="data-cleaning" class="section level3">
 <h3>Data Cleaning</h3>
@@ -88,7 +108,7 @@ any(is.na(sample_df))</code></pre>
   arrange(state_ut) %&gt;%
   select(state_ut) %&gt;%
   unique() </code></pre>
-<pre><code>## # A tibble: 38 x 1
+<pre><code>## # A tibble: 38 × 1
 ##    state_ut         
 ##    &lt;chr&gt;            
 ##  1 A &amp; N ISLANDS    
@@ -107,7 +127,7 @@ any(is.na(sample_df))</code></pre>
   arrange(crime_head) %&gt;%
   select(crime_head) %&gt;%
   unique()</code></pre>
-<pre><code>## # A tibble: 13 x 1
+<pre><code>## # A tibble: 13 × 1
 ##    crime_head                          
 ##    &lt;chr&gt;                               
 ##  1 ABETMENT OF SUICIDE                 
@@ -147,7 +167,7 @@ df$state_ut &lt;- str_to_title(df$state_ut)</code></pre>
 <pre class="r"><code>df %&gt;%
   filter(state_ut == &quot;Tamil Nadu&quot; &amp; year == 2012) %&gt;%
   arrange(desc(df)) </code></pre>
-<pre><code>## # A tibble: 13 x 4
+<pre><code>## # A tibble: 13 × 4
 ##    state_ut   crime_head                            year    df
 ##    &lt;chr&gt;      &lt;chr&gt;                                &lt;int&gt; &lt;dbl&gt;
 ##  1 Tamil Nadu Total Crimes Against Children         2012  1105
@@ -184,7 +204,9 @@ df %&gt;%
   scale_x_continuous(labels = function(x) as.integer(x)) +
   theme(axis.text.x = element_text(hjust=1),
         panel.spacing = unit(1.5, &quot;lines&quot;),
-        panel.border = element_rect(color = &quot;grey80&quot;, fill = NA))</code></pre>
+        panel.border = element_rect(color = &quot;grey80&quot;, fill = NA))
+## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+## ℹ Please use `linewidth` instead.</code></pre>
 <p><img src="/blog/2018-02-22-crime-against-children-in-india_files/figure-html/tamil_nadu_crimes_charts-1.png" width="672" /></p>
 <p>Kidnapping and rape appear to have the most alarming trajectories. I’m curious what average annual growth looks like.</p>
 <pre class="r"><code>df %&gt;%
@@ -192,7 +214,7 @@ df %&gt;%
   group_by(crime_head) %&gt;%
   summarize(CAGR =  scales::percent((df[year == 2012] / df[year == 2001]) ^ (1/11) - 1)) %&gt;%
   arrange(desc(CAGR)) </code></pre>
-<pre><code>## # A tibble: 4 x 2
+<pre><code>## # A tibble: 4 × 2
 ##   crime_head                           CAGR 
 ##   &lt;chr&gt;                                &lt;chr&gt;
 ## 1 Kidnapping And Abduction Of Children 47%  
@@ -315,7 +337,13 @@ growth.tbl &lt;- df %&gt;%
   group_by(state_ut) %&gt;%
   summarize(growth = 100 * ((df[year == 2012] / df[year == 2001]) ^ (1/11) - 1) ) %&gt;%
   arrange(desc(growth))</code></pre>
-<pre><code>## `summarise()` has grouped output by &#39;state_ut&#39;. You can override using the `.groups` argument.</code></pre>
+<pre><code>## Warning: Returning more (or less) than 1 row per `summarise()` group was deprecated in
+## dplyr 1.1.0.
+## ℹ Please use `reframe()` instead.
+## ℹ When switching from `summarise()` to `reframe()`, remember that `reframe()`
+##   always returns an ungrouped data frame and adjust accordingly.</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;state_ut&#39;. You can override using the
+## `.groups` argument.</code></pre>
 <pre class="r"><code>growth.tbl %&gt;%
   head(15) %&gt;%
   ggplot(aes(x = fct_reorder(state_ut, growth), y = growth)) + 
@@ -363,7 +391,7 @@ states.shp &lt;- rgdal::readOGR(&quot;India_Shape/IND_adm1.shp&quot;)</code></pr
 ## It has 12 fields
 ## Integer64 fields read as strings:  ID_0 ID_1 CCN_1</code></pre>
 <pre class="r"><code>gpclibPermit()</code></pre>
-<pre><code>## [1] FALSE</code></pre>
+<pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code>states.shp.f &lt;- fortify(states.shp, region = &quot;ID_1&quot;)
 
 # create a temporary datafrome from names and ID&#39;s
