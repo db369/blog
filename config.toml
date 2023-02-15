@@ -102,17 +102,23 @@ canonifyurls = true
   weight = 6
   identifier = "cv"
   name = "CV"
-  pre = "<i class=\"sidebar-button-icon fas fa-lg fa-user\" aria-hidden=\"true\"></i>"
+  pre = "<i class=\"sidebar-button-icon fas fa-lg fa-briefcase\" aria-hidden=\"true\"></i>"
   url = "/resume"
   
 [[menu.links]]
   weight = 1
+  identifier = "gitlab"
+  name = "GitLab"
+  pre = "<i class=\"sidebar-button-icon fab fa-lg fa-gitlab\" aria-hidden=\"true\"></i>"
+  url = "https://gitlab.com/db369"
+[[menu.links]]
+  weight = 2
   identifier = "github"
   name = "GitHub"
   pre = "<i class=\"sidebar-button-icon fab fa-lg fa-github\" aria-hidden=\"true\"></i>"
   url = "https://github.com/db369"
 [[menu.links]]
-  weight = 2
+  weight = 3
   identifier = "stackoverflow"
   name = "Stack Overflow"
   pre = "<i class=\"sidebar-button-icon fab fa-lg fa-stack-overflow\" aria-hidden=\"true\"></i>"
