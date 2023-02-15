@@ -1,7 +1,8 @@
-+++
-title = "About Me"
-date = "2018-02-13"
-+++
+---
+title: "About Me"
+date: "2018-02-13"
+---
+
 
 I was a Specialist at [Nasdaq](http://www.nasdaq.com) in Corporate Solutions (formerly part of Thomson Reuters) through November 2014. When I joined Thomson in 2004, I focused on valuation and quantitative analytics, however, I became particularly skilled at solving unique problems for clients using statistics and drawing insights from large sets of data. I have helped clients analyze counter-party risk, value themselves against peers, optimize capital structure, and evaluate market volatility. I have also worked with internal strategy in analyzing the business, its clients, and service structure as well as with business development teams to assess prospective services and interdepartmental product offerings. 
 
