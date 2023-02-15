@@ -107,18 +107,30 @@ canonifyurls = true
   
 [[menu.links]]
   weight = 1
+  identifier = "twitter"
+  name = "Twitter"
+  pre = "<i class=\"sidebar-button-icon fab fa-lg fa-twitter\" aria-hidden=\"true\"></i>"
+  url = "https://twitter.com/DaveBloom11"
+[[menu.links]]
+  weight = 2
+  identifier = "mastodon"
+  name = "Mastodon"
+  pre = "<i class=\"sidebar-button-icon fab fa-lg fa-mastodon\" aria-hidden=\"true\"></i>"
+  url = "https://vis.social/@db369"
+[[menu.links]]
+  weight = 3
   identifier = "gitlab"
   name = "GitLab"
   pre = "<i class=\"sidebar-button-icon fab fa-lg fa-gitlab\" aria-hidden=\"true\"></i>"
   url = "https://gitlab.com/db369"
 [[menu.links]]
-  weight = 2
+  weight = 4
   identifier = "github"
   name = "GitHub"
   pre = "<i class=\"sidebar-button-icon fab fa-lg fa-github\" aria-hidden=\"true\"></i>"
   url = "https://github.com/db369"
 [[menu.links]]
-  weight = 3
+  weight = 5
   identifier = "stackoverflow"
   name = "Stack Overflow"
   pre = "<i class=\"sidebar-button-icon fab fa-lg fa-stack-overflow\" aria-hidden=\"true\"></i>"
