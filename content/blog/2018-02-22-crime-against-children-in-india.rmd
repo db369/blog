@@ -11,7 +11,8 @@ tags:
   - R
   - crime
 coverImage: /img/main/thomas-young-634092-unsplash_alt.jpg
-coverCaption: _Photo by [Thomas Young](https://unsplash.com/@tryoung) on [Unsplash](https://unsplash.com/)_
+coverCaption: Photo by [Thomas Young](https://unsplash.com/@tryoung) on [Unsplash](https://unsplash.com/)
+coverMeta: out
 coverSize: partial
 slug: crime-against-children-in-india
 type: blog

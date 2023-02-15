@@ -7,10 +7,9 @@ categories:
 tags:
   - about
 slug: first-post
-thumbnailImage: /img/main/pic1.jpg
-thumbnailImagePosition: bottom
 coverImage: /img/main/pic1.jpg
 coverCaption: "me and kids"
+coverMeta: out
 coverSize: partial
 type: blog
 ---

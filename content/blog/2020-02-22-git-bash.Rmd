@@ -10,12 +10,13 @@ categories:
 tags: []
 description: ''
 coverImage: /img/main/yancy-min-git.jpg
-coverCaption: ''
+coverCaption: 'Photo by Yancy Min on Unsplash'
 coverSize: partial
+coverMeta: out
 linktitle: ''
 type: blog
 ---
-Photo by Yancy Min on Unsplash
+
 
 # Merging Git Repositories with Bash
 
