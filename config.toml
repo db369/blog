@@ -119,18 +119,24 @@ canonifyurls = true
   url = "https://vis.social/@db369"
 [[menu.links]]
   weight = 3
+  identifier = "linkedin"
+  name = "LinkedIn"
+  pre = "<i class=\"sidebar-button-icon fab fa-lg fa-linkedin\" aria-hidden=\"true\"></i>"
+  url = "https://www.linkedin.com/in/davidabloom"
+[[menu.links]]
+  weight = 4
   identifier = "gitlab"
   name = "GitLab"
   pre = "<i class=\"sidebar-button-icon fab fa-lg fa-gitlab\" aria-hidden=\"true\"></i>"
   url = "https://gitlab.com/db369"
 [[menu.links]]
-  weight = 4
+  weight = 5
   identifier = "github"
   name = "GitHub"
   pre = "<i class=\"sidebar-button-icon fab fa-lg fa-github\" aria-hidden=\"true\"></i>"
   url = "https://github.com/db369"
 [[menu.links]]
-  weight = 5
+  weight = 6
   identifier = "stackoverflow"
   name = "Stack Overflow"
   pre = "<i class=\"sidebar-button-icon fab fa-lg fa-stack-overflow\" aria-hidden=\"true\"></i>"
