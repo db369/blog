@@ -46,7 +46,8 @@ canonifyurls = true
 # ------
 [author]
   name = "Dave Bloom"
-  bio = "Yale SOM, MBA<\br>NYU, BA"
+  bio = "Yale SOM, MBA
+  NYU, BA"
   job = "Business Intelligence and Strategic Initiatives"
   location = "Baltimore, MD, USA"
   # Your Gravatar email. Overwrite `author.picture` everywhere in the blog
